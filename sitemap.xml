@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Nur indexierbare Seiten. danke.html und 404.html tragen noindex und
+     gehoeren deshalb nicht hinein. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vioweb.de/</loc>

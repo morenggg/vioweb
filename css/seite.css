@@ -1,239 +1,261 @@
 /* =========================================================================
    Vioweb — Stile unterhalb der Falz.
+   Nicht-blockierend geladen. Kritisches CSS steht inline im <head>.
 
-   Wird nicht-blockierend geladen. Das kritische CSS (Werte, Basis,
-   Kopfbereich, Aufmacher, Berichtstafel) steht inline im <head> der
-   jeweiligen Seite. Die Werte aus :root gelten hier mit.
-
-   Reihenfolge:
-     1. Abschnitte und Titel
-     2. Warum persoenlich
-     3. Was wir ansehen
-     4. Ablauf
-     5. Umfang
-     6. Haltung
-     7. Fragen
-     8. Kontaktformular
+     1. Abschnitte und Grossschrift
+     2. Warum von Hand  (.drei)
+     3. Pruefpunkte     (.index)
+     4. Ablauf          (.weg)
+     5. Umfang          (.wahl)
+     6. Vertrauensband  (.band)
+     7. Fragen          (.fragen)
+     8. Kontakt und Formular
      9. Fusszeile
     10. Textseiten
-    11. Desktop ab 1100 px
-    12. Einblenden beim Scrollen
+    11. Desktop ab 1080 px
+    12. Einblenden
    ========================================================================= */
 
-/* ------------------------------------------- 1. Abschnitte und Titel */
-.abschnitt {
+/* Erlaubt das Animieren auf height:auto — ohne das bleibt jede
+   Aufklapp-Animation eine Naeherung mit fester Hoehe. */
+:root { interpolate-size: allow-keywords; }
+
+/* --------------------------------------- 1. Abschnitte und Grossschrift */
+.teil { border-top: 1px solid var(--linie); padding-block: 72px; }
+.teil--flaeche { background: var(--grund-2); }
+
+/* Grosse Schrift traegt die Seite. Deutlich groesser als ueblich, dafuer
+   deutlich weniger Text darunter. */
+.gross {
+  font-size: clamp(2.1rem, 1.35rem + 3.4vw, 4.2rem);
+  font-weight: 700; line-height: 1.02; letter-spacing: -.034em;
+  max-width: 15ch;
+}
+.gross em { font-style: normal; color: var(--akzent-hell); }
+
+/* ------------------------------------------------ 2. Warum von Hand */
+.drei { margin-top: 48px; display: grid; }
+.drei li {
+  display: grid; grid-template-columns: 46px minmax(0, 1fr);
+  align-items: start;
+  padding-block: 26px;
   border-top: 1px solid var(--linie);
-  padding-block: 64px;
+  font-size: clamp(1.05rem, .95rem + .6vw, 1.35rem);
+  line-height: 1.4;
+  max-width: 34ch;
 }
-@media (min-width: 900px) { .abschnitt { padding-block: 96px; } }
-
-.abschnitt--flaeche { background: var(--grund-2); }
-
-.titel {
-  font-size: clamp(1.8rem, 1.3rem + 2.2vw, 3.4rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -.028em;
-  max-width: 20ch;
+.drei__nr {
+  font-family: var(--schrift-technik); font-size: .62rem;
+  letter-spacing: .18em; color: var(--akzent-hell);
+  padding-top: .5em;
 }
-/* Ein Akzent pro Abschnitt: genau ein Wort oder eine Wendung. */
-.titel em { font-style: normal; color: var(--akzent-hell); }
 
-.abschnitt .vorspann { margin-top: 20px; }
-
-/* ------------------------------------------------ 2. Warum persoenlich */
-.gegen { margin-top: 44px; display: grid; gap: 32px; }
-.gegen li { padding-top: 22px; border-top: 1px solid var(--linie); }
-.gegen h3 {
-  font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em;
-  line-height: 1.3;
-}
-.gegen p { margin-top: 10px; color: var(--text-leise); font-size: .96rem; }
-
-/* ------------------------------------------------- 3. Was wir ansehen */
-.bereiche { margin-top: 44px; display: grid; }
-.bereiche > div {
+/* ---------------------------------------------------- 3. Pruefpunkte */
+.index { margin-top: 48px; display: grid; }
+.index li {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: baseline;
   padding-block: 18px;
   border-top: 1px solid var(--linie);
 }
-.bereiche > div:first-child { border-top: 0; }
-.bereiche dt {
-  font-family: var(--schrift-struktur);
-  font-size: .95rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .08em;
+.index li:last-child { border-bottom: 1px solid var(--linie); }
+.index__nr {
+  font-family: var(--schrift-technik); font-size: .62rem;
+  letter-spacing: .18em; color: var(--text-still);
 }
-.bereiche dd {
-  margin: 6px 0 0; color: var(--text-leise); font-size: .95rem;
-  max-width: 44ch;
+.index b {
+  font-size: 1.1rem; font-weight: 700; letter-spacing: -.015em;
+  display: block;
 }
-
-/* ---------------------------------------------------------- 4. Ablauf */
-.schritte { margin-top: 44px; display: grid; gap: 28px; }
-.schritte li { padding-top: 20px; border-top: 1px solid var(--linie); }
-.schritte__nr {
-  font-family: var(--schrift-technik);
-  font-size: .68rem; letter-spacing: .22em;
-  color: var(--akzent-hell);
-  margin-bottom: 10px;
-}
-.schritte h3 {
-  font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em;
-  line-height: 1.3;
-}
-.schritte li p:last-child {
-  margin-top: 8px; color: var(--text-leise); font-size: .95rem;
-  max-width: 40ch;
+.index i {
+  display: block; margin-top: 4px;
+  font-style: normal; font-size: .95rem; color: var(--text-leise);
 }
 
-/* ---------------------------------------------------------- 5. Umfang */
-.stufen { margin-top: 44px; display: grid; }
-.stufen__zeile {
-  padding-block: 28px;
+/* --------------------------------------------------------- 4. Ablauf */
+.weg { margin-top: 48px; display: grid; }
+.weg li {
+  padding-block: 24px;
   border-top: 1px solid var(--linie);
 }
-.stufen__kopf { display: flex; align-items: baseline; gap: 16px; }
-.stufen__nr {
-  font-family: var(--schrift-technik);
-  font-size: .8rem; letter-spacing: .18em;
-  color: var(--text-leise);
-  border: 1px solid var(--linie-hell);
-  width: 30px; height: 30px; flex: none;
-  display: grid; place-items: center;
-  letter-spacing: 0;
+.weg__nr {
+  font-family: var(--schrift-technik); font-size: .62rem;
+  letter-spacing: .18em; color: var(--akzent-hell);
+  display: block; margin-bottom: 10px;
 }
-.stufen__zeile h3 {
+.weg h3 {
   font-size: clamp(1.25rem, 1.05rem + .8vw, 1.6rem);
-  font-weight: 700; letter-spacing: -.02em; line-height: 1.2;
+  font-weight: 700; letter-spacing: -.022em; line-height: 1.15;
 }
-.stufen__text {
-  margin-top: 14px; color: var(--text-leise);
-  max-width: var(--lesebreite); font-size: .98rem;
+.weg p { margin-top: 6px; color: var(--text-leise); font-size: .98rem; max-width: 30ch; }
+
+/* --------------------------------------------------------- 5. Umfang */
+.wahl { margin-top: 48px; display: grid; }
+.wahl li {
+  position: relative;
+  padding: 30px 0 30px 56px;
+  border-top: 1px solid var(--linie);
 }
-.stufen__fuer {
-  margin-top: 12px;
-  font-family: var(--schrift-technik);
-  font-size: .68rem; text-transform: uppercase; letter-spacing: .16em;
+.wahl__mark {
+  position: absolute; left: 0; top: 34px;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border: 1px solid var(--linie-hell);
+  font-family: var(--schrift-technik); font-size: .78rem;
   color: var(--text-leise);
 }
-/* Genau eine Stufe traegt den Akzent — nicht alle drei.
-   Negativer Rand, damit der Balken links AUSSERHALB der Textkante sitzt.
-   Mit reinem padding-left waere die betonte Stufe gegenueber den anderen
-   beiden eingerueckt — das bricht die feste linke Kante. */
-.stufen__zeile--betont {
+.wahl h3 {
+  font-size: clamp(1.3rem, 1.1rem + .9vw, 1.75rem);
+  font-weight: 700; letter-spacing: -.024em; line-height: 1.15;
+}
+.wahl p { margin-top: 10px; color: var(--text-leise); max-width: 40ch; }
+
+/* Genau eine Stufe traegt den Akzent. Der Balken sitzt ueber negativen
+   Rand ausserhalb der Textkante, damit die Zeile nicht einrueckt. */
+.wahl--betont {
   border-left: 3px solid var(--akzent-voll);
-  padding-left: 22px;
-  margin-left: -25px;
+  padding-left: 53px; margin-left: -3px;
+  background: linear-gradient(90deg, rgba(98,38,250,.07), rgba(98,38,250,0) 60%);
 }
-.stufen__zeile--betont .stufen__nr {
-  border-color: var(--akzent-voll); color: var(--akzent-hell);
-}
-.stufen__zeile--betont .stufen__fuer { color: var(--akzent-hell); }
+.wahl--betont .wahl__mark { border-color: var(--akzent-voll); color: var(--akzent-hell); }
 
-/* --------------------------------------------------------- 6. Haltung */
-.haltung { margin-top: 44px; display: grid; gap: 28px; }
-.haltung h3 {
-  font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em;
-  padding-left: 18px; position: relative; line-height: 1.35;
+/* ------------------------------------------------- 6. Vertrauensband */
+.band {
+  border-top: 1px solid var(--linie);
+  background: var(--flaeche);
+  box-shadow: var(--kante-licht);
+  padding-block: 40px;
 }
-.haltung h3::before {
-  content: ""; position: absolute; left: 0; top: .62em;
-  width: 7px; height: 7px; background: var(--akzent-voll);
+.band__liste { display: grid; gap: 26px; }
+.band__liste b {
+  display: block; font-size: 1rem; font-weight: 700; letter-spacing: -.012em;
+  padding-left: 16px; position: relative;
 }
-.haltung p {
-  margin-top: 8px; padding-left: 18px;
-  color: var(--text-leise); font-size: .95rem; max-width: 42ch;
+.band__liste b::before {
+  content: ""; position: absolute; left: 0; top: .55em;
+  width: 6px; height: 6px; background: var(--akzent-voll);
+}
+.band__liste span {
+  display: block; margin-top: 4px; padding-left: 16px;
+  font-size: .9rem; color: var(--text-leise);
 }
 
-/* ---------------------------------------------------------- 7. Fragen */
-.fragen { margin-top: 40px; }
-.fragen details { border-top: 1px solid var(--linie); }
-.fragen details:last-child { border-bottom: 1px solid var(--linie); }
+/* --------------------------------------------------------- 7. Fragen
+   Kein Standard-Akkordeon: grosse Schrift, viel Luft, ein Strich statt
+   eines Plus-Zeichens. Die Antwort faehrt ueber ::details-content weich
+   auf. Browser ohne Unterstuetzung oeffnen ohne Bewegung — der Inhalt ist
+   in jedem Fall erreichbar. */
+.fragen { margin-top: 48px; border-top: 1px solid var(--linie); }
+.fragen details { border-bottom: 1px solid var(--linie); }
+
 .fragen summary {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 20px; padding-block: 20px; min-height: 44px;
-  font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 34px;
+  align-items: baseline;
+  gap: 0 8px;
+  padding-block: 28px;
   cursor: pointer; list-style: none;
+  transition: color var(--schnell) var(--verlauf);
 }
 .fragen summary:hover { color: var(--akzent-hell); }
-/* Plus, das sich beim Oeffnen zum Minus dreht — reine CSS-Form, kein Icon. */
+.fragen__nr {
+  font-family: var(--schrift-technik); font-size: .62rem;
+  letter-spacing: .18em; color: var(--text-still);
+}
+.fragen__text {
+  font-size: clamp(1.2rem, 1rem + 1vw, 1.9rem);
+  font-weight: 700; letter-spacing: -.026em; line-height: 1.15;
+}
+/* Ein Strich, der sich beim Oeffnen dreht — kein Plus, kein Winkel. */
 .fragen__zeichen {
-  position: relative; width: 14px; height: 14px; flex: none;
+  position: relative; justify-self: end; align-self: center;
+  width: 20px; height: 20px;
 }
 .fragen__zeichen::before, .fragen__zeichen::after {
-  content: ""; position: absolute; background: var(--akzent-hell);
-  transition: transform var(--dauer) var(--verlauf);
+  content: ""; position: absolute; left: 0; top: 9px;
+  width: 20px; height: 1.5px; background: currentColor;
+  transition: transform var(--mittel-zeit) var(--verlauf);
 }
-.fragen__zeichen::before { left: 0; top: 6px; width: 14px; height: 2px; }
-.fragen__zeichen::after  { left: 6px; top: 0; width: 2px; height: 14px; }
-.fragen details[open] .fragen__zeichen::after { transform: scaleY(0); }
-.fragen details p {
-  padding-bottom: 24px; color: var(--text-leise);
-  max-width: var(--lesebreite); font-size: .96rem;
+.fragen__zeichen::after { transform: rotate(90deg); }
+.fragen details[open] .fragen__zeichen::before { transform: rotate(180deg); }
+.fragen details[open] .fragen__zeichen::after { transform: rotate(180deg); }
+
+.fragen__antwort { padding: 0 34px 34px 46px; }
+.fragen__antwort p {
+  color: var(--text-leise);
+  font-size: 1.05rem; line-height: 1.55; max-width: 42ch;
 }
 
-/* ------------------------------------------------- 8. Kontaktformular */
-/* Der einzige Abschnitt, der visuell aus der Reihe tanzen darf. */
-.check { border-top: 1px solid var(--linie); padding-block: 64px; }
-@media (min-width: 900px) { .check { padding-block: 104px; } }
-
-.check__flaeche {
-  border-left: 4px solid var(--akzent-voll);
-  background: linear-gradient(100deg,
-    rgba(98, 38, 250, .08) 0%,
-    rgba(98, 38, 250, .03) 42%,
-    rgba(98, 38, 250, 0) 78%);
-  padding: 40px 20px 44px;
+@supports (interpolate-size: allow-keywords) {
+  .fragen details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size var(--mittel-zeit) var(--verlauf),
+                content-visibility var(--mittel-zeit) allow-discrete;
+  }
+  .fragen details[open]::details-content { block-size: auto; }
 }
-@media (min-width: 900px) { .check__flaeche { padding: 72px 64px 76px; } }
 
-.formular { margin-top: 36px; max-width: 560px; }
+/* ---------------------------------------------- 8. Kontakt und Formular */
+.kontakt { border-top: 1px solid var(--linie); padding-block: 72px; }
+.kontakt__flaeche {
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-left: 3px solid var(--akzent-voll);
+  box-shadow: var(--kante-licht);
+  padding: 40px 22px 44px;
+}
+.kontakt__satz {
+  margin-top: 20px; font-size: 1.08rem;
+  color: var(--text-leise); max-width: 32ch;
+}
+.kontakt__still {
+  margin-top: 20px; font-size: .88rem; color: var(--text-still); max-width: 30ch;
+}
 
-.feldgruppe { margin-bottom: 22px; }
-/* Nicht auf .haken anwenden: der Einwilligungstext ist ein ganzer Satz und
-   darf nicht in Versalien laufen. */
+.formular { margin-top: 40px; }
+.feldgruppe { margin-bottom: 20px; }
 .feldgruppe > label:not(.haken) {
   display: block;
   font-family: var(--schrift-struktur);
-  font-size: .82rem;
-  text-transform: uppercase;
-  letter-spacing: .1em;
+  font-size: .8rem; text-transform: uppercase; letter-spacing: .1em;
   margin-bottom: 8px;
 }
 .pflicht {
-  font-family: var(--schrift-technik);
-  font-size: .62rem; letter-spacing: .18em;
-  color: var(--akzent-hell); margin-left: 8px;
+  font-family: var(--schrift-technik); font-size: .6rem;
+  letter-spacing: .18em; color: var(--akzent-hell); margin-left: 8px;
 }
 
 .formular input[type="url"],
 .formular input[type="email"],
 .formular input[type="text"],
 .formular textarea {
-  display: block; width: 100%; min-height: 52px;
-  padding: 13px 16px;
+  display: block; width: 100%; min-height: 54px;
+  padding: 14px 16px;
   background: var(--grund);
-  border: 1px solid var(--linie);
-  border-radius: 0;
-  color: var(--text);
-  transition: border-color var(--dauer) var(--verlauf);
+  border: 1px solid var(--linie-hell);
+  border-radius: 0; color: var(--text);
+  transition: border-color var(--schnell) var(--verlauf),
+              background-color var(--schnell) var(--verlauf);
 }
-.formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
-.formular input:hover, .formular textarea:hover { border-color: var(--linie-hell); }
-.formular input:focus-visible,
-.formular textarea:focus-visible { border-color: var(--akzent-hell); outline-offset: 1px; }
-.formular ::placeholder { color: #6B6E78; }
+.formular textarea { min-height: 104px; resize: vertical; line-height: 1.5; }
+.formular input:hover, .formular textarea:hover { background: var(--grund-2); }
+.formular input:focus-visible, .formular textarea:focus-visible {
+  border-color: var(--akzent-hell); outline-offset: 1px;
+}
+.formular ::placeholder { color: var(--text-still); }
 .formular [aria-invalid="true"] { border-color: var(--schlecht); }
 
-.hinweis { margin-top: 7px; font-size: .82rem; color: var(--text-leise); }
+.hinweis { margin-top: 7px; font-size: .8rem; color: var(--text-still); }
 .fehler {
-  margin-top: 7px; font-size: .87rem;
-  color: #FF8A8F;          /* heller als --schlecht, damit 4,5:1 erreicht wird */
-  font-weight: 700;
+  margin-top: 7px; font-size: .86rem; font-weight: 700;
+  color: #FF8A8F;   /* heller als --schlecht, sonst keine 4,5:1 */
 }
 .fehler:empty { display: none; }
 
-@media (min-width: 620px) {
-  .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+@media (min-width: 600px) {
+  .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
 }
 
 /* Falle gegen automatische Eintraege. Nicht display:none — manche
@@ -243,79 +265,67 @@
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-.feldgruppe--haken { margin-top: 30px; }
+.feldgruppe--haken { margin-top: 28px; }
 .haken {
   display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px;
-  align-items: start;
+  align-items: start; cursor: pointer;
+  font-size: .92rem; line-height: 1.5;
   text-transform: none; letter-spacing: normal;
-  font-family: var(--schrift-schlag);
-  font-size: .95rem; line-height: 1.55; cursor: pointer;
 }
 .haken input {
-  width: 22px; height: 22px; margin-top: 2px;
+  width: 22px; height: 22px; margin-top: 1px;
   accent-color: var(--akzent-voll); cursor: pointer;
 }
 .haken a { color: var(--akzent-hell); }
 
-.formular__senden { margin-top: 8px; }
+.formular__senden { margin-top: 10px; }
 .formular__senden[aria-disabled="true"] { opacity: .6; cursor: progress; }
-
-.check__ruhe {
-  margin-top: 24px; font-size: .87rem;
-  color: var(--text-leise); max-width: 40ch;
-}
 
 .meldung {
   margin-top: 22px; padding: 16px 18px;
   border-left: 3px solid var(--akzent-voll);
-  background: rgba(98, 38, 250, .08);
+  background: rgba(98, 38, 250, .1);
   font-size: .95rem;
 }
 .meldung:empty { display: none; }
 .meldung--fehler { border-left-color: #FF8A8F; background: rgba(193, 39, 45, .12); }
-.meldung--hinweis { border-left-color: var(--linie); background: var(--grund-2); }
+.meldung--hinweis { border-left-color: var(--linie-hell); background: var(--grund-3); }
 .meldung a { color: var(--akzent-hell); }
 
 /* ------------------------------------------------------- 9. Fusszeile */
-.fuss { border-top: 1px solid var(--linie); padding-block: 48px 32px; }
-.fuss__raster { display: grid; gap: 36px; }
-.fuss__marke .marke { margin-bottom: 14px; }
+.fuss { border-top: 1px solid var(--linie); padding-block: 56px 32px; }
+.fuss__raster { display: grid; gap: 40px; }
+.fuss__marke .marke { margin-bottom: 12px; }
 .fuss__marke p {
-  color: var(--text-leise); font-size: .92rem; max-width: 34ch;
+  color: var(--text-still); font-size: .84rem;
+  font-family: var(--schrift-struktur);
+  text-transform: uppercase; letter-spacing: .1em;
 }
 .fuss__block h2 {
   font-family: var(--schrift-technik);
-  font-size: .66rem; font-weight: 400;
+  font-size: .62rem; font-weight: 400;
   text-transform: uppercase; letter-spacing: .22em;
-  color: var(--text-leise);
-  margin-bottom: 6px;
+  color: var(--text-still); margin-bottom: 6px;
 }
 .fuss__block ul { display: grid; }
 .fuss__block a {
   display: inline-flex; align-items: center; min-height: 44px;
   font-size: .92rem; color: var(--text-leise); text-decoration: none;
-  transition: color var(--dauer) var(--verlauf);
+  transition: color var(--schnell) var(--verlauf);
 }
 .fuss__block a:hover { color: var(--text); }
-
 .fuss__unten {
-  margin-top: 40px; padding-top: 24px;
-  border-top: 1px solid var(--linie);
-  display: flex; flex-wrap: wrap; gap: 8px 32px;
-  justify-content: space-between;
-  font-size: .8rem; color: var(--text-leise);
+  margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--linie);
+  display: flex; flex-wrap: wrap; gap: 8px 32px; justify-content: space-between;
+  font-size: .78rem; color: var(--text-still);
 }
 
 /* ----------------------------------------------------- 10. Textseiten */
 .dokument { padding-block: 48px 80px; }
-@media (min-width: 900px) { .dokument { padding-block: 64px 104px; } }
-
 .dokument h1 {
-  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-  font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
-  max-width: 18ch;
+  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.4rem);
+  font-weight: 700; line-height: 1.04; letter-spacing: -.03em; max-width: 16ch;
 }
-.dokument h1 em { font-style: normal; color: var(--akzent-hell); }
 .dokument h2 {
   margin-top: 44px;
   font-family: var(--schrift-struktur);
@@ -324,154 +334,131 @@
 }
 .dokument h3 { margin-top: 26px; font-size: 1.05rem; font-weight: 700; }
 .dokument p, .dokument li {
-  margin-top: 14px; max-width: var(--lesebreite); color: var(--text-leise);
+  margin-top: 14px; max-width: 54ch; color: var(--text-leise);
 }
 .dokument a { color: var(--akzent-hell); }
-
 .dokument ul.liste { margin-top: 6px; }
 .dokument ul.liste li { position: relative; padding-left: 20px; }
 .dokument ul.liste li::before {
-  content: ""; position: absolute; left: 0; top: .68em;
+  content: ""; position: absolute; left: 0; top: .62em;
   width: 7px; height: 7px; background: var(--akzent-voll);
 }
-
-/* Platzhalter, die vor dem Livegang ersetzt werden muessen. */
 .luecke {
-  color: var(--text);
-  background: rgba(98, 38, 250, .16);
+  color: var(--text); background: rgba(98, 38, 250, .18);
   border-bottom: 1px solid var(--akzent-voll);
   padding: 1px 5px;
-  font-family: var(--schrift-technik);
-  font-size: .86em; letter-spacing: .04em;
+  font-family: var(--schrift-technik); font-size: .86em; letter-spacing: .04em;
 }
 .warnung {
   margin-top: 28px; padding: 18px 20px;
-  border-left: 4px solid var(--mittel);
+  border-left: 3px solid var(--mittel);
   background: rgba(217, 138, 0, .1);
 }
 .warnung p { margin-top: 0; color: var(--text); max-width: 58ch; }
 
 /* =========================================================================
-   11. Desktop ab 1100 px
-
-   Bis hierher ist die Seite einspaltig — auf dem Handy ist das richtig.
-   Darueber bekommt sie eine eigene Komposition statt eines in die Breite
-   gezogenen Handy-Layouts.
+   11. Desktop ab 1080 px — eigene Komposition, nicht das Handy in breit.
    ========================================================================= */
-@media (min-width: 1100px) {
+@media (min-width: 1080px) {
 
-  /* --- Aufmacher: Wort links, Berichtstafel rechts --------------------- */
-  .aufmacher__raster {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, .8fr);
+  .auf__raster { align-items: center; }
+
+  /* Unterschiedliche Dichte statt fuenfmal derselbe Abstand. */
+  .teil        { padding-block: 128px; }
+  .teil--eng   { padding-block: 88px; }
+  .kontakt     { padding-block: 152px; }
+  .band        { padding-block: 56px; }
+
+  /* --- Warum von Hand: eine Zeile pro Aussage, sehr grosszuegig ------- */
+  .drei { margin-top: 72px; }
+  .drei li { padding-block: 34px; max-width: 44ch; }
+
+  /* --- Pruefpunkte: zwei Spalten, durchlaufende Linien ---------------- */
+  .index {
+    margin-top: 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 72px;
-    align-items: center;
   }
+  .index li:nth-child(2) { border-top: 1px solid var(--linie); }
+  .index li:nth-last-child(2) { border-bottom: 1px solid var(--linie); }
 
-  /* --- Rhythmus: nicht jeder Abschnitt gleich hoch --------------------- */
-  .abschnitt       { padding-block: 112px; }
-  .abschnitt--weit { padding-block: 148px; }
-  .abschnitt--eng  { padding-block: 88px; }
-  .check           { padding-block: 152px; }
-
-  .abschnitt .vorspann { margin-top: 26px; }
-
-  /* --- Warum persoenlich: zwei Spalten --------------------------------- */
-  .gegen {
-    margin-top: 64px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 44px 64px;
-  }
-  .gegen h3 { font-size: 1.18rem; }
-
-  /* --- Was wir ansehen: zwei Spalten, durchlaufende Haarlinien --------- */
-  .bereiche {
-    margin-top: 64px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 64px;
-  }
-  .bereiche > div { padding-block: 20px; }
-  .bereiche > div:nth-child(2) { border-top: 0; }
-
-  /* --- Ablauf: drei Spalten -------------------------------------------- */
-  .schritte {
-    margin-top: 64px;
+  /* --- Ablauf: drei Spalten ------------------------------------------- */
+  .weg {
+    margin-top: 72px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 40px 56px;
+    column-gap: 56px;
   }
+  .weg li { padding-block: 32px; }
 
-  /* --- Umfang: Kopf links, Text rechts ---------------------------------- */
-  .stufen { margin-top: 64px; }
-  .stufen__zeile {
+  /* --- Umfang: Titel links, Text rechts -------------------------------- */
+  .wahl { margin-top: 72px; }
+  .wahl li {
     display: grid;
-    grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
-    column-gap: 64px;
-    padding-block: 40px;
+    grid-template-columns: 56px minmax(0, 300px) minmax(0, 1fr);
+    column-gap: 48px;
     align-items: start;
+    padding: 44px 0;
   }
-  .stufen__kopf { grid-column: 1; grid-row: 1; flex-direction: column; align-items: flex-start; gap: 16px; }
-  .stufen__text { grid-column: 2; grid-row: 1; margin-top: 0; }
-  .stufen__fuer { grid-column: 2; grid-row: 2; margin-top: 14px; }
-  .stufen__zeile--betont { padding-left: 28px; margin-left: -31px; }
+  .wahl__mark { position: static; }
+  .wahl p { margin-top: 0; }
+  .wahl--betont { padding-left: 24px; margin-left: -27px; }
 
-  /* --- Haltung: zwei Spalten ------------------------------------------- */
-  .haltung {
-    margin-top: 64px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 40px 64px;
-  }
+  /* --- Vertrauensband: vier Spalten ------------------------------------ */
+  .band__liste { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; }
 
-  /* --- Fragen ----------------------------------------------------------- */
-  .fragen { margin-top: 56px; }
-  .fragen summary { font-size: 1.1rem; padding-block: 24px; }
+  /* --- Fragen: sehr viel Luft ------------------------------------------ */
+  .fragen { margin-top: 72px; }
+  .fragen summary { padding-block: 38px; grid-template-columns: 56px minmax(0, 1fr) 40px; }
+  .fragen__antwort { padding: 0 40px 40px 56px; }
 
-  /* --- Check: eigene Komposition, Rail ueber dem Inhalt ---------------- */
-  .check__flaeche { padding: 96px 80px 100px; }
-  .check .raster { display: block; }
-  .check .rail { margin-bottom: 56px; padding-top: 0; }
-
-  .check__zwei {
+  /* --- Kontakt: Wort links, Formular rechts ---------------------------- */
+  .kontakt__flaeche {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: 80px;
-    align-items: stretch;
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
+    column-gap: 88px; align-items: start;
+    padding: 88px 72px 92px;
   }
-  .check__wort { display: flex; flex-direction: column; }
-  .check__wort .titel { font-size: clamp(2rem, 1.2rem + 1.7vw, 2.9rem); }
-  .check__wort .vorspann { max-width: 32ch; }
-  /* Das Formular ist deutlich hoeher als der Text daneben. Die ruhige
-     Zeile sitzt deshalb am Fuss der Spalte und schliesst den Block ab. */
-  .check__ruhe { margin-top: auto; padding-top: 64px; max-width: 30ch; }
-  .formular { margin-top: 0; max-width: none; }
+  .kontakt__wort { display: flex; flex-direction: column; }
+  .kontakt__still { margin-top: auto; padding-top: 56px; }
+  .formular { margin-top: 0; }
 
   /* --- Fusszeile: vier Spalten ----------------------------------------- */
-  .fuss { padding-block: 72px 40px; }
+  .fuss { padding-block: 80px 40px; }
   .fuss__raster {
-    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
     gap: 64px;
   }
 
-  /* --- Textseiten ------------------------------------------------------- */
-  .dokument h1 { font-size: clamp(2.4rem, 1.4rem + 2.4vw, 3.4rem); }
+  .dokument { padding-block: 72px 112px; }
 }
 
 /* =========================================================================
-   12. Einblenden beim Scrollen
+   12. Einblenden
 
-   Bewusst ueber JavaScript und nicht ueber animation-timeline: view().
-   Der Grund steht in den Designrichtlinien: bei der CSS-Variante bleibt
-   Inhalt auf opacity 0 stehen, wenn er den definierten Bereich nie
-   durchlaeuft — im Test war einmal ein kompletter Abschnitt unsichtbar.
-
-   Hier wird der Ausgangszustand erst gesetzt, wenn das Skript laeuft und
-   IntersectionObserver vorhanden ist (.js-bereit). Ohne JavaScript ist
-   nichts versteckt.
+   Ueber JavaScript, nicht ueber animation-timeline: view(). Bei der
+   CSS-Variante bleibt Inhalt auf opacity 0 stehen, wenn er den definierten
+   Bereich nie durchlaeuft — im Test war einmal ein ganzer Abschnitt
+   unsichtbar. Hier wird der Ausgangszustand erst gesetzt, wenn das Skript
+   laeuft; dazu ein Sicherheitsnetz nach zwei Sekunden.
    ========================================================================= */
-.js-bereit .einblenden { opacity: 0; transform: translateY(10px); }
-.js-bereit .einblenden.ist-da {
+.bereit .zeigen { opacity: 0; transform: translateY(12px); }
+.bereit .zeigen.da {
   opacity: 1; transform: none;
-  transition: opacity 380ms var(--verlauf), transform 380ms var(--verlauf);
+  transition: opacity var(--lang) var(--verlauf), transform var(--lang) var(--verlauf);
 }
 @media (prefers-reduced-motion: reduce) {
-  .js-bereit .einblenden { opacity: 1; transform: none; }
+  .bereit .zeigen { opacity: 1; transform: none; }
 }
+
+
+/* ------------------------------------------- 13. Nur auf den Textseiten */
+.nur-klein { display: inline-flex; }
+@media (min-width: 1000px) { .nur-klein { display: none; } }
+
+.fuss__zeile { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.fuss__zeile a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: .84rem; color: var(--text-still); text-decoration: none;
+  transition: color var(--schnell) var(--verlauf);
+}
+.fuss__zeile a:hover { color: var(--text); }

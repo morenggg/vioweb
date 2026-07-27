@@ -1,4 +1,14 @@
+# =============================================================================
+#  ACHTUNG — DIE SEITE IST DERZEIT FUER SUCHMASCHINEN GESPERRT.
+#
+#  Vor dem Livegang muss die Zeile "Disallow: /" entfernt und durch
+#  "Allow: /" ersetzt werden. Solange sie hier steht, nimmt Google die
+#  Seite NICHT in den Index auf — auch nicht Wochen spaeter.
+#
+#  Das ist Punkt 1 in LAUNCH_CHECKLIST.md.
+# =============================================================================
+
 User-agent: *
-Allow: /
+Disallow: /
 
 Sitemap: https://vioweb.de/sitemap.xml

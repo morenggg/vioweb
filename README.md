@@ -21,12 +21,23 @@ robots.txt
 sitemap.xml
 .nojekyll             schaltet die Jekyll-Verarbeitung von GitHub Pages ab
 CNAME                 eigene Domain für GitHub Pages — nicht löschen
+site.webmanifest      Name, Farben und Symbole fürs Ablegen am Startbildschirm
 css/seite.css         alles unterhalb der Falz
-js/seite.js           Formularversand, Menü, Einblenden
-img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopfbereich und Wasserzeichen
-img/favicon.png       Firmenzeichen quadratisch, 180 × 180 — Browser-Reiter
+js/seite.js           Formular, Off-Canvas-Menü, Kopfzeile, Einblenden
+img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopf, Fuß, Wasserzeichen
+img/favicon-32.png    Browser-Reiter
+img/favicon-192.png   Manifest
+img/favicon-512.png   Manifest, auf vollem Grund
+img/maskable-512.png  Android, mit Sicherheitszone
+img/apple-touch-icon.png   iOS-Startbildschirm, 180 × 180
 img/og-bild.png       Vorschaubild für soziale Netzwerke, 1200 × 630
+SEO.md                alle SEO-Maßnahmen mit Begründung
+LAUNCH_CHECKLIST.md   Prüfliste für den Livegang
 ```
+
+> **Die Seite ist derzeit für Suchmaschinen gesperrt.** In `robots.txt`
+> steht `Disallow: /`. Das ist Absicht während der Entwicklung — und
+> Punkt 1 in `LAUNCH_CHECKLIST.md`.
 
 ---
 
@@ -53,7 +64,8 @@ Neue Quelldatei bereitlegen, dann:
 1. Rahmen abschneiden und auf die echten Motivgrenzen zuschneiden
 2. Auf 480 px Breite verkleinern, als WebP mit Qualität 88 speichern →
    `img/zeichen.webp`
-3. Quadratisches Favicon mit 10 % Luft ringsum erzeugen → `img/favicon.png`
+3. Favicon-Paket erzeugen: 32, 192 und 512 px sowie `apple-touch-icon`
+   (180 px, voller Grund) und `maskable-512` (22 % Sicherheitszone)
 4. `img/og-bild.png` neu erzeugen, es enthält dasselbe Zeichen
 5. Ändert sich das Seitenverhältnis, in **allen fünf** HTML-Dateien die
    `width`- und `height`-Angaben am `<img class="marke__zeichen">` sowie am
@@ -251,7 +263,10 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - Fließtext über dem Wasserzeichen: 5,04:1 (mobil) und 5,41:1 (Desktop),
   gemessen am hellsten Punkt von Lichtschein und Zeichen
 - Formular in allen drei Wegen: mit Endpunkt, per E-Mail, ohne JavaScript
-- Aufklappmenü: öffnen, Linkklick, Escape, Klick daneben, Fokusrückgabe
+- Off-Canvas-Menü: öffnen, Fokus im Panel, Scroll-Sperre, Escape,
+  Fokusrückgabe, Linkklick, Schließen-Knopf
+- Keine doppelten Titel, keine doppelten Descriptions, Canonical überall
+- JSON-LD auf allen fünf Seiten gültig
 - Kein Abschnitt bleibt beim Einblenden unsichtbar (320, 390 und 1440 px)
 - Leeres Absenden erzeugt drei Fehler in Klartext neben den Feldern
 - `beispiel.de` wird zu `https://beispiel.de` ergänzt
@@ -259,6 +274,6 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - `prefers-reduced-motion` blendet nichts aus
 - JSON-LD gültig
 
-Gesamtgröße der Startseite: **109,6 KB** unkomprimiert, verteilt auf fünf
-Anfragen — davon 42,5 KB die beiden Bilddateien. HTML, CSS und JavaScript
-komprimiert der Server auf einen Bruchteil.
+Gesamtgröße der Startseite: **100 KB** unkomprimiert, verteilt auf fünf
+Anfragen — davon 32 KB Bilddateien. HTML, CSS und JavaScript komprimiert
+der Server auf einen Bruchteil.

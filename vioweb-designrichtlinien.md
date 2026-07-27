@@ -4,7 +4,7 @@
 > Die Werte stammen aus dem bestehenden Erscheinungsbild (Instagram,
 > PDF-Berichte, Facebook) und sind kein Vorschlag.
 
-Version 2.0 · löst die erste Fassung vollständig ab
+Version 3.0 · löst die zweite Fassung ab
 
 ---
 
@@ -50,9 +50,12 @@ Dunkles Erscheinungsbild. Lila ist die einzige Akzentfarbe.
 | Zweck | Hex | Variable |
 |---|---|---|
 | Hintergrund | `#060609` | `--grund` |
-| Hintergrund, zweite Ebene | `#0B0B10` | `--grund-2` |
+| Hintergrund, Stufe 2 | `#0A0A0F` | `--grund-2` |
+| Hintergrund, Stufe 3 | `#101017` | `--grund-3` |
+| Hintergrund, Stufe 4 | `#16161F` | `--grund-4` |
 | Text hell | `#FFFFFF` | `--text` |
 | Text gedämpft | `#9EA1A9` | `--text-leise` |
+| Text still | `#7E818B` | `--text-still` |
 | Linien | `#282830` | `--linie` |
 | Akzent hell | `#9B54FC` | `--akzent-hell` |
 | Akzent kräftig | `#6226FA` | `--akzent-voll` |
@@ -72,6 +75,10 @@ Gemessen gegen `#060609`:
 | `#9B54FC` | 4,9:1 | **Text**, Akzentwörter, Verweise |
 | `#6226FA` | **3,1:1** | **nur Flächen**, Balken, Punkte, Rahmen |
 | Weiß auf `#6226FA` | 6,6:1 | Schaltflächen |
+
+`#7E818B` erreicht 5,2:1 und ist die unterste zulässige Textstufe. Ein
+früherer Versuch mit `#6E717B` lag bei 4,15:1 und wurde von der Prüfung
+gefangen — unter 4,5:1 geht keine Textfarbe, egal wie klein die Schrift.
 
 `#6226FA` erreicht als Textfarbe die geforderten 4,5:1 nicht und wird
 deshalb **nie** für Text verwendet — auch nicht für kleine Beschriftungen.
@@ -121,8 +128,8 @@ wenn die Struktur-Schrift normal breit rendert.
 - **Alles linksbündig auf einer festen Kante. Nichts wird zentriert.**
   Das gilt auch für Innenpolster von Klickflächen: Sie dürfen die Kante
   nicht verschieben, notfalls über negative Außenabstände ausgleichen.
-- Seitenrand: 20 px bis 480 px, 24 px bis 900 px, darüber 64 px
-- Inhaltsbreite höchstens 1240 px
+- Seitenrand: 22 px bis 520 px, 28 px bis 900 px, darüber 56 px
+- Inhaltsbreite höchstens 1280 px
 - **Rechts bleibt bewusst Luft.** Text füllt die Fläche nie ganz aus
 - Wiederkehrend: der Balken **68 × 5 px** in `#6226FA` unter der Kicker-Zeile,
   in jedem Abschnitt
@@ -139,25 +146,42 @@ identisch aufgebaut, und die Seite las sich als hochskaliertes Handy-Layout.
 „Rechts bleibt Luft" heißt: **der Satzspiegel endet vor dem Rand** — nicht,
 dass das Layout einspaltig bleibt.
 
-- **Rail links** (`--rail: 180px`), Abstand `--gasse: 64px`, dann die
+- **Rail links** (`--rail: 168px`), Abstand `--gasse: 72px`, dann die
   Inhaltsspalte. In der Rail stehen Kicker und Balken, in der Spalte Titel
   und Inhalt. Beide Kanten sind über alle Abschnitte hinweg dieselben
-- **Container 1240 px**
+- **Container 1280 px**, Raster ab **1080 px**
 - **Fließtext bleibt bei 52 Zeichen.** Die Breite wird über Struktur
   genutzt, nicht über längere Zeilen: mehrspaltige Listen, ein
   dreiteiliges Leistungsraster, der zweispaltige Check-Block
 - **Stichwortlisten sind kein Fließtext** — für sie gilt die
   52-Zeichen-Grenze nicht, sie laufen dreispaltig über die volle Breite
-- **Die Abschnitte sind unterschiedlich dicht.** 88 px (eng), 112 px
-  (normal), 148 px (weit), 152 px (Kontakt). Immer derselbe Abstand ist
+- **Die Abschnitte sind unterschiedlich dicht.** 88 px (eng), 128 px
+  (normal), 152 px (Kontakt), 56 px (Band). Immer derselbe Abstand ist
   das deutlichste Zeichen dafür, dass niemand gestaltet hat
+- **Jeder Abschnitt hat eine eigene Komposition.** Kein zweiter Abschnitt
+  ist wie der davor aufgebaut: Aussagenliste, zweispaltiger Index,
+  dreispaltige Schrittfolge, Bänder mit Marke, Vertrauensband, große
+  Fragen, zweispaltiger Kontaktblock
 - **Der Check-Block bricht das Raster bewusst:** dort läuft die Rail über
   dem Inhalt, damit die beiden Spalten genug Breite haben. Er ist der
   einzige Abschnitt, der das darf
 
+### Tiefe entsteht durch Licht, nicht durch Schatten
+
+Auf schwarzem Grund wirkt ein Schlagschatten wie ein Fleck. Erhöhte
+Flächen bekommen deshalb:
+
+```css
+--kante-licht: inset 0 1px 0 rgba(255, 255, 255, .055);
+--flaeche: linear-gradient(180deg, var(--grund-3) 0%, var(--grund-2) 100%);
+```
+
+Eine Haarlinie oben plus ein sehr flacher Verlauf nach unten. Das ist der
+einzige zulässige Verlauf — vollflächige Farbverläufe bleiben verboten.
+
 ### Signaturelement
 
-Das Firmenzeichen liegt groß mit **9 % Deckkraft** als Wasserzeichen im
+Das Firmenzeichen liegt groß mit **7,5 % Deckkraft** als Wasserzeichen im
 Hintergrund des Aufmachers, dahinter ein weicher radialer Lichtschein in
 `#240D4E`.
 
@@ -165,16 +189,16 @@ Zwei harte Bedingungen:
 
 1. **Nur am rechten Rand angeschnitten.** Wird das Zeichen an zwei Rändern
    gleichzeitig beschnitten, wirkt es als dunkler Block statt als Form.
-   Umgesetzt über `right: -10%`, Breite `min(52vw, 560px)`, vertikal auf
-   42 % gesetzt. Das Zeichen ist **breiter als hoch (1,649 : 1)** und stößt
+   Umgesetzt über `right: -12%`, Breite `min(56vw, 620px)`, vertikal auf
+   38 % gesetzt. Das Zeichen ist **breiter als hoch (1,649 : 1)** und stößt
    damit weder oben noch unten an.
 2. **Der Schein hat keine sichtbare Kante.** Der Verlauf läuft über sieben
    Stufen bis auf null aus. Weniger Stufen erzeugen einen sichtbaren Ring.
 3. **Der Text darüber muss lesbar bleiben.** Schein und Zeichen zusammen
-   ergeben am hellsten Punkt `rgb(52,33,84)`. Der gedämpfte Fließtext
-   erreicht darauf 5,45:1 (Handy) und 5,73:1 (Desktop). Wird die Deckkraft
-   des Wasserzeichens (aktuell 9 %) oder die Stärke des Scheins erhöht, ist
-   dieser Wert neu zu messen.
+   ergeben am hellsten Punkt `rgb(50,31,87)`. Der gedämpfte Fließtext
+   erreicht darauf 5,53:1 (Handy) und 5,90:1 (Desktop). Wird die Deckkraft
+   des Wasserzeichens (aktuell 7,5 %) oder die Stärke des Scheins erhöht,
+   ist dieser Wert neu zu messen.
 
 ### Das Zeichen ist eine Rastergrafik
 
@@ -207,6 +231,37 @@ Animation abhängen.**
 
 ---
 
+## 6a. Zwei Bausteine mit eigenen Regeln
+
+### Off-Canvas-Menü
+
+Fährt von rechts ein, dahinter ein weichgezeichneter Schleier. Grundlage
+ist ein `<details>` — ohne JavaScript öffnet und schließt es nativ.
+
+Zwei Fallen, beide beim Testen aufgetreten und behoben:
+
+1. **Der Kopfbereich muss über der Tafel liegen** (`z-index: 110` bei
+   offenem Menü). Sonst verdeckt die Tafel den Schließen-Knopf und das
+   Menü lässt sich nicht mehr zuklappen.
+2. **Marke und Schließen-Knopf brauchen `z-index: 115`.** Schleier und
+   Tafel liegen im selben Stapelkontext des Kopfbereichs und würden das
+   Logo sonst überdecken.
+
+Die Punkte laufen versetzt ein (130 ms Abstand) — das meint Reihenfolge,
+nicht Dekoration. Bei `prefers-reduced-motion` entfällt alles.
+
+### Fragen
+
+**Kein Standard-Akkordeon.** Große Schrift (bis 1,9 rem), sehr viel Luft
+(38 px Innenabstand), eine laufende Nummer in der Rail und ein Strich, der
+sich beim Öffnen dreht — kein Plus, kein Winkel, kein Icon.
+
+Die Antwort fährt über `::details-content` mit `interpolate-size:
+allow-keywords` weich auf. Browser ohne Unterstützung öffnen ohne
+Bewegung; der Inhalt ist in jedem Fall erreichbar.
+
+---
+
 ## 7. Was ausdrücklich nicht vorkommt
 
 Diese Muster sind verworfen und dürfen nicht wieder auftauchen:
@@ -220,6 +275,10 @@ Diese Muster sind verworfen und dürfen nicht wieder auftauchen:
 - Kurze Fragmentsätze in Serie („Schnell. Sicher. Sichtbar.")
 - Aufgeblasene Werbesprache
 - Cookie-Banner
+- Glaseffekte als Selbstzweck (Weichzeichnung nur hinter dem Menü und im
+  Kopfbereich, wo sie Lesbarkeit schafft)
+- gleich aufgebaute Abschnitte hintereinander
+- Fließtext, wo drei Zeilen reichen
 
 ---
 
@@ -231,11 +290,11 @@ Diese Muster sind verworfen und dürfen nicht wieder auftauchen:
   Anfrage an einen fremden Server senden. Das ist die Kernaussage der
   Marke und nicht verhandelbar.
 - Kritisches CSS inline im `<head>`, der Rest nicht-blockierend nachgeladen
-- **JavaScript nur für drei Dinge:** Formularversand, Schließen des
-  Aufklappmenüs und das Einblenden beim Scrollen. Die letzten beiden sind
-  reine Zugaben — ohne JavaScript bleibt die Seite vollständig bedienbar
-  und nichts ist versteckt. Das Menü selbst ist ein `<details>` und
-  funktioniert ohne Skript
+- **JavaScript nur für vier Dinge:** Formularversand, Off-Canvas-Menü
+  (Fokusfang, Scroll-Sperre, Ausblendbewegung), Haarlinie unter dem Kopf
+  und das Einblenden beim Scrollen. Die letzten drei sind reine Zugaben —
+  ohne JavaScript bleibt die Seite vollständig bedienbar und nichts ist
+  versteckt. Das Menü selbst ist ein `<details>` und öffnet nativ
 - Gesamtgröße unter 500 KB, sichtbarer Inhalt unter 1,5 s bei gedrosseltem
   Mobilfunk
 - Bilder mit `width` und `height` im Markup, `loading="lazy"` außer im

@@ -10,56 +10,70 @@
 <link rel="canonical" href="https://vioweb.de/404.html">
 <meta name="robots" content="noindex,follow">
 <meta name="theme-color" content="#060609">
-<link rel="icon" href="img/favicon.png" sizes="any">
-<link rel="apple-touch-icon" href="img/favicon.png">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="img/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 
 <style>
-/* ---------------------------------------------------------------- Werte */
+/* ------------------------------------------------------------ 1. Werte */
 :root {
   color-scheme: dark;
 
-  --grund:        #060609;
-  --grund-2:      #0B0B10;
-  --grund-3:      #101017;
-  --text:         #FFFFFF;
-  --text-leise:   #9EA1A9;
-  --linie:        #282830;
-  --linie-hell:   #3A3A46;
-  --akzent-hell:  #9B54FC;  /* Text und Akzentwoerter — 4,9:1 auf --grund */
-  --akzent-voll:  #6226FA;  /* nur Flaechen, Linien, Punkte — kein Text */
-  --schein:       #240D4E;
+  /* Grundtoene — vier Stufen statt zwei, damit Tiefe entsteht */
+  --grund:      #060609;
+  --grund-2:    #0A0A0F;
+  --grund-3:    #101017;
+  --grund-4:    #16161F;
 
-  --gut:   #2E7D32;
-  --mittel:#D98A00;
-  --schlecht:#C1272D;
+  --text:       #FFFFFF;
+  --text-leise: #9EA1A9;
+  --text-still: #7E818B;  /* 5,2:1 auf --grund */
 
-  --schrift-schlag:    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --schrift-struktur:  "Arial Narrow", "Helvetica Neue Condensed",
-                       "Liberation Sans Narrow", Arial, sans-serif;
-  --schrift-technik:   ui-monospace, "SF Mono", Menlo, Consolas,
-                       "Liberation Mono", monospace;
+  --linie:      #22222B;
+  --linie-hell: #34343F;
 
-  --rand: 20px;
-  --feld: 1240px;
-  --lesebreite: 52ch;
-  --rail: 180px;
-  --gasse: 64px;
-  --kopfhoehe: 72px;
+  --akzent-hell: #9B54FC;   /* Text und Akzentwoerter — 4,9:1 auf --grund */
+  --akzent-voll: #6226FA;   /* nur Flaechen, Linien, Punkte — kein Text */
+  --schein:      #240D4E;
 
-  --dauer: 200ms;
+  --gut: #2E7D32;  --mittel: #D98A00;  --schlecht: #C1272D;
+
+  /* Licht statt Schatten: eine Haarlinie oben erzeugt auf dunklem Grund
+     mehr Tiefe als jeder Schlagschatten. */
+  --kante-licht: inset 0 1px 0 rgba(255, 255, 255, .055);
+  --flaeche: linear-gradient(180deg, var(--grund-3) 0%, var(--grund-2) 100%);
+
+  --schrift-schlag:   "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --schrift-struktur: "Arial Narrow", "Helvetica Neue Condensed",
+                      "Liberation Sans Narrow", Arial, sans-serif;
+  --schrift-technik:  ui-monospace, "SF Mono", Menlo, Consolas,
+                      "Liberation Mono", monospace;
+
+  --rand: 22px;
+  --feld: 1280px;
+  --lesebreite: 46ch;
+  --rail: 168px;
+  --gasse: 72px;
+  --kopfhoehe: 68px;
+
+  --schnell: 180ms;
+  --mittel-zeit: 320ms;
+  --lang: 520ms;
   --verlauf: cubic-bezier(.22, 1, .36, 1);
+  --verlauf-weich: cubic-bezier(.4, 0, .2, 1);
 }
-@media (min-width: 480px) { :root { --rand: 24px; } }
-@media (min-width: 900px) { :root { --rand: 64px; } }
+@media (min-width: 520px) { :root { --rand: 28px; } }
+@media (min-width: 900px) { :root { --rand: 56px; --kopfhoehe: 76px; } }
 
-/* ---------------------------------------------------------------- Basis */
+/* ------------------------------------------------------------ 2. Basis */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--kopfhoehe) + 24px);
+  scroll-padding-top: calc(var(--kopfhoehe) + 20px);
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
@@ -67,10 +81,11 @@ body {
   background: var(--grund);
   color: var(--text);
   font-family: var(--schrift-schlag);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.6;
   overflow-wrap: break-word;
 }
+body.starr { overflow: hidden; }
 
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -84,137 +99,211 @@ summary::-webkit-details-marker { display: none; }
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
-
-.sprungmarke-inhalt {
-  position: absolute; left: var(--rand); top: 12px; z-index: 60;
+.sprung {
+  position: absolute; left: var(--rand); top: 12px; z-index: 120;
   transform: translateY(-300%);
   background: var(--akzent-voll); color: #FFF;
   padding: 12px 18px; text-decoration: none; font-size: .9rem;
-  transition: transform var(--dauer) var(--verlauf);
+  transition: transform var(--schnell) var(--verlauf);
 }
-.sprungmarke-inhalt:focus { transform: translateY(0); }
+.sprung:focus { transform: translateY(0); }
 
-/* Alles sitzt auf einer festen linken Kante. Nichts wird zentriert. */
 .feld {
   width: 100%; max-width: var(--feld);
   margin-inline: auto; padding-inline: var(--rand);
 }
 
-/* Zwei-Kanten-Raster: mobil untereinander, ab 1100px nebeneinander. */
-.rail { margin-bottom: 24px; }
+/* Zwei-Kanten-Raster: mobil untereinander, ab 1080px nebeneinander. */
+.rail { margin-bottom: 28px; }
 .spalte > :first-child { margin-top: 0; }
-
-@media (min-width: 1100px) {
+@media (min-width: 1080px) {
   .raster {
-    display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    column-gap: var(--gasse);
-    align-items: start;
+    display: grid; grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--gasse); align-items: start;
   }
-  .rail { margin-bottom: 0; padding-top: 12px; }
+  .rail { margin-bottom: 0; padding-top: 14px; position: sticky; top: calc(var(--kopfhoehe) + 40px); }
 }
 
-/* ------------------------------------------------- wiederkehrende Teile */
+/* ------------------------------------------------ 3. Wiederkehrende Teile */
 .kicker {
   font-family: var(--schrift-technik);
-  font-size: .7rem; text-transform: uppercase; letter-spacing: .24em;
-  color: var(--text-leise);
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .26em;
+  color: var(--text-still);
 }
 .balken {
   display: block; width: 68px; height: 5px;
-  background: var(--akzent-voll); margin-top: 18px;
+  background: var(--akzent-voll); margin-top: 16px;
 }
 
 .knopf {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-height: 52px; padding: 14px 26px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 54px; padding: 15px 28px;
   font-size: .95rem; font-weight: 700; letter-spacing: -.01em;
   text-decoration: none; border: 1px solid transparent;
-  transition: background-color var(--dauer) var(--verlauf),
-              border-color var(--dauer) var(--verlauf),
-              color var(--dauer) var(--verlauf);
+  transition: background-color var(--schnell) var(--verlauf),
+              border-color var(--schnell) var(--verlauf),
+              color var(--schnell) var(--verlauf),
+              transform var(--schnell) var(--verlauf);
 }
-.knopf--voll { background: var(--akzent-voll); color: #FFFFFF; }
+.knopf:active { transform: translateY(1px); }
+.knopf--voll { background: var(--akzent-voll); color: #FFFFFF; box-shadow: var(--kante-licht); }
 .knopf--voll:hover { background: var(--akzent-hell); color: #060609; }
 .knopf--rand { border-color: var(--linie-hell); color: var(--text); }
 .knopf--rand:hover { border-color: var(--akzent-hell); color: var(--akzent-hell); }
 .knopf--klein { min-height: 44px; padding: 10px 20px; font-size: .875rem; }
+/* Der Pfeil ruckt beim Ueberfahren — eine Bewegung, die Richtung meint. */
+.knopf__pfeil { transition: transform var(--schnell) var(--verlauf); }
+.knopf:hover .knopf__pfeil { transform: translateX(3px); }
 
-/* --------------------------------------------- Kopfbereich, klebend */
+/* -------------------------------------------------------- 4. Kopfbereich */
 .kopf {
-  position: sticky; top: 0; z-index: 50;
+  position: sticky; top: 0; z-index: 90;
   background: var(--grund);
   border-bottom: 1px solid transparent;
-  transition: border-color var(--dauer) var(--verlauf);
+  transition: border-color var(--mittel-zeit) var(--verlauf),
+              background-color var(--mittel-zeit) var(--verlauf);
 }
 @supports (backdrop-filter: blur(1px)) {
-  .kopf { background: rgba(6, 6, 9, .78); backdrop-filter: saturate(160%) blur(14px); }
+  .kopf { background: rgba(6, 6, 9, .72); backdrop-filter: saturate(170%) blur(16px); }
 }
-.kopf.ist-gescrollt { border-bottom-color: var(--linie); }
+.kopf.gescrollt { border-bottom-color: var(--linie); }
 
 .kopf__inhalt {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; min-height: var(--kopfhoehe);
 }
-.marke { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-/* Rastergrafik mit eigenen Farben: keine Einfaerbung ueber currentColor. */
-.marke__zeichen { height: 28px; width: auto; flex: none; }
-.marke__name {
-  display: block; font-size: 1.2rem; font-weight: 700;
-  letter-spacing: .02em; line-height: 1.1;
-}
-.marke__claim {
-  display: none; font-family: var(--schrift-struktur);
-  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--akzent-hell); margin-top: 2px;
-}
-@media (min-width: 620px) { .marke__claim { display: block; } }
+/* Wie der Schliessen-Knopf ueber den Schleier heben, damit das Logo
+   bei offenem Menue sichtbar bleibt. */
+.marke { position: relative; z-index: 115;
+  display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.marke__zeichen { height: 26px; width: auto; flex: none; }
+.marke__name { font-size: 1.15rem; font-weight: 700; letter-spacing: .015em; }
 
 .nav { display: none; }
 @media (min-width: 1000px) {
-  .nav { display: flex; align-items: center; gap: 4px; }
+  .nav { display: flex; align-items: center; gap: 2px; }
   .nav a {
     display: inline-flex; align-items: center; min-height: 44px;
     padding-inline: 14px; font-size: .875rem;
     color: var(--text-leise); text-decoration: none;
-    transition: color var(--dauer) var(--verlauf);
+    transition: color var(--schnell) var(--verlauf);
   }
   .nav a:hover { color: var(--text); }
-  .nav .knopf { margin-left: 12px; color: #FFFFFF; }
+  .nav .knopf { margin-left: 14px; color: #FFFFFF; }
   .nav .knopf:hover { color: #060609; }
 }
 
-/* Aufklappmenue ohne JavaScript. */
-.menue { position: relative; }
+/* --------------------------------------------------- 5. Off-Canvas-Menue
+   Grundlage ist ein <details>: ohne JavaScript oeffnet und schliesst es
+   nativ. Das Skript ergaenzt nur Weichzeichner-Overlay, Fokusfang,
+   Scroll-Sperre und die Ausblendbewegung. */
+.menue { position: static; }
 @media (min-width: 1000px) { .menue { display: none; } }
-.menue > summary {
-  display: flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px; margin-right: -10px;
-  cursor: pointer; list-style: none; color: var(--text);
-}
-.menue > summary svg { width: 22px; height: 22px; }
-.menue__zu { display: none; }
-.menue[open] > summary .menue__auf { display: none; }
-.menue[open] > summary .menue__zu { display: block; }
 
-.menue__inhalt {
-  position: absolute; right: -10px; top: calc(100% + 14px);
-  width: min(84vw, 300px);
+.menue__knopf {
+  /* Muss ueber der Tafel liegen: beide stehen im selben Stapelkontext
+     des Kopfbereichs, sonst faengt die Tafel den Klick ab. */
+  position: relative; z-index: 115;
+  display: flex; align-items: center; gap: 12px;
+  height: 48px; padding-inline: 4px; margin-right: -4px;
+  cursor: pointer; list-style: none;
+  font-family: var(--schrift-technik);
+  font-size: .64rem; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--text-leise);
+}
+.menue__striche { position: relative; width: 26px; height: 12px; flex: none; }
+.menue__striche i {
+  position: absolute; left: 0; height: 1.5px; background: var(--text);
+  transition: transform var(--mittel-zeit) var(--verlauf),
+              width var(--mittel-zeit) var(--verlauf),
+              opacity var(--schnell) linear;
+}
+.menue__striche i:nth-child(1) { top: 0; width: 26px; }
+.menue__striche i:nth-child(2) { top: 10px; width: 17px; }
+.menue[open] .menue__striche i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.menue[open] .menue__striche i:nth-child(2) { width: 26px; transform: translateY(-5px) rotate(-45deg); }
+
+.menue__schleier {
+  position: fixed; inset: 0; z-index: 95;
+  background: rgba(4, 4, 7, .6);
+  opacity: 0;
+  animation: schleier-auf var(--mittel-zeit) var(--verlauf-weich) forwards;
+}
+@supports (backdrop-filter: blur(1px)) {
+  .menue__schleier { backdrop-filter: blur(10px) saturate(120%); }
+}
+@keyframes schleier-auf { to { opacity: 1; } }
+
+.menue__tafel {
+  position: fixed; z-index: 100;
+  top: 0; right: 0; bottom: 0;
+  width: min(86vw, 420px);
   background: var(--grund-2);
-  border: 1px solid var(--linie);
-  padding: 8px;
-  display: grid; gap: 2px;
+  border-left: 1px solid var(--linie);
+  padding: calc(var(--kopfhoehe) + 36px) var(--rand) 32px;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  transform: translateX(100%);
+  animation: tafel-rein var(--lang) var(--verlauf) forwards;
 }
-.menue__inhalt a {
-  display: flex; align-items: center; min-height: 48px;
-  padding-inline: 14px; text-decoration: none; font-size: 1rem;
-}
-.menue__inhalt a:hover { background: var(--grund-3); }
-.menue__inhalt .knopf { margin-top: 8px; }
+@keyframes tafel-rein { to { transform: translateX(0); } }
 
-/* Auf den Textseiten gibt es kein Aufklappmenue — nur einen Knopf. */
-.nav__klein { display: inline-flex; }
-@media (min-width: 1000px) { .nav__klein { display: none; } }
+.menue.geht .menue__tafel { animation: tafel-raus var(--mittel-zeit) var(--verlauf-weich) forwards; }
+.menue.geht .menue__schleier { animation: schleier-zu var(--mittel-zeit) var(--verlauf-weich) forwards; }
+@keyframes tafel-raus { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes schleier-zu { from { opacity: 1; } to { opacity: 0; } }
+
+/* Bei offenem Menue liegt der Kopfbereich UEBER Tafel und Schleier.
+   Zwei Gruende: der Schliessen-Knopf bleibt erreichbar (die Tafel wuerde
+   ihn sonst verdecken), und das Logo bleibt sichtbar. */
+body.starr .kopf {
+  z-index: 110;
+  background: transparent;
+  border-bottom-color: transparent;
+}
+@supports (backdrop-filter: blur(1px)) {
+  body.starr .kopf { backdrop-filter: none; }
+}
+.menue__liste { display: grid; }
+.menue__liste a {
+  display: flex; align-items: baseline; gap: 16px;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--linie);
+  font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.1rem);
+  font-weight: 700; letter-spacing: -.028em; line-height: 1.1;
+  text-decoration: none;
+  transition: color var(--schnell) var(--verlauf);
+}
+.menue__liste a:hover { color: var(--akzent-hell); }
+.menue__nr {
+  font-family: var(--schrift-technik);
+  font-size: .6rem; letter-spacing: .18em;
+  color: var(--text-still); flex: none;
+}
+/* Die Punkte laufen versetzt ein — Reihenfolge, nicht Dekoration. */
+.menue__liste a, .menue__fuss {
+  opacity: 0; transform: translateX(18px);
+  animation: punkt-rein var(--mittel-zeit) var(--verlauf) forwards;
+}
+@keyframes punkt-rein { to { opacity: 1; transform: none; } }
+.menue__liste a:nth-child(1) { animation-delay: 130ms; }
+.menue__liste a:nth-child(2) { animation-delay: 180ms; }
+.menue__liste a:nth-child(3) { animation-delay: 230ms; }
+.menue__liste a:nth-child(4) { animation-delay: 280ms; }
+.menue__liste a:nth-child(5) { animation-delay: 330ms; }
+.menue__fuss { animation-delay: 390ms; margin-top: auto; padding-top: 40px; }
+.menue__fuss .knopf { width: 100%; }
+.menue__kontakt {
+  margin-top: 20px; font-size: .88rem; color: var(--text-leise);
+  display: grid; gap: 4px;
+}
+.menue__kontakt a { color: var(--akzent-hell); text-decoration: none; }
+
+/* Ohne JavaScript gibt es keinen Schleier und keine Bewegung — das Menue
+   liegt dann einfach da. Bedienbar bleibt es in jedem Fall. */
+html:not(.js) .menue__schleier { display: none; }
+html:not(.js) .menue__tafel { animation: none; transform: none; }
+html:not(.js) .menue__liste a, html:not(.js) .menue__fuss { animation: none; opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -222,6 +311,8 @@ summary::-webkit-details-marker { display: none; }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  .menue__tafel { transform: none; }
+  .menue__liste a, .menue__fuss { opacity: 1; transform: none; }
 }
 </style>
 
@@ -230,23 +321,20 @@ summary::-webkit-details-marker { display: none; }
 </head>
 
 <body>
-<a class="sprungmarke-inhalt" href="#inhalt">Zum Inhalt springen</a>
+<a class="sprung" href="#inhalt">Zum Inhalt springen</a>
 
-<header class="kopf">
+<header class="kopf" id="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="index.html">
-      <img class="marke__zeichen" src="img/zeichen.webp" alt=""
+      <img class="marke__zeichen" src="img/zeichen.webp" alt="Vioweb"
            width="480" height="291">
-      <span>
-        <span class="marke__name">VIOWEB</span>
-        <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
-      </span>
+      <span class="marke__name">VIOWEB</span>
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
       <a href="index.html">Startseite</a>
-      <a class="knopf knopf--voll knopf--klein" href="index.html#kontakt">Ersteinschätzung</a>
+      <a class="knopf knopf--voll knopf--klein" href="index.html#kontakt">Einschätzung anfragen</a>
     </nav>
-    <a class="knopf knopf--rand knopf--klein nav__klein" href="index.html#kontakt">Ersteinschätzung</a>
+    <a class="knopf knopf--rand knopf--klein nur-klein" href="index.html#kontakt">Anfragen</a>
   </div>
 </header>
 
@@ -274,8 +362,8 @@ summary::-webkit-details-marker { display: none; }
 <footer class="fuss">
   <div class="feld fuss__unten">
     <p>© 2026 Vioweb</p>
-    <nav class="fuss__block" aria-label="Rechtliches">
-      <ul role="list" style="grid-auto-flow:column;gap:24px">
+    <nav aria-label="Rechtliches">
+      <ul role="list" class="fuss__zeile">
         <li><a href="index.html">Startseite</a></li>
         <li><a href="impressum.html">Impressum</a></li>
         <li><a href="datenschutz.html">Datenschutz</a></li>
@@ -283,5 +371,15 @@ summary::-webkit-details-marker { display: none; }
     </nav>
   </div>
 </footer>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://vioweb.de/" },
+    { "@type": "ListItem", "position": 2, "name": "Seite nicht gefunden", "item": "https://vioweb.de/404.html" }
+  ]
+}
+</script>
 </body>
 </html>
