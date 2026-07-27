@@ -22,9 +22,48 @@ sitemap.xml
 .nojekyll             schaltet die Jekyll-Verarbeitung von GitHub Pages ab
 css/seite.css         alles unterhalb der Falz
 js/formular.js        ausschließlich der Formularversand
-img/zeichen.svg       Firmenzeichen — PLATZHALTER
+img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopfbereich und Wasserzeichen
+img/favicon.png       Firmenzeichen quadratisch, 180 × 180 — Browser-Reiter
 img/og-bild.png       Vorschaubild für soziale Netzwerke, 1200 × 630
 ```
+
+---
+
+## Das Firmenzeichen
+
+Das echte Zeichen ist eingebaut. Die Quelldatei war ein 1024 × 1024 großes
+PNG, an dem zwei Dinge nicht stimmten und die vor dem Einbau behoben
+wurden:
+
+- Ein **ein Pixel breiter grauer Rahmen** lief um die gesamte Fläche. Auf
+  dem dunklen Grund hätte er als graues Kästchen um das Logo gestanden,
+  bei 32 px im Kopfbereich deutlich sichtbar.
+- **88 % der Fläche war leer.** Ungeschnitten wäre das Zeichen im
+  Kopfbereich auf etwa 19 px Höhe geschrumpft.
+
+Daraus entstanden die drei Dateien oben. Verhältnis des Zeichens nach dem
+Zuschnitt: **1,649 : 1** (breiter als hoch) — davon hängen die Größen im
+CSS ab.
+
+### Wenn das Zeichen einmal getauscht wird
+
+Neue Quelldatei bereitlegen, dann:
+
+1. Rahmen abschneiden und auf die echten Motivgrenzen zuschneiden
+2. Auf 480 px Breite verkleinern, als WebP mit Qualität 88 speichern →
+   `img/zeichen.webp`
+3. Quadratisches Favicon mit 10 % Luft ringsum erzeugen → `img/favicon.png`
+4. `img/og-bild.png` neu erzeugen, es enthält dasselbe Zeichen
+5. Ändert sich das Seitenverhältnis, in **allen fünf** HTML-Dateien die
+   `width`- und `height`-Angaben am `<img class="marke__zeichen">` sowie am
+   Wasserzeichen in `index.html` anpassen
+
+**Warum WebP und kein SVG:** Das Zeichen hat zwei Farben und weiche
+Verläufe. Eine Nachzeichnung als SVG wäre etwa 2 KB statt 30 KB groß und
+bei jeder Größe gestochen scharf — sie wäre aber eine **Nachbildung**, nicht
+die Originaldatei. Bei einem Markenzeichen ist das eine Entscheidung des
+Betreibers, keine des Entwicklers. Sag Bescheid, wenn du die schlanke
+Variante willst; die 30 KB sind der Preis für die exakte Vorlage.
 
 ---
 
@@ -32,20 +71,7 @@ img/og-bild.png       Vorschaubild für soziale Netzwerke, 1200 × 630
 
 Diese Punkte sind noch offen. Die Reihenfolge ist die empfohlene.
 
-### 1. Firmenzeichen ersetzen
-
-`img/zeichen.svg` enthält ein selbst gezeichnetes Platzhalter-W. Ersetze die
-Datei durch das echte Zeichen — gleicher Dateiname, gleiche Stelle.
-
-Damit Wasserzeichen und Kopfbereich weiter passen, sollte die Ersatzdatei
-ein **quadratisches** `viewBox`-Verhältnis haben und ihre Farbe über
-`currentColor` beziehen. Das Zeichen ist zusätzlich direkt in den
-HTML-Dateien eingebettet (Kopfbereich und Fußzeile) — such dort nach
-`marke__zeichen` und tausche den `<path>` mit aus.
-
-Danach `img/og-bild.png` neu erzeugen, es enthält dasselbe Zeichen.
-
-### 2. E-Mail-Adresse prüfen
+### 1. E-Mail-Adresse prüfen
 
 Überall steht `kontakt@vioweb.de`. Das ist eine **Annahme**, keine
 Vorgabe — die Domain war bekannt, der Teil davor nicht. Stimmt die Adresse
@@ -59,7 +85,7 @@ Der Grund für die Annahme statt eines Platzhalters: Ohne funktionierende
 Adresse wäre der E-Mail-Rückfall des Formulars tot, und ein totes Formular
 war ausgeschlossen.
 
-### 3. Impressum ausfüllen
+### 2. Impressum ausfüllen
 
 In `impressum.html` sind alle offenen Stellen hervorgehoben — im Quelltext
 als `[GROSSBUCHSTABEN IN KLAMMERN]`, auf der Seite als lila unterlegter
@@ -79,14 +105,14 @@ die Umsatzsteuer-Identifikationsnummer nach § 27a UStG.
 Zum Schluss den orangen Warnkasten und den Warnhinweis am Anfang der Datei
 löschen.
 
-### 4. Datenschutzerklärung ausfüllen
+### 3. Datenschutzerklärung ausfüllen
 
 Gleiches Vorgehen in `datenschutz.html`. Zusätzlich zu den Angaben aus dem
 Impressum:
 
 | Platzhalter | Woher |
 |---|---|
-| `[NAME DES FORMULARDIENSTES]` | siehe Punkt 5 |
+| `[NAME DES FORMULARDIENSTES]` | siehe Punkt 4 |
 | `[ANBIETER UND ANSCHRIFT]` | aus dem Impressum des Dienstes |
 | `[SERVERSTANDORT]` | aus dem Vertrag |
 | `[SPEICHERDAUER…]` | deine Entscheidung, üblich sind 6 bis 12 Monate |
@@ -97,7 +123,7 @@ per E-Mail arbeitet, muss der Absatz zum Formulardienst **gelöscht**
 werden. Eine Datenschutzerklärung, die einen nicht genutzten Dienst nennt,
 ist genauso falsch wie eine, die einen genutzten verschweigt.
 
-### 5. Formulardienst einrichten
+### 4. Formulardienst einrichten
 
 GitHub Pages kann keine Formulare verarbeiten — es liefert nur Dateien aus.
 Für den Versand braucht es einen fremden Dienst.
@@ -132,7 +158,7 @@ Außerdem das versteckte Feld `_redirect` auf die volle Adresse von
 eine vorbefüllte E-Mail zurück. Es gibt keinen Zustand, in dem der Besucher
 vor einem toten Formular steht.
 
-### 6. GitHub Pages aktivieren
+### 5. GitHub Pages aktivieren
 
 1. Im Repository auf **Settings → Pages**
 2. Unter *Build and deployment* als Source **Deploy from a branch** wählen
@@ -148,7 +174,7 @@ vor einem toten Formular steht.
 Die Datei `.nojekyll` muss liegen bleiben, sonst verarbeitet GitHub die
 Dateien unnötig nach.
 
-### 7. Zum Schluss
+### 6. Zum Schluss
 
 - `sitemap.xml`: das `lastmod`-Datum aktualisieren
 - Die Seite bei der Google Search Console anmelden
@@ -217,6 +243,8 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - Klickflächen ab 44 px, außer bei Verweisen mitten im Satz
 - Keine toten Verweise, keine Anker ohne Ziel
 - Alle Bilder mit `width` und `height`
+- Fließtext über dem Wasserzeichen: 5,04:1 (mobil) und 5,41:1 (Desktop),
+  gemessen am hellsten Punkt von Lichtschein und Zeichen
 - Formular in allen drei Wegen: mit Endpunkt, per E-Mail, ohne JavaScript
 - Leeres Absenden erzeugt drei Fehler in Klartext neben den Feldern
 - `beispiel.de` wird zu `https://beispiel.de` ergänzt
@@ -224,4 +252,6 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - `prefers-reduced-motion` blendet nichts aus
 - JSON-LD gültig
 
-Gesamtgröße der Startseite: **rund 30 KB**, verteilt auf vier Anfragen.
+Gesamtgröße der Startseite: **79,5 KB**, verteilt auf fünf Anfragen —
+davon 30,6 KB das Firmenzeichen und 11,9 KB das Favicon. Ohne die beiden
+Bilddateien wären es 38,6 KB.

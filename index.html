@@ -25,7 +25,8 @@
 <meta name="twitter:description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit. Der erste Check kostet nichts.">
 <meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
 
-<link rel="icon" href="img/zeichen.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon.png" sizes="any">
+<link rel="apple-touch-icon" href="img/favicon.png">
 
 <!-- =====================================================================
      KRITISCHES CSS — deckt alles oberhalb der Falz ab (Werte, Basis,
@@ -151,7 +152,9 @@ button, input, textarea { font: inherit; color: inherit; }
   gap: 24px; flex-wrap: wrap;
 }
 .marke { display: flex; align-items: flex-start; gap: 14px; text-decoration: none; }
-.marke__zeichen { width: 38px; height: 38px; flex: none; color: var(--akzent-hell); margin-top: 2px; }
+/* Rastergrafik mit eigenen Farben: keine Einfaerbung ueber currentColor.
+   Hoehe steuert die Groesse, Breite folgt dem Seitenverhaeltnis 1,649. */
+.marke__zeichen { height: 32px; width: auto; flex: none; margin-top: 3px; }
 .marke__name {
   display: block; font-size: 1.35rem; font-weight: 700;
   letter-spacing: .02em; line-height: 1.1;
@@ -196,9 +199,9 @@ button, input, textarea { font: inherit; color: inherit; }
 /* Wasserzeichen: nur am rechten Rand angeschnitten. Oben und unten bleibt
    Luft, damit die Form als W lesbar bleibt und nicht als dunkler Block. */
 .aufmacher__zeichen {
-  position: absolute; right: -11%; top: 50%; transform: translateY(-50%);
-  width: min(46vw, 460px); height: auto;
-  color: var(--akzent-hell); opacity: .11; pointer-events: none;
+  position: absolute; right: -9%; top: 50%; transform: translateY(-50%);
+  width: min(58vw, 620px); height: auto;
+  opacity: .11; pointer-events: none;
 }
 .aufmacher__inhalt { position: relative; }
 .aufmacher h1 {
@@ -233,10 +236,8 @@ button, input, textarea { font: inherit; color: inherit; }
 <header class="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="/">
-      <svg class="marke__zeichen" viewBox="0 0 100 100" aria-hidden="true">
-        <path d="M8 12 L28 88 L50 40 L72 88 L92 12" fill="none"
-              stroke="currentColor" stroke-width="15" stroke-linejoin="miter"/>
-      </svg>
+      <img class="marke__zeichen" src="img/zeichen.webp" alt=""
+           width="480" height="291">
       <span>
         <span class="marke__name">VIOWEB</span>
         <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
@@ -254,8 +255,8 @@ button, input, textarea { font: inherit; color: inherit; }
   <!-- ===================================================== Aufmacher -->
   <section class="aufmacher">
     <div class="aufmacher__schein" aria-hidden="true"></div>
-    <img class="aufmacher__zeichen" src="img/zeichen.svg" alt=""
-         width="460" height="460" fetchpriority="low">
+    <img class="aufmacher__zeichen" src="img/zeichen.webp" alt=""
+         width="480" height="291" fetchpriority="low">
 
     <div class="feld aufmacher__inhalt">
       <p class="kicker">Website-Prüfung und Entwicklung</p>

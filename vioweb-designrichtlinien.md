@@ -139,10 +139,25 @@ Zwei harte Bedingungen:
 
 1. **Nur am rechten Rand angeschnitten.** Wird das Zeichen an zwei Rändern
    gleichzeitig beschnitten, wirkt es als dunkler Block statt als Form.
-   Umgesetzt über `right: -11%`, vertikal zentriert, Breite
-   `min(46vw, 460px)` gegen eine Mindesthöhe von 560 px.
+   Umgesetzt über `right: -9%`, vertikal zentriert, Breite
+   `min(58vw, 620px)`. Das Zeichen ist **breiter als hoch (1,649 : 1)**,
+   bei 620 px also 376 px hoch — es passt damit sicher in die Mindesthöhe
+   von 560 px, ohne oben oder unten anzustoßen.
 2. **Der Schein hat keine sichtbare Kante.** Der Verlauf läuft über sieben
    Stufen bis auf null aus. Weniger Stufen erzeugen einen sichtbaren Ring.
+3. **Der Text darüber muss lesbar bleiben.** Schein und Zeichen zusammen
+   ergeben am hellsten Punkt `rgb(57,39,90)`. Der gedämpfte Fließtext
+   erreicht darauf 5,04:1 (Handy) und 5,41:1 (Desktop). Wird die Deckkraft
+   des Wasserzeichens oder die Stärke des Scheins erhöht, ist dieser Wert
+   neu zu messen.
+
+### Das Zeichen ist eine Rastergrafik
+
+Es hat zwei Farben und weiche Verläufe, wird also **nicht** über
+`currentColor` eingefärbt. Größen laufen deshalb über die Höhe
+(Kopfbereich) beziehungsweise die Breite (Wasserzeichen), das
+Seitenverhältnis folgt aus den `width`/`height`-Angaben im Markup — die
+verhindern zugleich jeden Layoutsprung beim Laden.
 
 ---
 
