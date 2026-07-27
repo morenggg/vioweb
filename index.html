@@ -396,15 +396,32 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 
 .auf h1 {
   margin-top: var(--s-lg);
-  font-size: clamp(2.1rem, 1.35rem + 3.3vw, 3.9rem);
+  /* Nur der untere Anschlag ist gesenkt (war 2.1rem). Er greift erst
+     unter rund 366px Fensterbreite und spart dort eine ganze Zeile.
+     Anstieg und oberer Anschlag bleiben unveraendert, ab 390px ist die
+     Schlagzeile also exakt so gross wie vorher. */
+  font-size: clamp(1.95rem, 1.35rem + 3.3vw, 3.9rem);
   font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
-  max-width: 19ch;
+  /* 23ch ist der schmalste Wert, bei dem der erste Satzteil auf dem
+     Desktop in eine Zeile passt. Rechts bleibt dadurch Luft. */
+  max-width: 23ch;
+  text-wrap: balance;
+}
+/* Die Schlagzeile nennt zwei Wege. Ab Tablet wird jeder Satzteil ein
+   eigener Kasten: Der Umbruch faellt dann am Scharnier "oder", nicht
+   mitten in den zweiten Weg. Darunter bleibt der Umbruch frei, sonst
+   kostet die Aufteilung auf schmalen Geraeten eine ganze Zeile.
+   Aeltere Browser ohne text-wrap ignorieren die Zeile und brechen
+   normal — die Aussage bleibt in jedem Fall vollstaendig lesbar. */
+@media (min-width: 768px) {
+  .auf h1 .auf__teil { display: inline-block; }
 }
 .auf h1 em { font-style: normal; color: var(--akzent); }
 .auf__satz {
   margin-top: var(--s-lg); max-width: 56ch;
   font-size: clamp(1.05rem, 1rem + .45vw, 1.25rem);
   line-height: 1.6; color: var(--text-leise);
+  text-wrap: pretty;   /* verhindert ein einzelnes Wort in der letzten Zeile */
 }
 .auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-sm); margin-top: var(--s-xl); }
 .auf__hinweis {
@@ -488,12 +505,14 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     <div class="feld">
       <p class="auf__marke"><span aria-hidden="true"></span>Website-Analyse und Webentwicklung</p>
 
-      <h1>Deine Website hat Probleme — oder es gibt sie <em>noch gar nicht</em>?</h1>
+      <h1><span class="auf__teil">Bestehende Website verbessern</span>
+        <span class="auf__teil">oder eine <em>neue&nbsp;Website</em> erstellen lassen.</span></h1>
 
       <p class="auf__satz">
-        Wir prüfen bestehende Websites und erklären verständlich, wo es hakt.
-        Auf Wunsch setzen wir die Punkte um. Und wenn noch keine Website da
-        ist, bauen wir sie.
+        Wir analysieren bestehende Websites, zeigen verständlich, wo
+        technische, gestalterische oder inhaltliche Probleme liegen, und
+        unterstützen auf Wunsch bei der Umsetzung. Wenn noch keine Website
+        vorhanden ist, entwickeln wir einen neuen, modernen&nbsp;Webauftritt.
       </p>
 
       <div class="auf__aktionen">
