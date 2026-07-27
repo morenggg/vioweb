@@ -464,6 +464,15 @@
   .schritte { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s-xl); }
   .schritte li { padding-block: var(--s-lg); }
 
+  /* Gleiche Ursache wie im Band: Schritt 05 hat eine zweizeilige
+     Ueberschrift, die anderen einzeilige. Nummer, Ueberschrift und
+     Beschreibung teilen sich deshalb ueber subgrid je drei Zeilen des
+     Elternrasters, sodass alle Schritte einer Reihe auf denselben
+     Kanten sitzen. */
+  @supports (grid-template-rows: subgrid) {
+    .schritte li { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+  }
+
   .fragen { margin-top: var(--s-2xl); }
   .frage summary { padding-block: var(--s-lg); }
 
