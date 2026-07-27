@@ -126,8 +126,34 @@ wenn die Struktur-Schrift normal breit rendert.
 - **Rechts bleibt bewusst Luft.** Text füllt die Fläche nie ganz aus
 - Wiederkehrend: der Balken **68 × 5 px** in `#6226FA` unter der Kicker-Zeile,
   in jedem Abschnitt
-- Abstände zwischen Abschnitten: 72 px mobil, 104 px ab 900 px
 - Abschnitte werden durch Haarlinien in `#282830` getrennt, nicht durch Flächen
+
+### Das Zwei-Kanten-Raster ab 1100 px
+
+Bis 1100 px ist die Seite einspaltig — auf dem Handy ist das richtig.
+Darüber bekommt sie eine **eigene Komposition**. Das einspaltige Layout
+einfach in die Breite zu ziehen war der Fehler der ersten Fassung: bei
+1920 px nutzte der Inhalt nur 52 % der Breite, alle fünf Abschnitte waren
+identisch aufgebaut, und die Seite las sich als hochskaliertes Handy-Layout.
+
+„Rechts bleibt Luft" heißt: **der Satzspiegel endet vor dem Rand** — nicht,
+dass das Layout einspaltig bleibt.
+
+- **Rail links** (`--rail: 180px`), Abstand `--gasse: 64px`, dann die
+  Inhaltsspalte. In der Rail stehen Kicker und Balken, in der Spalte Titel
+  und Inhalt. Beide Kanten sind über alle Abschnitte hinweg dieselben
+- **Container 1240 px**
+- **Fließtext bleibt bei 52 Zeichen.** Die Breite wird über Struktur
+  genutzt, nicht über längere Zeilen: mehrspaltige Listen, ein
+  dreiteiliges Leistungsraster, der zweispaltige Check-Block
+- **Stichwortlisten sind kein Fließtext** — für sie gilt die
+  52-Zeichen-Grenze nicht, sie laufen dreispaltig über die volle Breite
+- **Die Abschnitte sind unterschiedlich dicht.** 88 px (eng), 112 px
+  (normal), 152 px (weit), 160 px (Check). Fünfmal derselbe Abstand ist
+  das deutlichste Zeichen dafür, dass niemand gestaltet hat
+- **Der Check-Block bricht das Raster bewusst:** dort läuft die Rail über
+  dem Inhalt, damit die beiden Spalten genug Breite haben. Er ist der
+  einzige Abschnitt, der das darf
 
 ### Signaturelement
 

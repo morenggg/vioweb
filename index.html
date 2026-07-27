@@ -65,8 +65,10 @@
                        "Liberation Mono", monospace;
 
   --rand: 24px;
-  --feld: 1120px;
+  --feld: 1240px;
   --lesebreite: 52ch;
+  --rail: 180px;      /* linke Meta-Spalte ab 1100px */
+  --gasse: 64px;      /* Abstand Rail zur Inhaltsspalte */
 
   --dauer: 200ms;
   --verlauf: cubic-bezier(.22, 1, .36, 1);
@@ -118,6 +120,25 @@ button, input, textarea { font: inherit; color: inherit; }
 .feld {
   width: 100%; max-width: var(--feld);
   margin-inline: auto; padding-inline: var(--rand);
+}
+
+/* Redaktionelles Zwei-Kanten-Raster.
+   Auf dem Handy laufen Rail und Inhalt untereinander — dort ist einspaltig
+   richtig, und daran wird nichts geaendert. Ab 1100px stellt sich die Rail
+   links daneben. Das nutzt die Breite, haelt die feste linke Kante und
+   laesst rechts trotzdem echte Luft, weil die Inhaltsspalte vor dem Rand
+   endet. Beide Kanten sind ueber alle Abschnitte hinweg dieselben. */
+.rail { margin-bottom: 26px; }
+.spalte > :first-child { margin-top: 0; }
+
+@media (min-width: 1100px) {
+  .raster {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--gasse);
+    align-items: start;
+  }
+  .rail { margin-bottom: 0; padding-top: 12px; }
 }
 
 /* ------------------------------------------------- wiederkehrende Teile */
@@ -204,10 +225,12 @@ button, input, textarea { font: inherit; color: inherit; }
   opacity: .11; pointer-events: none;
 }
 .aufmacher__inhalt { position: relative; }
+/* Die Spitzenwerte der clamp() steigen, die Startwerte nicht: bei 390px
+   greift weiterhin der mittlere Term, dort aendert sich nichts. */
 .aufmacher h1 {
-  font-size: clamp(2.6rem, 1.7rem + 3.9vw, 4.6rem);
-  font-weight: 700; line-height: 1.02; letter-spacing: -.03em;
-  max-width: 15ch; margin-top: 26px;
+  font-size: clamp(2.6rem, 1.7rem + 3.9vw, 5.6rem);
+  font-weight: 700; line-height: 1.0; letter-spacing: -.032em;
+  max-width: 14ch;
 }
 .aufmacher h1 em { font-style: normal; color: var(--akzent-hell); }
 
@@ -216,6 +239,12 @@ button, input, textarea { font: inherit; color: inherit; }
   font-size: 1.06rem; color: var(--text-leise);
 }
 .aktionen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+
+@media (min-width: 1100px) {
+  .vorspann { font-size: 1.2rem; margin-top: 30px; }
+  .aktionen { margin-top: 44px; }
+  .aufmacher { min-height: clamp(620px, 86svh, 860px); }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -258,10 +287,13 @@ button, input, textarea { font: inherit; color: inherit; }
     <img class="aufmacher__zeichen" src="img/zeichen.webp" alt=""
          width="480" height="291" fetchpriority="low">
 
-    <div class="feld aufmacher__inhalt">
-      <p class="kicker">Website-Prüfung und Entwicklung</p>
-      <span class="balken" aria-hidden="true"></span>
+    <div class="feld raster aufmacher__inhalt">
+      <div class="rail">
+        <p class="kicker">Website-Prüfung und Entwicklung</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
 
+      <div class="spalte">
       <h1>Websites, die <em>überzeugen</em>.</h1>
 
       <p class="vorspann">
@@ -274,14 +306,19 @@ button, input, textarea { font: inherit; color: inherit; }
         <a class="knopf knopf--voll" href="#check">Kostenlosen Check anfragen</a>
         <a class="knopf knopf--rand" href="#leistungen">Was wir machen</a>
       </div>
+      </div>
     </div>
   </section>
 
   <!-- ==================================================== Leistungen -->
-  <section class="abschnitt" id="leistungen">
-    <div class="feld">
-      <p class="kicker">Leistungen</p>
-      <span class="balken" aria-hidden="true"></span>
+  <section class="abschnitt abschnitt--weit" id="leistungen">
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Leistungen</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
       <h2 class="titel">Drei Wege, in dieser <em>Reihenfolge</em>.</h2>
 
       <ol class="leistungen" role="list">
@@ -320,14 +357,19 @@ button, input, textarea { font: inherit; color: inherit; }
           </div>
         </li>
       </ol>
+      </div>
     </div>
   </section>
 
   <!-- =============================================== Was wir prüfen -->
   <section class="abschnitt abschnitt--flaeche" id="pruefung">
-    <div class="feld">
-      <p class="kicker">Was wir prüfen</p>
-      <span class="balken" aria-hidden="true"></span>
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Was wir prüfen</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
       <h2 class="titel">Zwölf Punkte, die <em>Besucher kosten</em>.</h2>
 
       <ul class="punkte" role="list">
@@ -345,33 +387,48 @@ button, input, textarea { font: inherit; color: inherit; }
         <li>Sicherheit</li>
       </ul>
       <p class="punkte__mehr">… und einiges mehr.</p>
+      </div>
     </div>
   </section>
 
   <!-- ======================================================== Ablauf -->
-  <section class="abschnitt" id="ablauf">
-    <div class="feld">
-      <p class="kicker">Ablauf</p>
-      <span class="balken" aria-hidden="true"></span>
+  <section class="abschnitt abschnitt--eng" id="ablauf">
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Ablauf</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
       <h2 class="titel">Was nach dem Absenden <em>passiert</em>.</h2>
       <p class="vorspann ablauf__text">
         Du schickst uns die Adresse deiner Website. Wir schauen sie uns an und
         melden uns mit dem, was uns auffällt. Was daraus wird, entscheidest
         du — wir rufen nicht hinterher.
       </p>
+      </div>
     </div>
   </section>
 
   <!-- ================================================ Kontaktformular -->
   <section class="check" id="check">
     <div class="feld">
-      <div class="check__flaeche">
-        <p class="kicker">Kostenloser Erstcheck</p>
-        <span class="balken" aria-hidden="true"></span>
-        <h2 class="titel">Der erste Check <em>kostet nichts</em>.</h2>
-        <p class="vorspann">
-          Trag die Adresse deiner Website ein. Alles Weitere ist freiwillig.
-        </p>
+      <div class="check__flaeche raster">
+        <div class="rail">
+          <p class="kicker">Kostenloser Erstcheck</p>
+          <span class="balken" aria-hidden="true"></span>
+        </div>
+
+        <div class="spalte check__zwei">
+        <div class="check__wort">
+          <h2 class="titel">Der erste Check <em>kostet nichts</em>.</h2>
+          <p class="vorspann">
+            Trag die Adresse deiner Website ein. Alles Weitere ist freiwillig.
+          </p>
+          <p class="check__ruhe">
+            Erster Check, unverbindlich. Mehr als die Adresse brauchen wir nicht.
+          </p>
+        </div>
 
         <!-- ===============================================================
              VERSAND — vor dem Livegang einzurichten:
@@ -454,10 +511,6 @@ button, input, textarea { font: inherit; color: inherit; }
             Domain schicken
           </button>
 
-          <p class="formular__ruhe">
-            Erster Check, unverbindlich. Mehr als die Adresse brauchen wir nicht.
-          </p>
-
           <p class="meldung" id="formular-meldung" role="status"></p>
 
           <noscript>
@@ -468,15 +521,20 @@ button, input, textarea { font: inherit; color: inherit; }
             </p>
           </noscript>
         </form>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ======================================================= Kontakt -->
   <section class="abschnitt" id="kontakt">
-    <div class="feld">
-      <p class="kicker">Kontakt</p>
-      <span class="balken" aria-hidden="true"></span>
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Kontakt</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
       <h2 class="titel">Lieber direkt <em>schreiben</em>?</h2>
 
       <dl class="kontaktliste">
@@ -493,6 +551,7 @@ button, input, textarea { font: inherit; color: inherit; }
           <dd>Deutschlandweit, ansässig in Torgau</dd>
         </div>
       </dl>
+      </div>
     </div>
   </section>
 

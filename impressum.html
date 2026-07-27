@@ -52,8 +52,10 @@
                        "Liberation Mono", monospace;
 
   --rand: 24px;
-  --feld: 1120px;
+  --feld: 1240px;
   --lesebreite: 52ch;
+  --rail: 180px;
+  --gasse: 64px;
 
   --dauer: 200ms;
   --verlauf: cubic-bezier(.22, 1, .36, 1);
@@ -98,6 +100,20 @@ ul, ol { list-style: none; padding: 0; }
 .feld {
   width: 100%; max-width: var(--feld);
   margin-inline: auto; padding-inline: var(--rand);
+}
+
+/* Zwei-Kanten-Raster, identisch zu index.html. */
+.rail { margin-bottom: 26px; }
+.spalte > :first-child { margin-top: 0; }
+
+@media (min-width: 1100px) {
+  .raster {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--gasse);
+    align-items: start;
+  }
+  .rail { margin-bottom: 0; padding-top: 12px; }
 }
 
 .kicker {
@@ -175,8 +191,10 @@ ul, ol { list-style: none; padding: 0; }
 <header class="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="index.html">
-      <img class="marke__zeichen" src="img/zeichen.webp" alt=""
-           width="480" height="291">
+      <svg class="marke__zeichen" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M8 12 L28 88 L50 40 L72 88 L92 12" fill="none"
+              stroke="currentColor" stroke-width="15" stroke-linejoin="miter"/>
+      </svg>
       <span>
         <span class="marke__name">VIOWEB</span>
         <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
@@ -191,9 +209,12 @@ ul, ol { list-style: none; padding: 0; }
 
 <main id="inhalt">
   <article class="dokument">
-    <div class="feld">
-      <p class="kicker">Pflichtangaben</p>
-      <span class="balken" aria-hidden="true"></span>
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Pflichtangaben</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+      <div class="spalte">
       <h1>Impressum</h1>
 
       <div class="warnung">
@@ -260,6 +281,7 @@ ul, ol { list-style: none; padding: 0; }
         Verlinkung waren keine Rechtsverstöße erkennbar. Wird uns eine
         Rechtsverletzung bekannt, entfernen wir den Verweis umgehend.
       </p>
+      </div>
     </div>
   </article>
 </main>

@@ -27,11 +27,10 @@
 .abschnitt--flaeche { background: var(--grund-2); }
 
 .titel {
-  margin-top: 26px;
-  font-size: clamp(1.9rem, 1.35rem + 2.2vw, 3rem);
+  font-size: clamp(1.9rem, 1.35rem + 2.2vw, 3.6rem);
   font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -.025em;
+  line-height: 1.04;
+  letter-spacing: -.028em;
   max-width: 18ch;
 }
 /* Ein Akzent pro Abschnitt: genau ein Wort in der Schlagzeile. */
@@ -99,6 +98,7 @@
 
 /* ---------------------------------------------------------- 4. Ablauf */
 .ablauf__text { font-size: 1.12rem; }
+@media (min-width: 1100px) { .ablauf__text { font-size: 1.35rem; max-width: 46ch; } }
 
 /* ------------------------------------------------- 5. Kontaktformular */
 /* Der einzige Abschnitt, der visuell aus der Reihe tanzen darf. */
@@ -215,11 +215,11 @@
 .formular__senden { margin-top: 8px; }
 .formular__senden[aria-disabled="true"] { opacity: .6; cursor: progress; }
 
-.formular__ruhe {
-  margin-top: 18px;
+.check__ruhe {
+  margin-top: 26px;
   font-size: .87rem;
   color: var(--text-leise);
-  max-width: 46ch;
+  max-width: 40ch;
 }
 
 .meldung {
@@ -364,3 +364,98 @@
    abhaengen. Die Richtlinien erlauben das Einblenden ausdruecklich nur
    als "hoechstens" — also verzichten wir darauf. Die Seite lebt von
    Typografie und Raum, nicht von Bewegung. */
+
+
+/* =========================================================================
+   10. Desktop ab 1100 px
+
+   Bis hierher ist die Seite einspaltig — auf dem Handy ist das richtig und
+   bleibt unangetastet. Ab 1100 px bekommt sie eine eigene Komposition,
+   statt das Handy-Layout in die Breite zu ziehen:
+
+     - Rail links, Inhalt rechts (Grundraster im kritischen CSS)
+     - groessere Typografie mit mehr Abstand zwischen den Ebenen
+     - Listen laufen mehrspaltig ueber die volle Inhaltsbreite
+     - die Abschnitte sind unterschiedlich dicht statt alle gleich
+     - der Check-Block wird zweispaltig und damit zum Hoehepunkt
+   ========================================================================= */
+@media (min-width: 1100px) {
+
+  /* --- Rhythmus: nicht jeder Abschnitt gleich hoch --------------------- */
+  .abschnitt          { padding-block: 112px; }
+  .abschnitt--weit    { padding-block: 152px; }
+  .abschnitt--eng     { padding-block: 88px; }
+  .check              { padding-block: 160px; }
+
+  /* --- Leistungen: Nummer und Titel links, Beschreibung rechts ---------
+     display:contents loest den Zwischencontainer auf, damit Ueberschrift
+     und Absatz direkt im Raster der Leistung liegen. */
+  .leistungen { margin-top: 64px; }
+
+  .leistung {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    column-gap: 72px;
+    align-items: start;
+    padding-block: 52px;
+  }
+  .leistung__nummer { grid-column: 1; grid-row: 1; margin-bottom: 12px; }
+  .leistung__inhalt { display: contents; }
+  .leistung__inhalt h3 {
+    grid-column: 1; grid-row: 2;
+    font-size: 2rem; line-height: 1.08; letter-spacing: -.025em;
+  }
+  /* Der Absatz beginnt in Zeile 2 — also auf Hoehe des Titels, nicht auf
+     Hoehe der Nummer. Sonst haengen Titel und Text sichtbar versetzt. */
+  .leistung__inhalt p {
+    grid-column: 2; grid-row: 2;
+    margin-top: 0; font-size: 1.06rem;
+  }
+
+  /* --- Zwoelf Punkte: drei Spalten ueber die volle Inhaltsbreite -------
+     Stichworte sind kein Fliesstext, fuer sie gilt die 52-Zeichen-Regel
+     nicht. */
+  .punkte {
+    margin-top: 64px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px 56px;
+    max-width: none;
+    font-size: 1.06rem;
+  }
+  .punkte li { padding-left: 24px; }
+  .punkte li::before { top: .7em; }
+  .punkte__mehr { margin-top: 40px; }
+
+  /* --- Kontakt --------------------------------------------------------- */
+  .kontaktliste { margin-top: 56px; max-width: none; gap: 40px; }
+  .kontaktliste dd { font-size: 1.15rem; }
+
+  /* --- Check: der einzige Abschnitt mit eigener Komposition ------------
+     Hier laeuft die Rail nicht seitlich, sondern ueber dem Inhalt. Sonst
+     bliebe fuer die beiden Spalten zu wenig Breite und die Ueberschrift
+     bricht auf vier Zeilen. Der Block darf als einziger aus der Reihe
+     tanzen — genau das nutzen wir hier. */
+  .check__flaeche { padding: 96px 80px 100px; }
+  .check .raster { display: block; }
+  .check .rail { margin-bottom: 56px; padding-top: 0; }
+
+  .check__zwei {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 80px;
+    align-items: stretch;
+  }
+  .check__wort { display: flex; flex-direction: column; }
+  .check__wort .titel { font-size: clamp(2rem, 1.2rem + 1.7vw, 3rem); }
+  .check__wort .vorspann { max-width: 32ch; }
+  /* Das Formular ist deutlich hoeher als der Text daneben. Statt die
+     linke Spalte unten leer auslaufen zu lassen, sitzt die ruhige Zeile
+     am Fuss der Spalte — sie schliesst den Block ab, statt in der Luft
+     zu haengen. */
+  .check__ruhe { margin-top: auto; padding-top: 64px; max-width: 30ch; }
+  .formular { margin-top: 0; max-width: none; }
+
+  /* --- Textseiten ------------------------------------------------------ */
+  .dokument h1 { font-size: clamp(2.6rem, 1.4rem + 2.6vw, 3.6rem); }
+  .dokument h2:first-of-type { margin-top: 0; }
+}
