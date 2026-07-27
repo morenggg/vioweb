@@ -20,6 +20,7 @@ danke.html            Bestätigung, nur ohne JavaScript erreichbar
 robots.txt
 sitemap.xml
 .nojekyll             schaltet die Jekyll-Verarbeitung von GitHub Pages ab
+CNAME                 eigene Domain für GitHub Pages — nicht löschen
 css/seite.css         alles unterhalb der Falz
 js/formular.js        ausschließlich der Formularversand
 img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopfbereich und Wasserzeichen
@@ -160,10 +161,14 @@ vor einem toten Formular steht.
 
 ### 5. GitHub Pages aktivieren
 
+Die Datei `CNAME` mit dem Inhalt `vioweb.de` liegt bereits im Repository —
+damit ist die eigene Domain für GitHub Pages hinterlegt. Sie darf nicht
+gelöscht oder umbenannt werden.
+
 1. Im Repository auf **Settings → Pages**
 2. Unter *Build and deployment* als Source **Deploy from a branch** wählen
 3. Branch `main`, Ordner `/ (root)`, speichern
-4. Unter *Custom domain* `vioweb.de` eintragen
+4. Unter *Custom domain* sollte `vioweb.de` bereits stehen (aus `CNAME`)
 5. Beim Domain-Anbieter setzen:
    - `A`-Einträge für `vioweb.de` auf
      `185.199.108.153`, `185.199.109.153`,
