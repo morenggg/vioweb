@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Seite nicht gefunden — Vioweb</title>
+<meta name="description" content="Diese Adresse gibt es auf vioweb.de nicht.">
+<link rel="canonical" href="https://vioweb.de/404.html">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#060609">
+<link rel="icon" href="img/zeichen.svg" type="image/svg+xml">
+
+<style>
+/* ---------------------------------------------------------------- Werte */
+/* Identisch zu index.html. Wird eine Farbe geaendert, muss sie in ALLEN
+   HTML-Dateien geaendert werden — die Liste steht in der README. */
+:root {
+  color-scheme: dark;
+
+  --grund:        #060609;
+  --grund-2:      #0B0B10;
+  --text:         #FFFFFF;
+  --text-leise:   #9EA1A9;
+  --linie:        #282830;
+  --akzent-hell:  #9B54FC;
+  --akzent-voll:  #6226FA;
+  --schein:       #240D4E;
+
+  --gut:   #2E7D32;
+  --mittel:#D98A00;
+  --schlecht:#C1272D;
+
+  --schrift-schlag:    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --schrift-struktur:  "Arial Narrow", "Helvetica Neue Condensed",
+                       "Liberation Sans Narrow", Arial, sans-serif;
+  --schrift-technik:   ui-monospace, "SF Mono", Menlo, Consolas,
+                       "Liberation Mono", monospace;
+
+  --rand: 24px;
+  --feld: 1120px;
+  --lesebreite: 52ch;
+
+  --dauer: 200ms;
+  --verlauf: cubic-bezier(.22, 1, .36, 1);
+}
+@media (min-width: 900px) { :root { --rand: 64px; } }
+
+/* ---------------------------------------------------------------- Basis */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 32px;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--grund);
+  color: var(--text);
+  font-family: var(--schrift-schlag);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+ul, ol { list-style: none; padding: 0; }
+
+:focus-visible { outline: 2px solid var(--akzent-hell); outline-offset: 3px; }
+
+.sprungmarke-inhalt {
+  position: absolute; left: var(--rand); top: 16px; z-index: 20;
+  transform: translateY(-250%);
+  background: var(--akzent-voll); color: #FFF;
+  padding: 12px 18px; text-decoration: none; font-size: .9rem;
+  transition: transform var(--dauer) var(--verlauf);
+}
+.sprungmarke-inhalt:focus { transform: translateY(0); }
+
+.feld {
+  width: 100%; max-width: var(--feld);
+  margin-inline: auto; padding-inline: var(--rand);
+}
+
+.kicker {
+  font-family: var(--schrift-technik);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .24em;
+  color: var(--text-leise);
+}
+.balken {
+  display: block; width: 68px; height: 5px;
+  background: var(--akzent-voll); margin-top: 18px;
+}
+
+.knopf {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 14px 26px;
+  font-size: .95rem; font-weight: 700; letter-spacing: -.01em;
+  text-decoration: none; border: 1px solid transparent;
+  transition: background-color var(--dauer) var(--verlauf),
+              border-color var(--dauer) var(--verlauf),
+              color var(--dauer) var(--verlauf);
+}
+.knopf--voll { background: var(--akzent-voll); color: #FFFFFF; }
+.knopf--voll:hover { background: var(--akzent-hell); color: #060609; }
+.knopf--rand { border-color: var(--linie); color: var(--text); }
+.knopf--rand:hover { border-color: var(--akzent-hell); color: var(--akzent-hell); }
+
+/* -------------------------------------------------------- Kopfbereich */
+.kopf { padding-block: 28px 0; }
+.kopf__inhalt {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.marke { display: flex; align-items: flex-start; gap: 14px; text-decoration: none; }
+.marke__zeichen { width: 38px; height: 38px; flex: none; color: var(--akzent-hell); margin-top: 2px; }
+.marke__name {
+  display: block; font-size: 1.35rem; font-weight: 700;
+  letter-spacing: .02em; line-height: 1.1;
+}
+.marke__claim {
+  display: block; font-family: var(--schrift-struktur);
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--akzent-hell); margin-top: 3px;
+}
+@media (min-width: 460px) { .marke__claim { font-size: .78rem; } }
+
+.sprungmarken { display: flex; gap: 4px; margin-top: 6px; margin-inline: -12px; }
+.sprungmarken a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding-inline: 12px;
+  font-family: var(--schrift-technik);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--text-leise); text-decoration: none;
+  transition: color var(--dauer) var(--verlauf);
+}
+.sprungmarken a:hover { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+
+<link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="css/seite.css"></noscript>
+</head>
+
+<body>
+<a class="sprungmarke-inhalt" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="kopf">
+  <div class="feld kopf__inhalt">
+    <a class="marke" href="index.html">
+      <svg class="marke__zeichen" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M8 12 L28 88 L50 40 L72 88 L92 12" fill="none"
+              stroke="currentColor" stroke-width="15" stroke-linejoin="miter"/>
+      </svg>
+      <span>
+        <span class="marke__name">VIOWEB</span>
+        <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
+      </span>
+    </a>
+    <nav class="sprungmarken" aria-label="Schnellzugriff">
+      <a href="index.html">Startseite</a>
+      <a href="index.html#check">Check anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+  <article class="dokument">
+    <div class="feld">
+      <p class="kicker">Fehler 404</p>
+      <span class="balken" aria-hidden="true"></span>
+      <h1>Diese Seite gibt es <em>nicht</em>.</h1>
+      <p>
+        Der Verweis ist veraltet, oder in der Adresse steckt ein Tippfehler.
+        Beides passiert — und beides finden wir bei einer Analyse.
+      </p>
+      <p style="margin-top:36px">
+        <a class="knopf knopf--voll" href="index.html">Zur Startseite</a>
+      </p>
+    </div>
+  </article>
+</main>
+
+<footer class="fuss">
+  <div class="feld fuss__inhalt">
+    <p class="fuss__marke">VIOWEB</p>
+    <nav class="fuss__marken" aria-label="Rechtliches">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>

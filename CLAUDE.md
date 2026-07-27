@@ -1,84 +1,84 @@
 # Vioweb — Projektanweisungen
 
 **Marke:** Vioweb · **Domain:** vioweb.de · **Instagram:** @vio.web
-**Sprache der Seite und der Inhalte:** Deutsch
+**Sprache:** Deutsch, durchgehend **Du** und **Wir**
 
-Vioweb ist eine Plattform für Website-Analyse, Optimierung, SEO, Performance,
-UX, Conversion und moderne Webentwicklung.
+Ein-Personen-Betrieb für Webentwicklung. Zielgruppe sind kleine und mittlere
+Betriebe in Deutschland: Handwerk, Dienstleister, Vereine, Praxen.
+**Keine Entwickler** — kein Fachjargon, keine englischen Begriffe, wo es
+deutsche gibt.
 
-> Wir verkaufen keine Webseiten. Wir lösen Probleme.
+> Analysieren. Optimieren. Entwickeln.
+> Der erste Check kostet nichts.
+
+---
+
+## Das eine Ziel
+
+Der Besucher trägt seine Website-Adresse in das Kontaktformular ein und
+fragt den kostenlosen Kurz-Check an. Alles auf der Seite zahlt darauf ein
+oder fliegt raus.
 
 ---
 
 ## Vor jeder Änderung
 
-1. `vioweb-designrichtlinien.md` lesen — **verpflichtend** vor jeder
-   Designentscheidung
-2. Projekt analysieren: vorhandene Komponenten, Styles, Patterns suchen
-3. Bestehendes nutzen und verbessern statt neu bauen
-4. Analyse, Probleme, Verbesserungsideen und Umsetzung **erklären**, dann coden
+1. `vioweb-designrichtlinien.md` lesen — **verpflichtend**
+2. Vorhandene Bausteine, Stile und Muster suchen und weiterverwenden
+3. Analyse, Probleme, Verbesserungsideen und Umsetzung **erklären**, dann coden
 
-Nie blind arbeiten. Keine Quick Fixes, keine Hacks, keine doppelten
-Komponenten, keine unnötigen Libraries.
+Keine Quick Fixes, keine Hacks, keine doppelten Bausteine, keine Libraries.
 
 ---
 
-## Prototyp-Regel
+## Harte Grenzen
 
-Die Website ist noch nicht produktiv. Deshalb gilt: **jede neue Idee und jede
-größere Designänderung beginnt als eigenständiger HTML-Prototyp** unter
-`prototypes/`.
-
-Ein Prototyp muss:
-
-- direkt im Browser per Doppelklick funktionieren
-- ohne Build-Tools auskommen
-- HTML, CSS und JS in einer Datei enthalten
-- responsive sein und alle Animationen zeigen
-- realistisch wirken und leicht testbar sein
-
-Erst nach Freigabe entsteht daraus produktiver Code.
+- **Statisch auf GitHub Pages.** Kein Server, kein Build, kein npm
+- **Keine externen Ressourcen.** Beim Aufruf darf keine einzige Anfrage an
+  einen fremden Server gehen. Das ist die Kernaussage der Marke und nicht
+  verhandelbar
+- Kritisches CSS inline, der Rest nicht-blockierend nachgeladen
+- JavaScript ausschließlich für den Formularversand
+- **Keine erfundenen Zahlen und keine erfundenen Angaben.** Fehlt etwas,
+  kommt ein sichtbar markierter Platzhalter hin
+- Kein Cookie-Banner. Die Seite setzt keine Cookies und lädt nichts von
+  Dritten — dann braucht sie auch keine Einwilligung
 
 ---
 
-## Qualitätsziele
+## Gestaltung in drei Sätzen
 
-Lighthouse 100 / 100 / 100 / 100 (Performance, Accessibility, Best Practices, SEO).
-Core Web Vitals: LCP < 1,8 s · INP < 200 ms · CLS < 0,05.
+Dunkel, linksbündig, typografisch. Lila ist die einzige Akzentfarbe, und
+zwar `#9B54FC` für Text und `#6226FA` für Flächen — die beiden sind nicht
+austauschbar. Ein Akzent pro Abschnitt, meist ein einzelnes Wort in der
+Schlagzeile.
 
-Mobile first: zuerst 360 px, dann Tablet, dann Desktop.
-
----
-
-## Kritisches Denken
-
-Anforderungen werden nicht ungeprüft übernommen. Wenn eine bessere Lösung
-existiert: erklären, begründen, dann die bessere Variante umsetzen.
-Abweichungen von diesen Regeln werden in `vioweb-designrichtlinien.md`
-dokumentiert, nicht stillschweigend eingeführt.
-
-Qualität hat Vorrang vor Geschwindigkeit. Lieber weniger Elemente in höchster
-Qualität als viele durchschnittliche.
-
----
-
-## Selbstkontrolle nach jeder Aufgabe
-
-Responsiveness · Lighthouse · Accessibility · SEO · Konsistenz · Performance ·
-Animationen · Dark Mode · Mobile · Tablet · Desktop · Codequalität
-
-Die vollständige Checkliste steht in `vioweb-designrichtlinien.md`, Abschnitt 12.
+Alles Weitere, inklusive der verworfenen Muster, steht in
+`vioweb-designrichtlinien.md`.
 
 ---
 
 ## Struktur
 
 ```
-vioweb-designrichtlinien.md   Design-System, verbindlich
-CLAUDE.md                     diese Datei
-prototypes/                   eigenständige HTML-Prototypen
-  index.html                  Landingpage
+index.html · impressum.html · datenschutz.html · danke.html · 404.html
+css/seite.css        alles unterhalb der Falz
+js/formular.js       nur der Formularversand
+img/                 Zeichen und Vorschaubild
+vioweb-designrichtlinien.md   verbindlich
+README.md            offene Platzhalter und Einrichtung
 ```
+
+Der `:root`-Werteblock steht in jeder HTML-Datei. Wird ein Wert geändert,
+muss er in **allen fünf** geändert werden.
+
+---
+
+## Selbstkontrolle nach jeder Aufgabe
+
+Die vollständige Prüfliste steht in `vioweb-designrichtlinien.md`,
+Abschnitt 11. Das Wichtigste: 360/768/1280 px, null fremde Anfragen,
+Tastaturbedienung, Formular in allen drei Wegen, keine toten Verweise.
 
 ---
 

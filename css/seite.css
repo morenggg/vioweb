@@ -1,0 +1,366 @@
+/* =========================================================================
+   Vioweb — Stile unterhalb der Falz.
+
+   Wird nicht-blockierend geladen. Das kritische CSS (Werte, Basis,
+   Kopfbereich, Aufmacher) steht inline im <head> der jeweiligen Seite.
+   Die Werte aus :root gelten hier mit.
+
+   Reihenfolge:
+     1. Abschnitte und Titel
+     2. Leistungen
+     3. Was wir pruefen
+     4. Ablauf
+     5. Kontaktformular
+     6. Kontakt
+     7. Fusszeile
+     8. Textseiten (Impressum, Datenschutz, Danke, 404)
+     9. Einblenden beim Scrollen
+   ========================================================================= */
+
+/* ------------------------------------------- 1. Abschnitte und Titel */
+.abschnitt {
+  border-top: 1px solid var(--linie);
+  padding-block: 72px;
+}
+@media (min-width: 900px) { .abschnitt { padding-block: 104px; } }
+
+.abschnitt--flaeche { background: var(--grund-2); }
+
+.titel {
+  margin-top: 26px;
+  font-size: clamp(1.9rem, 1.35rem + 2.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  max-width: 18ch;
+}
+/* Ein Akzent pro Abschnitt: genau ein Wort in der Schlagzeile. */
+.titel em { font-style: normal; color: var(--akzent-hell); }
+
+/* ------------------------------------------------------ 2. Leistungen */
+.leistungen { margin-top: 48px; }
+
+/* Einspaltig, auch auf dem Desktop. Eine Nummernspalte links wuerde den
+   Titel um ihre Breite einruecken — dann saessen die Leistungen nicht mehr
+   auf derselben Kante wie alles andere. Die Nummer steht deshalb ueber
+   dem Titel. */
+.leistung {
+  padding-block: 32px;
+  border-top: 1px solid var(--linie);
+}
+.leistung:first-child { border-top: 0; padding-top: 0; }
+@media (min-width: 760px) { .leistung { padding-block: 40px; } }
+
+.leistung__nummer {
+  font-family: var(--schrift-technik);
+  font-size: .72rem;
+  letter-spacing: .22em;
+  color: var(--akzent-hell);
+  margin-bottom: 10px;
+}
+
+.leistung__inhalt h3 {
+  font-size: clamp(1.35rem, 1.1rem + .9vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.15;
+}
+.leistung__inhalt p {
+  margin-top: 12px;
+  max-width: var(--lesebreite);
+  color: var(--text-leise);
+}
+
+/* ------------------------------------------------- 3. Was wir pruefen */
+.punkte {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 32px;
+  max-width: 720px;
+}
+.punkte li {
+  position: relative;
+  padding-left: 20px;
+  font-size: .98rem;
+}
+.punkte li::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .68em;
+  width: 7px; height: 7px;
+  background: var(--akzent-voll);
+}
+.punkte__mehr {
+  margin-top: 28px;
+  color: var(--text-leise);
+  font-size: .95rem;
+}
+
+/* ---------------------------------------------------------- 4. Ablauf */
+.ablauf__text { font-size: 1.12rem; }
+
+/* ------------------------------------------------- 5. Kontaktformular */
+/* Der einzige Abschnitt, der visuell aus der Reihe tanzen darf. */
+.check {
+  border-top: 1px solid var(--linie);
+  padding-block: 72px;
+}
+@media (min-width: 900px) { .check { padding-block: 104px; } }
+
+.check__flaeche {
+  border-left: 4px solid var(--akzent-voll);
+  background: linear-gradient(100deg,
+    rgba(98, 38, 250, .07) 0%,
+    rgba(98, 38, 250, .03) 42%,
+    rgba(98, 38, 250, 0) 78%);
+  padding: 40px 24px 44px;
+}
+@media (min-width: 900px) {
+  .check__flaeche { padding: 72px 64px 76px; }
+}
+
+.formular { margin-top: 40px; max-width: 560px; }
+
+.feldgruppe { margin-bottom: 24px; }
+/* Nicht auf .haken anwenden: der Einwilligungstext ist ein ganzer Satz und
+   darf nicht in Versalien laufen. */
+.feldgruppe > label:not(.haken) {
+  display: block;
+  font-family: var(--schrift-struktur);
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: 8px;
+}
+.pflicht {
+  font-family: var(--schrift-technik);
+  font-size: .62rem;
+  letter-spacing: .18em;
+  color: var(--akzent-hell);
+  margin-left: 8px;
+}
+
+.formular input[type="url"],
+.formular input[type="email"],
+.formular input[type="text"],
+.formular textarea {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 16px;
+  background: var(--grund);
+  border: 1px solid var(--linie);
+  border-radius: 0;
+  color: var(--text);
+  transition: border-color var(--dauer) var(--verlauf);
+}
+.formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
+
+.formular input:hover, .formular textarea:hover { border-color: #3A3A46; }
+.formular input:focus-visible,
+.formular textarea:focus-visible { border-color: var(--akzent-hell); outline-offset: 1px; }
+.formular ::placeholder { color: #6B6E78; }
+
+.formular [aria-invalid="true"] { border-color: var(--schlecht); }
+
+.hinweis {
+  margin-top: 7px;
+  font-size: .82rem;
+  color: var(--text-leise);
+}
+.fehler {
+  margin-top: 7px;
+  font-size: .87rem;
+  color: #FF8A8F;          /* heller als --schlecht, damit 4,5:1 erreicht wird */
+  font-weight: 700;
+}
+.fehler:empty { display: none; }
+
+@media (min-width: 620px) {
+  .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+}
+
+/* Falle gegen automatische Eintraege. Nicht display:none — manche
+   Programme fuellen nur sichtbare Felder, und genau die sollen anbeissen. */
+.falle {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.feldgruppe--haken { margin-top: 32px; }
+.haken {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  text-transform: none;
+  letter-spacing: normal;
+  font-family: var(--schrift-schlag);
+  font-size: .95rem;
+  line-height: 1.55;
+  cursor: pointer;
+}
+.haken input {
+  width: 22px; height: 22px;
+  margin-top: 2px;
+  accent-color: var(--akzent-voll);
+  cursor: pointer;
+}
+.haken a { color: var(--akzent-hell); }
+
+.formular__senden { margin-top: 8px; }
+.formular__senden[aria-disabled="true"] { opacity: .6; cursor: progress; }
+
+.formular__ruhe {
+  margin-top: 18px;
+  font-size: .87rem;
+  color: var(--text-leise);
+  max-width: 46ch;
+}
+
+.meldung {
+  margin-top: 22px;
+  padding: 16px 18px;
+  border-left: 3px solid var(--akzent-voll);
+  background: rgba(98, 38, 250, .08);
+  font-size: .95rem;
+}
+.meldung:empty { display: none; }
+.meldung--fehler { border-left-color: #FF8A8F; background: rgba(193, 39, 45, .12); }
+.meldung--hinweis { border-left-color: var(--linie); background: var(--grund-2); }
+.meldung a { color: var(--akzent-hell); }
+
+/* --------------------------------------------------------- 6. Kontakt */
+.kontaktliste {
+  margin-top: 44px;
+  display: grid;
+  gap: 28px;
+}
+@media (min-width: 760px) {
+  .kontaktliste { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 860px; }
+}
+.kontaktliste dt {
+  font-family: var(--schrift-technik);
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+  color: var(--text-leise);
+}
+.kontaktliste dd {
+  margin: 8px 0 0;
+  font-size: 1.05rem;
+}
+.kontaktliste a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  color: var(--akzent-hell);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dauer) var(--verlauf);
+}
+.kontaktliste a:hover { border-bottom-color: var(--akzent-hell); }
+
+/* ------------------------------------------------------- 7. Fusszeile */
+.fuss {
+  border-top: 1px solid var(--linie);
+  padding-block: 36px 44px;
+}
+.fuss__inhalt {
+  display: flex; flex-wrap: wrap; gap: 16px 32px;
+  align-items: center; justify-content: space-between;
+}
+.fuss__marke {
+  font-family: var(--schrift-technik);
+  font-size: .7rem;
+  letter-spacing: .28em;
+  color: var(--text-leise);
+}
+.fuss__marken { display: flex; gap: 4px; margin-inline: -12px; }
+.fuss__marken a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding-inline: 12px;
+  font-size: .88rem;
+  color: var(--text-leise);
+  text-decoration: none;
+  transition: color var(--dauer) var(--verlauf);
+}
+.fuss__marken a:hover { color: var(--text); }
+
+/* ------------------------------------------------------ 8. Textseiten */
+.dokument { padding-block: 56px 88px; }
+@media (min-width: 900px) { .dokument { padding-block: 72px 112px; } }
+
+.dokument h1 {
+  margin-top: 26px;
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  max-width: 18ch;
+}
+.dokument h1 em { font-style: normal; color: var(--akzent-hell); }
+
+.dokument h2 {
+  margin-top: 48px;
+  font-family: var(--schrift-struktur);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.dokument h3 {
+  margin-top: 28px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.dokument p, .dokument li {
+  margin-top: 14px;
+  max-width: var(--lesebreite);
+  color: var(--text-leise);
+}
+.dokument a { color: var(--akzent-hell); }
+
+.dokument ul.liste { margin-top: 6px; }
+.dokument ul.liste li { position: relative; padding-left: 20px; }
+.dokument ul.liste li::before {
+  content: ""; position: absolute; left: 0; top: .68em;
+  width: 7px; height: 7px; background: var(--akzent-voll);
+}
+
+/* Platzhalter, die vor dem Livegang ersetzt werden muessen. */
+.luecke {
+  color: var(--text);
+  background: rgba(98, 38, 250, .16);
+  border-bottom: 1px solid var(--akzent-voll);
+  padding: 1px 5px;
+  font-family: var(--schrift-technik);
+  font-size: .86em;
+  letter-spacing: .04em;
+}
+
+.warnung {
+  margin-top: 32px;
+  padding: 18px 20px;
+  border-left: 4px solid var(--mittel);
+  background: rgba(217, 138, 0, .1);
+}
+.warnung p { margin-top: 0; color: var(--text); max-width: 58ch; }
+
+/* --------------------------------------- 9. Kein Einblenden beim Scrollen
+   Hier stand ein reines CSS-Einblenden ueber animation-timeline: view().
+   Es ist entfernt worden, und zwar aus einem harten Grund:
+
+   Ein Element, das den definierten Bereich nie durchlaeuft — weil die
+   Seite gerade nicht scrollt, weil der Besucher ueber einen Anker
+   mitten hinein springt oder weil der Bildschirm hoch genug ist —
+   bleibt auf opacity: 0 stehen. Im Test war der komplette Abschnitt
+   "Leistungen" unsichtbar.
+
+   Sichtbarkeit von Inhalt darf nie vom Zustand einer Animation
+   abhaengen. Die Richtlinien erlauben das Einblenden ausdruecklich nur
+   als "hoechstens" — also verzichten wir darauf. Die Seite lebt von
+   Typografie und Raum, nicht von Bewegung. */

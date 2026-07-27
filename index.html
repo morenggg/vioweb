@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Vioweb — Websites prüfen, verbessern und neu bauen</title>
+<meta name="description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit und sagen dir im Klartext, was zu tun ist. Der erste Check kostet nichts.">
+<link rel="canonical" href="https://vioweb.de/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#060609">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vioweb">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://vioweb.de/">
+<meta property="og:title" content="Vioweb — Websites prüfen, verbessern und neu bauen">
+<meta property="og:description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit. Der erste Check kostet nichts.">
+<meta property="og:image" content="https://vioweb.de/img/og-bild.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Vioweb — Analysieren. Optimieren. Entwickeln.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vioweb — Websites prüfen, verbessern und neu bauen">
+<meta name="twitter:description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit. Der erste Check kostet nichts.">
+<meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
+
+<link rel="icon" href="img/zeichen.svg" type="image/svg+xml">
+
+<!-- =====================================================================
+     KRITISCHES CSS — deckt alles oberhalb der Falz ab (Werte, Basis,
+     Kopfbereich, Aufmacher). Der Rest kommt nicht-blockierend aus
+     css/seite.css.
+
+     Der Werte-Block (:root) steht bewusst in jeder HTML-Datei. Ohne
+     Build-Schritt ist das die einzige Moeglichkeit, kritisches CSS
+     inline zu halten. Wird eine Farbe geaendert, muss sie in allen
+     HTML-Dateien geaendert werden — die Liste steht in der README.
+     ===================================================================== -->
+<style>
+/* ---------------------------------------------------------------- Werte */
+:root {
+  color-scheme: dark;
+
+  --grund:        #060609;
+  --grund-2:      #0B0B10;
+  --text:         #FFFFFF;
+  --text-leise:   #9EA1A9;
+  --linie:        #282830;
+  --akzent-hell:  #9B54FC;  /* Text und Akzentwoerter — 4,9:1 auf --grund */
+  --akzent-voll:  #6226FA;  /* nur Flaechen, Linien, Punkte — kein Text */
+  --schein:       #240D4E;
+
+  --gut:   #2E7D32;
+  --mittel:#D98A00;
+  --schlecht:#C1272D;
+
+  /* Systemschriften. Umstellung auf lokale Dateien: nur diese drei
+     Zeilen aendern und die @font-face-Regeln ergaenzen. */
+  --schrift-schlag:    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --schrift-struktur:  "Arial Narrow", "Helvetica Neue Condensed",
+                       "Liberation Sans Narrow", Arial, sans-serif;
+  --schrift-technik:   ui-monospace, "SF Mono", Menlo, Consolas,
+                       "Liberation Mono", monospace;
+
+  --rand: 24px;
+  --feld: 1120px;
+  --lesebreite: 52ch;
+
+  --dauer: 200ms;
+  --verlauf: cubic-bezier(.22, 1, .36, 1);
+}
+@media (min-width: 900px) { :root { --rand: 64px; } }
+
+/* ---------------------------------------------------------------- Basis */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 32px;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--grund);
+  color: var(--text);
+  font-family: var(--schrift-schlag);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+ul, ol { list-style: none; padding: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+
+:focus-visible { outline: 2px solid var(--akzent-hell); outline-offset: 3px; }
+
+.nur-vorlesen {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+.sprungmarke-inhalt {
+  position: absolute; left: var(--rand); top: 16px; z-index: 20;
+  transform: translateY(-250%);
+  background: var(--akzent-voll); color: #FFF;
+  padding: 12px 18px; text-decoration: none; font-size: .9rem;
+  transition: transform var(--dauer) var(--verlauf);
+}
+.sprungmarke-inhalt:focus { transform: translateY(0); }
+
+/* Alles sitzt auf einer festen linken Kante. Nichts wird zentriert. */
+.feld {
+  width: 100%; max-width: var(--feld);
+  margin-inline: auto; padding-inline: var(--rand);
+}
+
+/* ------------------------------------------------- wiederkehrende Teile */
+.kicker {
+  font-family: var(--schrift-technik);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .24em;
+  color: var(--text-leise);
+}
+.balken {
+  display: block; width: 68px; height: 5px;
+  background: var(--akzent-voll); margin-top: 18px;
+}
+
+.knopf {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px; padding: 14px 26px;
+  font-size: .95rem; font-weight: 700; letter-spacing: -.01em;
+  text-decoration: none; border: 1px solid transparent;
+  transition: background-color var(--dauer) var(--verlauf),
+              border-color var(--dauer) var(--verlauf),
+              color var(--dauer) var(--verlauf);
+}
+.knopf--voll { background: var(--akzent-voll); color: #FFFFFF; }
+.knopf--voll:hover { background: var(--akzent-hell); color: #060609; }
+.knopf--rand { border-color: var(--linie); color: var(--text); }
+.knopf--rand:hover { border-color: var(--akzent-hell); color: var(--akzent-hell); }
+
+/* -------------------------------------------------------- Kopfbereich */
+.kopf { padding-block: 28px 0; }
+.kopf__inhalt {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.marke { display: flex; align-items: flex-start; gap: 14px; text-decoration: none; }
+.marke__zeichen { width: 38px; height: 38px; flex: none; color: var(--akzent-hell); margin-top: 2px; }
+.marke__name {
+  display: block; font-size: 1.35rem; font-weight: 700;
+  letter-spacing: .02em; line-height: 1.1;
+}
+.marke__claim {
+  display: block; font-family: var(--schrift-struktur);
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--akzent-hell); margin-top: 3px;
+}
+@media (min-width: 460px) { .marke__claim { font-size: .78rem; } }
+
+/* Negativer Rand, damit der Text der Marken optisch auf derselben linken
+   Kante sitzt wie alles andere. */
+.sprungmarken { display: flex; gap: 4px; margin-top: 6px; margin-inline: -12px; }
+.sprungmarken a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding-inline: 12px;
+  font-family: var(--schrift-technik);
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .2em;
+  color: var(--text-leise); text-decoration: none;
+  transition: color var(--dauer) var(--verlauf);
+}
+.sprungmarken a:hover { color: var(--text); }
+
+/* ----------------------------------------------------------- Aufmacher */
+.aufmacher {
+  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+  min-height: clamp(560px, 82svh, 780px);
+  padding-block: 72px 96px;
+}
+/* Lichtschein: viele Stufen, damit keine sichtbare Kante entsteht. */
+.aufmacher__schein {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(58% 62% at 76% 44%,
+      rgba(36, 13, 78, .95) 0%,  rgba(36, 13, 78, .72) 18%,
+      rgba(36, 13, 78, .46) 34%, rgba(36, 13, 78, .26) 50%,
+      rgba(36, 13, 78, .11) 64%, rgba(36, 13, 78, .03) 80%,
+      rgba(36, 13, 78, 0) 100%);
+}
+/* Wasserzeichen: nur am rechten Rand angeschnitten. Oben und unten bleibt
+   Luft, damit die Form als W lesbar bleibt und nicht als dunkler Block. */
+.aufmacher__zeichen {
+  position: absolute; right: -11%; top: 50%; transform: translateY(-50%);
+  width: min(46vw, 460px); height: auto;
+  color: var(--akzent-hell); opacity: .11; pointer-events: none;
+}
+.aufmacher__inhalt { position: relative; }
+.aufmacher h1 {
+  font-size: clamp(2.6rem, 1.7rem + 3.9vw, 4.6rem);
+  font-weight: 700; line-height: 1.02; letter-spacing: -.03em;
+  max-width: 15ch; margin-top: 26px;
+}
+.aufmacher h1 em { font-style: normal; color: var(--akzent-hell); }
+
+.vorspann {
+  margin-top: 24px; max-width: var(--lesebreite);
+  font-size: 1.06rem; color: var(--text-leise);
+}
+.aktionen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+
+<link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="css/seite.css"></noscript>
+</head>
+
+<body>
+<a class="sprungmarke-inhalt" href="#inhalt">Zum Inhalt springen</a>
+
+<header class="kopf">
+  <div class="feld kopf__inhalt">
+    <a class="marke" href="/">
+      <svg class="marke__zeichen" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M8 12 L28 88 L50 40 L72 88 L92 12" fill="none"
+              stroke="currentColor" stroke-width="15" stroke-linejoin="miter"/>
+      </svg>
+      <span>
+        <span class="marke__name">VIOWEB</span>
+        <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
+      </span>
+    </a>
+    <nav class="sprungmarken" aria-label="Schnellzugriff">
+      <a href="#leistungen">Leistungen</a>
+      <a href="#check">Check anfragen</a>
+    </nav>
+  </div>
+</header>
+
+<main id="inhalt">
+
+  <!-- ===================================================== Aufmacher -->
+  <section class="aufmacher">
+    <div class="aufmacher__schein" aria-hidden="true"></div>
+    <img class="aufmacher__zeichen" src="img/zeichen.svg" alt=""
+         width="460" height="460" fetchpriority="low">
+
+    <div class="feld aufmacher__inhalt">
+      <p class="kicker">Website-Prüfung und Entwicklung</p>
+      <span class="balken" aria-hidden="true"></span>
+
+      <h1>Websites, die <em>überzeugen</em>.</h1>
+
+      <p class="vorspann">
+        Wir prüfen bestehende Seiten auf Tempo, Rechtssicherheit und
+        Auffindbarkeit. Wenn sich ein Neubau eher lohnt als jede Reparatur,
+        sagen wir dir das — und bauen ihn.
+      </p>
+
+      <div class="aktionen">
+        <a class="knopf knopf--voll" href="#check">Kostenlosen Check anfragen</a>
+        <a class="knopf knopf--rand" href="#leistungen">Was wir machen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== Leistungen -->
+  <section class="abschnitt" id="leistungen">
+    <div class="feld">
+      <p class="kicker">Leistungen</p>
+      <span class="balken" aria-hidden="true"></span>
+      <h2 class="titel">Drei Wege, in dieser <em>Reihenfolge</em>.</h2>
+
+      <ol class="leistungen" role="list">
+        <li class="leistung">
+          <p class="leistung__nummer" aria-hidden="true">01</p>
+          <div class="leistung__inhalt">
+            <h3>Analyse</h3>
+            <p>
+              Wir gehen deine Seite durch: Ladezeit auf dem Handy, Impressum
+              und Datenschutz, Auffindbarkeit bei Google, den Weg vom Besuch
+              zur Anfrage. Du bekommst einen Bericht in Klartext — mit einer
+              Reihenfolge, was zuerst dran ist und was warten kann.
+            </p>
+          </div>
+        </li>
+        <li class="leistung">
+          <p class="leistung__nummer" aria-hidden="true">02</p>
+          <div class="leistung__inhalt">
+            <h3>Optimierung</h3>
+            <p>
+              Die gefundenen Punkte beheben wir an deiner bestehenden Seite.
+              Kein Neubau, kein neues System, kein Umzug. Du behältst, was
+              schon läuft.
+            </p>
+          </div>
+        </li>
+        <li class="leistung">
+          <p class="leistung__nummer" aria-hidden="true">03</p>
+          <div class="leistung__inhalt">
+            <h3>Neubau</h3>
+            <p>
+              Wenn die Grundlage nicht mehr trägt, bauen wir neu. Handarbeit
+              statt Baukasten — und nur dann, wenn sich das für dich eher
+              rechnet als jede weitere Reparatur.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- =============================================== Was wir prüfen -->
+  <section class="abschnitt abschnitt--flaeche" id="pruefung">
+    <div class="feld">
+      <p class="kicker">Was wir prüfen</p>
+      <span class="balken" aria-hidden="true"></span>
+      <h2 class="titel">Zwölf Punkte, die <em>Besucher kosten</em>.</h2>
+
+      <ul class="punkte" role="list">
+        <li>Ladezeit</li>
+        <li>Bilder &amp; Video</li>
+        <li>Seitengewicht</li>
+        <li>Impressum</li>
+        <li>Datenschutz</li>
+        <li>Schriften &amp; Karten</li>
+        <li>Google-Auftritt</li>
+        <li>Tote Links</li>
+        <li>Seitentitel</li>
+        <li>Bedienung am Handy</li>
+        <li>Weg zum Kontakt</li>
+        <li>Sicherheit</li>
+      </ul>
+      <p class="punkte__mehr">… und einiges mehr.</p>
+    </div>
+  </section>
+
+  <!-- ======================================================== Ablauf -->
+  <section class="abschnitt" id="ablauf">
+    <div class="feld">
+      <p class="kicker">Ablauf</p>
+      <span class="balken" aria-hidden="true"></span>
+      <h2 class="titel">Was nach dem Absenden <em>passiert</em>.</h2>
+      <p class="vorspann ablauf__text">
+        Du schickst uns die Adresse deiner Website. Wir schauen sie uns an und
+        melden uns mit dem, was uns auffällt. Was daraus wird, entscheidest
+        du — wir rufen nicht hinterher.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================================================ Kontaktformular -->
+  <section class="check" id="check">
+    <div class="feld">
+      <div class="check__flaeche">
+        <p class="kicker">Kostenloser Erstcheck</p>
+        <span class="balken" aria-hidden="true"></span>
+        <h2 class="titel">Der erste Check <em>kostet nichts</em>.</h2>
+        <p class="vorspann">
+          Trag die Adresse deiner Website ein. Alles Weitere ist freiwillig.
+        </p>
+
+        <!-- ===============================================================
+             VERSAND — vor dem Livegang einzurichten:
+
+             1. Beim Formulardienst ein Formular anlegen und den Endpunkt
+                in BEIDE Stellen eintragen: action="…" und data-endpunkt="…"
+             2. Das versteckte Feld _redirect auf die volle Adresse von
+                danke.html setzen (nur fuer den Fall ohne JavaScript).
+             3. Auftragsverarbeitungsvertrag abschliessen und den Dienst in
+                datenschutz.html namentlich eintragen.
+
+             Solange kein Endpunkt hinterlegt ist, faellt das Formular
+             automatisch auf eine vorbefuellte E-Mail zurueck. Es ist in
+             keinem Zustand tot.
+             =============================================================== -->
+        <form class="formular" id="check-formular" novalidate
+              method="post" enctype="text/plain"
+              action="mailto:kontakt@vioweb.de?subject=Kostenloser%20Check"
+              data-endpunkt=""
+              data-mail="kontakt@vioweb.de">
+
+          <input type="hidden" name="_redirect" value="https://vioweb.de/danke.html">
+
+          <div class="feldgruppe">
+            <label for="adresse">Adresse deiner Website <span class="pflicht">Pflichtfeld</span></label>
+            <input id="adresse" name="adresse" type="url" inputmode="url"
+                   autocomplete="url" spellcheck="false" placeholder="beispiel.de"
+                   required aria-describedby="adresse-hinweis adresse-fehler">
+            <p class="hinweis" id="adresse-hinweis">Das https:// davor ergänzen wir automatisch.</p>
+            <p class="fehler" id="adresse-fehler"></p>
+          </div>
+
+          <div class="feldgruppe">
+            <label for="mail">E-Mail <span class="pflicht">Pflichtfeld</span></label>
+            <input id="mail" name="mail" type="email" inputmode="email"
+                   autocomplete="email" spellcheck="false" placeholder="name@beispiel.de"
+                   required aria-describedby="mail-fehler">
+            <p class="fehler" id="mail-fehler"></p>
+          </div>
+
+          <div class="feldpaar">
+            <div class="feldgruppe">
+              <label for="name">Ansprechpartner</label>
+              <input id="name" name="name" type="text" autocomplete="name">
+            </div>
+            <div class="feldgruppe">
+              <label for="betrieb">Betrieb</label>
+              <input id="betrieb" name="betrieb" type="text" autocomplete="organization">
+            </div>
+          </div>
+
+          <div class="feldgruppe">
+            <label for="nachricht">Nachricht</label>
+            <textarea id="nachricht" name="nachricht" rows="4"
+                      placeholder="Gibt es etwas, das dich besonders stört?"></textarea>
+          </div>
+
+          <!-- Falle gegen automatische Eintraege. Menschen sehen das Feld
+               nicht, Maschinen fuellen es aus. Kein Captcha von Dritten. -->
+          <div class="falle" aria-hidden="true">
+            <label for="ort-zusatz">Diesen Punkt bitte frei lassen</label>
+            <input id="ort-zusatz" name="ort_zusatz" type="text"
+                   tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="feldgruppe feldgruppe--haken">
+            <label class="haken" for="einwilligung">
+              <input id="einwilligung" name="einwilligung" type="checkbox"
+                     required aria-describedby="einwilligung-fehler">
+              <span>
+                Ich bin einverstanden, dass meine Angaben zur Bearbeitung
+                dieser Anfrage gespeichert werden.
+                <a href="datenschutz.html">Zur Datenschutzerklärung</a>
+              </span>
+            </label>
+            <p class="fehler" id="einwilligung-fehler"></p>
+          </div>
+
+          <button class="knopf knopf--voll formular__senden" type="submit">
+            Domain schicken
+          </button>
+
+          <p class="formular__ruhe">
+            Erster Check, unverbindlich. Mehr als die Adresse brauchen wir nicht.
+          </p>
+
+          <p class="meldung" id="formular-meldung" role="status"></p>
+
+          <noscript>
+            <p class="meldung meldung--hinweis">
+              Ohne JavaScript öffnet der Knopf dein E-Mail-Programm mit den
+              eingetragenen Angaben. Du kannst uns auch direkt schreiben:
+              <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+            </p>
+          </noscript>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= Kontakt -->
+  <section class="abschnitt" id="kontakt">
+    <div class="feld">
+      <p class="kicker">Kontakt</p>
+      <span class="balken" aria-hidden="true"></span>
+      <h2 class="titel">Lieber direkt <em>schreiben</em>?</h2>
+
+      <dl class="kontaktliste">
+        <div>
+          <dt>E-Mail</dt>
+          <dd><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></dd>
+        </div>
+        <div>
+          <dt>Instagram</dt>
+          <dd><a href="https://www.instagram.com/vio.web/" rel="noopener">@vio.web</a></dd>
+        </div>
+        <div>
+          <dt>Einzugsgebiet</dt>
+          <dd>Deutschlandweit, ansässig in Torgau</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer class="fuss">
+  <div class="feld fuss__inhalt">
+    <p class="fuss__marke">VIOWEB</p>
+    <nav class="fuss__marken" aria-label="Rechtliches">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+    </nav>
+  </div>
+</footer>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": "https://vioweb.de/#betrieb",
+  "name": "Vioweb",
+  "url": "https://vioweb.de/",
+  "email": "kontakt@vioweb.de",
+  "description": "Prüfung, Optimierung und Neubau von Websites für kleine und mittlere Betriebe.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "[STRASSE UND HAUSNUMMER EINTRAGEN]",
+    "postalCode": "[POSTLEITZAHL EINTRAGEN]",
+    "addressLocality": "Torgau",
+    "addressCountry": "DE"
+  },
+  "areaServed": { "@type": "Country", "name": "Deutschland" },
+  "sameAs": ["https://www.instagram.com/vio.web/"]
+}
+</script>
+
+<script src="js/formular.js" defer></script>
+</body>
+</html>

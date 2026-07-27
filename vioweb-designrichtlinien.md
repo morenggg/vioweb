@@ -1,304 +1,247 @@
 # Vioweb — Designrichtlinien
 
-> Verbindliche Grundlage für jede Design- und Frontend-Entscheidung.
-> Diese Datei wird **vor** jeder Designentscheidung gelesen. Änderungen daran sind
-> Änderungen an der Marke — sie werden begründet, nicht nebenbei gemacht.
+> Verbindliche Grundlage für jede Gestaltungsentscheidung.
+> Die Werte stammen aus dem bestehenden Erscheinungsbild (Instagram,
+> PDF-Berichte, Facebook) und sind kein Vorschlag.
 
-Version 1.0 · Stand: Erstdefinition
+Version 2.0 · löst die erste Fassung vollständig ab
 
 ---
 
 ## 1. Haltung
 
-Vioweb verkauft keine Webseiten. Vioweb löst Probleme.
+Die Seite hat genau eine Aufgabe: Der Besucher trägt seine Website-Adresse
+in das Kontaktformular ein und fragt den kostenlosen Kurz-Check an. Alles
+andere zahlt darauf ein oder fliegt raus.
 
-Das Design ist die erste Demonstration dieser Kompetenz. Eine Seite, die selbst
-langsam, laut oder unzugänglich ist, widerlegt jedes Versprechen auf ihr.
-
-**Wirkung:** ruhig · kompetent · technisch · modern · minimalistisch · hochwertig
-**Nie:** laut · bunt · überladen · verkäuferisch
-
-**Grundregel:** Lieber weniger Elemente in höchster Qualität als viele
-durchschnittliche. Im Zweifel: weglassen.
+Der Betreiber prüft fremde Websites gegen genau die Punkte, die auf dieser
+Seite selbst gelten. Eine Seite, die langsam ist, fremde Server anfragt oder
+sich nicht mit der Tastatur bedienen lässt, widerlegt jedes Versprechen auf
+ihr. Das ist hier keine Ästhetikfrage, sondern eine Glaubwürdigkeitsfrage.
 
 ---
 
-## 2. Entscheidungshierarchie
+## 2. Zielgruppe und Sprache
 
-Wenn Anforderungen kollidieren, gilt diese Reihenfolge:
+Kleine und mittlere Betriebe in Deutschland: Handwerk, Dienstleister,
+Vereine, Praxen. **Keine Entwickler.**
 
-1. **Zugänglichkeit** — nicht verhandelbar
-2. **Performance** — nicht verhandelbar
-3. **Klarheit** — versteht der Nutzer, was hier passiert?
-4. **Ästhetik** — wirkt es hochwertig?
-5. **Neuheit** — ist es originell?
+- **Du**, nicht Sie. **Wir**, nicht ich. Durchgehend.
+- Kurze Hauptsätze, ein Gedanke pro Satz.
+- Kein Fachjargon. Keine englischen Begriffe, wo es deutsche gibt.
+- Konkret statt allgemein: „Drei Sekunden Ladezeit" statt „schlechte Performance".
+- Folgen benennen, nicht Methoden: „Ob dich findet, wer dich sucht" statt
+  „Meta-Tags und strukturierte Daten".
+- **Keine erfundenen Zahlen.** Steht eine Zahl auf der Seite, muss sie
+  belegbar sein. Fehlt eine Angabe, kommt ein sichtbar markierter
+  Platzhalter hin — nichts Erfundenes.
 
-Punkt 5 gewinnt nie gegen 1–4.
+Feste Formulierungen:
+
+> Analysieren. Optimieren. Entwickeln.
+> Der erste Check kostet nichts.
 
 ---
 
 ## 3. Farben
 
-Träger des Designs sind Schwarz, Weiß und Fläche. Lila ist ein **Akzent**,
-kein Grundton.
+Dunkles Erscheinungsbild. Lila ist die einzige Akzentfarbe.
 
-### Token
+| Zweck | Hex | Variable |
+|---|---|---|
+| Hintergrund | `#060609` | `--grund` |
+| Hintergrund, zweite Ebene | `#0B0B10` | `--grund-2` |
+| Text hell | `#FFFFFF` | `--text` |
+| Text gedämpft | `#9EA1A9` | `--text-leise` |
+| Linien | `#282830` | `--linie` |
+| Akzent hell | `#9B54FC` | `--akzent-hell` |
+| Akzent kräftig | `#6226FA` | `--akzent-voll` |
+| Lichtschein | `#240D4E` | `--schein` |
 
-| Token | Light | Dark | Zweck |
-|---|---|---|---|
-| `--c-bg` | `#FFFFFF` | `#0B0B0C` | Seitenhintergrund |
-| `--c-surface` | `#FAFAFA` | `#151517` | Karten, erhöhte Flächen |
-| `--c-surface-2` | `#F2F2F3` | `#1D1D20` | Verschachtelte Flächen |
-| `--c-text` | `#0B0B0C` | `#F5F5F6` | Primärtext |
-| `--c-text-muted` | `#5A5A61` | `#A1A1AA` | Sekundärtext |
-| `--c-border` | `#E4E4E7` | `#27272A` | Trennlinien, Rahmen |
-| `--c-accent` | `#6D3BF5` | `#A78CFF` | Vioweb Lila |
-| `--c-accent-contrast` | `#FFFFFF` | `#0B0B0C` | Text auf Akzentfläche |
+Ampelfarben nur, wenn tatsächlich eine Bewertung dargestellt wird:
+`#2E7D32` grün · `#D98A00` gelb · `#C1272D` rot. Sonst keine weiteren Farben.
 
-Statusfarben (nur in Analyse-/Datenkontext, nie dekorativ):
-`--c-good #15803D` / `#4ADE80` · `--c-warn #B45309` / `#FBBF24` · `--c-bad #B91C1C` / `#F87171`
+### Die beiden Lila sind nicht austauschbar
 
-**Score-Bänder** (verbindlich für alle Messwert-Visualisierungen):
-`0–59` kritisch · `60–89` verbesserungswürdig · `90–100` gut.
-Messwerte werden nach diesen Bändern eingefärbt, **nicht** in Markenlila — ein
-Wert von 54 darf nicht aussehen wie einer von 92. Die Zahl bleibt der
-Informationsträger, die Farbe verstärkt sie nur.
+Gemessen gegen `#060609`:
 
-### Kontrast (geprüft)
+| Farbe | Kontrast | Erlaubt für |
+|---|---|---|
+| `#FFFFFF` | 19,4:1 | alles |
+| `#9EA1A9` | 7,8:1 | Fließtext |
+| `#9B54FC` | 4,9:1 | **Text**, Akzentwörter, Verweise |
+| `#6226FA` | **3,1:1** | **nur Flächen**, Balken, Punkte, Rahmen |
+| Weiß auf `#6226FA` | 6,6:1 | Schaltflächen |
 
-- `#6D3BF5` auf Weiß → **5,85:1** ✓ (AA Fließtext)
-- `#A78CFF` auf `#0B0B0C` → **7,3:1** ✓ (AAA Fließtext)
-- Weiß auf `#6D3BF5` → **5,85:1** ✓ (Primär-Button)
-- `--c-text-muted` erfüllt in beiden Modi ≥ 4,5:1
+`#6226FA` erreicht als Textfarbe die geforderten 4,5:1 nicht und wird
+deshalb **nie** für Text verwendet — auch nicht für kleine Beschriftungen.
+Umgekehrt bleibt `#6226FA` die Farbe des Balkens, der Aufzählungspunkte und
+der vollflächigen Schaltfläche.
 
-Jede neue Farbkombination wird vor Einsatz gegen 4,5:1 (Text) bzw. 3:1
-(UI-Komponenten, Fokusringe) geprüft.
+Fehlermeldungen im Formular laufen auf `#FF8A8F` statt `#C1272D`: Rot auf
+Schwarz erreicht sonst die 4,5:1 nicht.
 
-### Einsatzregeln für Lila
+### Ein Akzent pro Abschnitt
 
-- Maximal **ein** dominanter Lila-Akzent pro Viewport-Höhe
-- Erlaubt: Primär-CTA, Fokusring, aktiver Zustand, ein einzelnes Hervorhebungswort
-- Verboten: großflächige Verläufe, farbige Sektionshintergründe, Deko-Blobs,
-  eingefärbte Icon-Sets, Lila als Fließtextfarbe über mehr als drei Wörter
-- Farbe darf **nie** alleiniger Informationsträger sein (Status immer zusätzlich
-  über Text oder Form)
+Meist ein einzelnes Wort in der Schlagzeile. Nie zwei lila Hervorhebungen
+in derselben Überschrift, nie eine ganze Zeile in Lila.
 
 ---
 
-## 4. Typografie
+## 4. Schrift
 
-Typografie trägt das Design — nicht Farben, nicht Icons, nicht Animationen.
+Systemschriften. Keine geladenen Schriftdateien, keine Schriften von fremden
+Servern. Drei Rollen, klar getrennt:
 
-### Schrift
-
-System-Font-Stack. Keine Webfonts.
-
-```
-system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif
-```
-
-**Begründung:** null Netzwerk-Requests, kein FOUT/CLS, native Rendering-Qualität
-auf jeder Plattform. Ein Webfont müsste einen messbaren Markenvorteil belegen,
-der die LCP-Kosten rechtfertigt — bis dahin gilt der System-Stack.
-
-Monospace (nur Code/Messwerte): `ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`
-
-### Skala (fluid, mobile-first)
-
-| Token | clamp() | Einsatz |
+| Rolle | Stack | Einsatz |
 |---|---|---|
-| `--fs-display` | `clamp(2.25rem, 1.5rem + 3.6vw, 4rem)` | Hero-H1, einmal pro Seite |
-| `--fs-h2` | `clamp(1.75rem, 1.3rem + 2vw, 2.75rem)` | Sektionstitel |
-| `--fs-h3` | `clamp(1.125rem, 1rem + 0.6vw, 1.375rem)` | Kartentitel |
-| `--fs-lead` | `clamp(1.0625rem, 1rem + 0.5vw, 1.25rem)` | Vorspann |
-| `--fs-body` | `1rem` | Fließtext |
-| `--fs-sm` | `0.875rem` | Meta, Labels |
-| `--fs-xs` | `0.75rem` | Eyebrow, Footnote |
+| Schlagzeile | `"Helvetica Neue", Helvetica, Arial, sans-serif` | H1, H2, H3, Fließtext |
+| Struktur | `"Arial Narrow", "Helvetica Neue Condensed", "Liberation Sans Narrow", Arial` | Versal-Beschriftungen, Formularlabels, Claim |
+| Technik | `ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono"` | Kicker, Nummern, technische Angaben |
+
+**Bekannte Grenze:** Die schmale Grotesk existiert nicht auf jedem System.
+Android und manche Linux-Systeme fallen auf normal breite Schrift zurück.
+Das ist bewusst in Kauf genommen — der Preis einer geladenen Schriftdatei
+wäre höher als der Gewinn. Alle Layouts müssen deshalb auch dann tragen,
+wenn die Struktur-Schrift normal breit rendert.
 
 ### Regeln
 
-- Zeilenhöhe: Headlines `1.08–1.15`, Fließtext `1.6`
-- Letter-Spacing: nur bei großen Headlines negativ (`-0.02em` bis `-0.03em`);
-  Eyebrows/Labels in Versalien `+0.08em`
-- Zeilenlänge maximal **68 Zeichen** (`max-width: 62ch` bei Fließtext)
-- Gewichte: 400 (Fließtext), 500 (Labels/UI), 600 (Headlines). Kein 700+, kein 300
-- Niemals Text in Versalien über mehr als ~24 Zeichen
-- `text-wrap: balance` für Headlines, `pretty` für Fließtext
-- Niemals Schriftgröße unter 12 px, niemals `user-scalable=no`
+- Schlagzeilen: fett (700), Laufweite `-0.02em` bis `-0.03em`, Zeilenhöhe 1.02–1.06
+- Versalien bekommen **immer** zusätzliche Laufweite:
+  Struktur `+0.1em`, Technik `+0.2em` bis `+0.28em`
+- Fließtext höchstens **52 Zeichen** pro Zeile (`max-width: 52ch`)
+- Zeilenhöhe Fließtext 1.65
+- Nie Versalien über lange Textstrecken
 
 ---
 
-## 5. Raum & Layout
+## 5. Layout
 
-### Spacing-Skala (Basis 4 px)
+- **Alles linksbündig auf einer festen Kante. Nichts wird zentriert.**
+  Das gilt auch für Innenpolster von Klickflächen: Sie dürfen die Kante
+  nicht verschieben, notfalls über negative Außenabstände ausgleichen.
+- Seitenrand: 24 px auf dem Handy, 64 px ab 900 px Breite
+- Inhaltsbreite höchstens 1120 px
+- **Rechts bleibt bewusst Luft.** Text füllt die Fläche nie ganz aus
+- Wiederkehrend: der Balken **68 × 5 px** in `#6226FA` unter der Kicker-Zeile,
+  in jedem Abschnitt
+- Abstände zwischen Abschnitten: 72 px mobil, 104 px ab 900 px
+- Abschnitte werden durch Haarlinien in `#282830` getrennt, nicht durch Flächen
 
-`--s-1: 4px` · `--s-2: 8px` · `--s-3: 12px` · `--s-4: 16px` · `--s-5: 24px` ·
-`--s-6: 32px` · `--s-7: 48px` · `--s-8: 64px` · `--s-9: 96px` · `--s-10: 128px`
+### Signaturelement
 
-Werte außerhalb der Skala sind nicht zulässig.
+Das Firmenzeichen liegt groß mit **11 % Deckkraft** als Wasserzeichen im
+Hintergrund des Aufmachers, dahinter ein weicher radialer Lichtschein in
+`#240D4E`.
 
-### Container & Raster
+Zwei harte Bedingungen:
 
-- Content-Container: `max-width: 1200px`, Innenabstand `--s-5` mobil / `--s-7` ab 768 px
-- Schmaler Textcontainer: `max-width: 720px`
-- Raster: CSS Grid, `repeat(auto-fit, minmax(…, 1fr))` statt Breakpoint-Ketten
-- Vertikaler Sektionsrhythmus: `--s-9` mobil, `--s-10` ab 768 px
-
-### Breakpoints (mobile-first, nur `min-width`)
-
-`480px` (große Phones) · `768px` (Tablet) · `1024px` (Desktop) · `1280px` (groß)
-
-Entwickelt wird zuerst für 360 px Breite. Desktop ist die Erweiterung, nie der
-Ausgangspunkt.
-
-### Radien & Tiefe
-
-- Radien: `--r-sm 8px` · `--r-md 12px` · `--r-lg 16px` · `--r-xl 24px` · `--r-full 999px`
-- Tiefe entsteht primär über **Rahmen und Flächenwechsel**, nicht über Schatten
-- Höchstens zwei Schattenstufen; im Dark Mode Schatten reduzieren und Kontur
-  über `--c-border` führen
+1. **Nur am rechten Rand angeschnitten.** Wird das Zeichen an zwei Rändern
+   gleichzeitig beschnitten, wirkt es als dunkler Block statt als Form.
+   Umgesetzt über `right: -11%`, vertikal zentriert, Breite
+   `min(46vw, 460px)` gegen eine Mindesthöhe von 560 px.
+2. **Der Schein hat keine sichtbare Kante.** Der Verlauf läuft über sieben
+   Stufen bis auf null aus. Weniger Stufen erzeugen einen sichtbaren Ring.
 
 ---
 
-## 6. Motion
+## 6. Bewegung
 
-Animation erklärt Zustandswechsel. Sie unterhält nicht.
+Höchstens ein dezentes Einblenden beim Scrollen. Nichts, was hüpft oder
+blinkt. Dauer 150–300 ms.
 
-| Token | Wert | Einsatz |
-|---|---|---|
-| `--t-fast` | `150ms` | Hover, Fokus, kleine Farbwechsel |
-| `--t-base` | `220ms` | Ein-/Ausblenden, Transformationen |
-| `--t-slow` | `300ms` | Panels, Overlays, Scroll-Reveals |
-| `--t-data` | `600ms` | **Ausnahme:** einmalige Daten-/Fortschrittsanimationen |
-| `--ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | Standard |
+Umgesetzt rein in CSS über `animation-timeline: view()`, ohne JavaScript.
+Browser ohne Unterstützung zeigen den Inhalt sofort — es darf keinen
+Zustand geben, in dem etwas unsichtbar hängen bleibt.
 
-**Zur Ausnahme `--t-data`:** Die Marken-Vorgabe lautet 150–300 ms. Für
-UI-Transitions gilt sie ohne Einschränkung. Ein Score-Ring oder Messwert, der in
-200 ms durchläuft, liest sich jedoch als Rendering-Sprung statt als Messung —
-die Animation trägt hier Bedeutung („es wird gemessen"). Deshalb genau eine
-dokumentierte Ausnahme bis 600 ms, ausschließlich für einmalige
-Datenvisualisierung, nie für Navigation oder Interface-Zustände.
-
-### Regeln
-
-- Nur `transform` und `opacity` animieren. Niemals `width`, `height`, `top`, `left`
-- Keine Endlos-Animationen, keine Parallax-Effekte, keine Auto-Play-Karussells
-- Kein Layout-Shift durch Animation (CLS = 0)
-- `prefers-reduced-motion: reduce` schaltet **alle** Bewegung ab; Inhalte bleiben
-  sofort sichtbar und vollständig
-- Scroll-Reveals: nur einmal, nur leichte Bewegung (≤ 12 px), niemals als
-  Voraussetzung für Sichtbarkeit ohne JS
+`prefers-reduced-motion: reduce` schaltet alle Bewegung ab.
 
 ---
 
-## 7. Zugänglichkeit (Zielwert 100)
+## 7. Was ausdrücklich nicht vorkommt
 
-Nicht verhandelbar:
+Diese Muster sind verworfen und dürfen nicht wieder auftauchen:
 
-- Semantisches HTML zuerst. ARIA nur, wenn kein natives Element existiert
-- Genau eine `<h1>` pro Seite; Überschriftenebenen ohne Sprünge
-- Skip-Link als erstes fokussierbares Element
-- Sichtbarer Fokus: `:focus-visible` mit 2 px Akzentring + 2 px Offset, ≥ 3:1
-- Alle Interaktionsflächen ≥ 44 × 44 px — auch Navigations- und Footer-Links.
-  WCAG 2.5.8 (AA) verlangt nur 24 × 24 px; 44 px ist bewusst die strengere
-  Hausregel, weil die Zielgruppe die Seite überwiegend mobil aufruft. Erreicht
-  wird das über `min-height` und Padding, nicht über größere Schrift
-- Jedes Formularfeld hat ein `<label>` (visuell versteckt ist erlaubt, `placeholder` als Label nicht)
-- Fehler werden in Text benannt, mit `aria-describedby` verknüpft, nicht nur eingefärbt
-- Dynamische Ergebnisse in `aria-live="polite"` ankündigen
-- Bedienbarkeit vollständig per Tastatur; Overlays: Esc schließt, Fokus wird
-  gefangen und beim Schließen zurückgegeben
-- Bilder: aussagekräftiges `alt`, dekorative Grafiken `aria-hidden="true"`
-- `lang="de"` gesetzt; Kontrast in **beiden** Farbmodi geprüft
+- Reihen aus drei oder vier gleich großen Symbolen mit Beschriftung darunter
+- Zentrierte Sperrsatz-Zeilen als Zierde
+- Farbverläufe über die gesamte Fläche
+- Mehrere Akzentfarben
+- Nummerierte Schrittfolgen `01 / 02 / 03`, **außer** wenn wirklich eine
+  Reihenfolge gemeint ist (bei den drei Leistungen ist sie es)
+- Kurze Fragmentsätze in Serie („Schnell. Sicher. Sichtbar.")
+- Aufgeblasene Werbesprache
+- Cookie-Banner
 
 ---
 
-## 8. Performance (Zielwert 100)
+## 8. Technische Grenzen
 
-- **Budget:** ≤ 100 KB CSS+JS (komprimiert) für die Landingpage; LCP < 1,8 s,
-  INP < 200 ms, CLS < 0,05
-- Kein Framework, keine Library ohne belegten Bedarf. Jede Abhängigkeit wird
-  begründet
-- Keine externen Requests im kritischen Pfad: keine CDN-Fonts, keine
-  Third-Party-Widgets, keine Icon-Bibliotheken (Icons als Inline-SVG)
-- Bilder: AVIF/WebP mit Fallback, `width`/`height` immer gesetzt,
-  `loading="lazy"` + `decoding="async"` unterhalb des Folds; LCP-Bild niemals lazy
-- JavaScript ist Progressive Enhancement. Ohne JS bleiben Inhalt und Navigation
-  vollständig nutzbar
-- `content-visibility: auto` für weit unten liegende Sektionen
+- **Statisch auf GitHub Pages.** Kein Server, keine Datenbank, kein Build.
+- HTML, CSS und JavaScript von Hand. Kein Framework, kein npm.
+- **Keine externen Ressourcen.** Beim Aufruf darf die Seite keine einzige
+  Anfrage an einen fremden Server senden. Das ist die Kernaussage der
+  Marke und nicht verhandelbar.
+- Kritisches CSS inline im `<head>`, der Rest nicht-blockierend nachgeladen
+- JavaScript ausschließlich für den Formularversand. Alles andere
+  funktioniert ohne
+- Gesamtgröße unter 500 KB, sichtbarer Inhalt unter 1,5 s bei gedrosseltem
+  Mobilfunk
+- Bilder mit `width` und `height` im Markup, `loading="lazy"` außer im
+  Aufmacher, als WebP oder AVIF
+- Kein Layoutsprung beim Laden
 
----
-
-## 9. SEO (Zielwert 100)
-
-Jede Seite liefert verpflichtend:
-
-- `<title>` ≤ 60 Zeichen, `<meta name="description">` 120–160 Zeichen
-- `<link rel="canonical">` absolut
-- OpenGraph: `og:type`, `og:title`, `og:description`, `og:url`, `og:image`
-  (1200 × 630), `og:locale=de_DE`, `og:site_name`
-- Twitter: `summary_large_image`
-- `robots` (Standard `index,follow`)
-- JSON-LD Schema.org, passend zum Seitentyp und **deckungsgleich mit dem
-  sichtbaren Inhalt**
-- Genau eine `<h1>`, sinnvolle Überschriftenstruktur
-- Sprechende URLs in Kleinbuchstaben mit Bindestrich
-- `sitemap.xml` und `robots.txt` gepflegt
+**Bewusste Doppelung:** Der `:root`-Werteblock steht in jeder HTML-Datei.
+Ohne Build-Schritt ist das die einzige Möglichkeit, kritisches CSS inline zu
+halten. Wird ein Wert geändert, muss er in allen HTML-Dateien geändert
+werden — die Liste steht in der README.
 
 ---
 
-## 10. Komponentenregeln
+## 9. Zugänglichkeit
 
-- **Erst suchen, dann bauen.** Existiert eine Komponente, wird sie erweitert,
-  nicht dupliziert
-- Jede Komponente: modular, wiederverwendbar, dokumentiert, ohne Wissen über
-  ihren Einsatzort
-- Styling ausschließlich über Token. Keine Hex-Werte, keine Magic Numbers im
-  Komponenten-CSS
-- Zustände immer vollständig definieren: default, hover, focus-visible, active,
-  disabled, loading, error, empty
-
-### Button
-
-| Variante | Einsatz | Regel |
-|---|---|---|
-| Primär | Hauptaktion | Lila-Fläche, **max. eine** pro Bildschirmbereich |
-| Sekundär | Nebenaktion | Rahmen, transparente Fläche |
-| Ghost | tertiär, Navigation | nur Text |
-
-Höhe ≥ 44 px, Radius `--r-full` oder `--r-md` (konsistent pro Projekt),
-Label als Verb + Objekt („Analyse starten"), niemals „Hier klicken".
-
-### Karte
-
-Fläche `--c-surface`, 1 px `--c-border`, Radius `--r-lg`, Padding `--s-5`/`--s-6`.
-Hover nur, wenn die Karte tatsächlich klickbar ist — dann Bewegung ≤ 2 px.
-
-### Formular
-
-Label sichtbar oder korrekt versteckt, Feldhöhe ≥ 48 px, Fehler unterhalb des
-Feldes in Text, `inputmode`/`autocomplete` gesetzt, Ergebnis per Live-Region.
+- Kontrast mindestens 4,5:1 für Fließtext, 3:1 für Bedienelemente
+- Sichtbarer Fokusrahmen: 2 px `#9B54FC`, 3 px Abstand
+- Sinnvolle Überschriftenhierarchie, genau eine `<h1>` pro Seite
+- Jedes Formularfeld hat ein `<label>`. Platzhalter ersetzen kein Label
+- Bedienbarkeit vollständig per Tastatur
+- Klickflächen mindestens 44 × 44 px. **Ausnahme:** Verweise, die mitten in
+  einem Satz stehen (etwa „Zur Datenschutzerklärung" im Einwilligungstext
+  oder eine E-Mail-Adresse im Fließtext). WCAG 2.5.8 nimmt diese
+  ausdrücklich aus, und eine erzwungene Höhe würde den Zeilenfall
+  zerreißen. Alles, was allein steht — Schaltflächen, Navigation, Fußzeile,
+  Listenverweise — hält die 44 px ein
+- Fehlermeldungen stehen **neben dem betroffenen Feld**, nicht gesammelt
+  oben. Kein „Ungültige Eingabe" — stattdessen sagen, was fehlt
 
 ---
 
-## 11. Inhalt & Tonalität
+## 10. Suchmaschinen
 
-- Sachlich, konkret, in der Sie-Form. Nutzen vor Feature
-- Keine Superlative ohne Beleg, keine erfundenen Zahlen, keine Fake-Testimonials,
-  keine künstliche Dringlichkeit
-- Demo- und Beispieldaten werden **sichtbar** als solche gekennzeichnet
-- Kurze Sätze. Fachbegriffe nur, wenn sie erklärt werden
+Je Seite eigener Titel und eigene Beschreibung. Open Graph, Twitter Card,
+kanonische Adresse, `robots.txt`, `sitemap.xml`. JSON-LD vom Typ
+`ProfessionalService` mit Anschrift.
+
+**Keine Ortsangabe in Titeln.** Die Leistung ist ortsunabhängig; Torgau
+steht nur dort, wo eine Anschrift rechtlich oder strukturell nötig ist
+(Impressum, Datenschutz, JSON-LD, Fußzeile).
+
+Keine toten Verweise. Kein `href="javascript:void(0)"`. Was noch nicht
+existiert, kommt nicht ins Menü.
 
 ---
 
-## 12. Selbstkontrolle vor jedem Abschluss
+## 11. Prüfliste vor jedem Abschluss
 
-- [ ] 360 px / 768 px / 1280 px geprüft
-- [ ] Light **und** Dark Mode geprüft
+- [ ] 360 px, 768 px und 1280 px ohne horizontalen Überlauf
+- [ ] Nichts zentriert, alles auf der linken Kante
+- [ ] Ein Akzent pro Abschnitt, `#6226FA` nirgends als Textfarbe
+- [ ] Wasserzeichen nur rechts angeschnitten, Schein ohne Kante
+- [ ] **Null Anfragen an fremde Server**
+- [ ] Kontraste beider Lila geprüft
 - [ ] Vollständige Tastaturbedienung, Fokus jederzeit sichtbar
-- [ ] Kontraste in beiden Modi ≥ 4,5:1 (Text) / 3:1 (UI)
-- [ ] `prefers-reduced-motion` schaltet alle Bewegung ab
-- [ ] Ohne JavaScript nutzbar
-- [ ] Kein Layout-Shift, keine externen Requests
-- [ ] Meta, OG, Canonical, JSON-LD vorhanden und inhaltlich deckungsgleich
-- [ ] Nur Token-Werte, keine Duplikate, keine toten Regeln
+- [ ] Formular in allen drei Wegen bedienbar (Endpunkt, E-Mail, ohne JS)
+- [ ] Fehlermeldungen in Klartext neben dem Feld
+- [ ] `prefers-reduced-motion` blendet nichts aus
+- [ ] Keine toten Verweise, keine erfundenen Zahlen
+- [ ] Alle Platzhalter in der README verzeichnet
