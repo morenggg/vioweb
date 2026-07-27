@@ -109,7 +109,12 @@
 
   --rand: 20px;
   --feld: 1200px;
-  --lesebreite: 62ch;
+  /* ch ist die Breite der Null und damit breiter als ein
+     Durchschnittsbuchstabe. 62ch ergaben gemessen 82 Zeichen je Zeile,
+     nicht 62. 46ch trifft die Vorgabe aus den Richtlinien. Der Wert
+     gilt fuer Fliesstext in Grundgroesse; groessere Schriften brauchen
+     einen eigenen Wert, siehe .vorspann und .auf__satz. */
+  --lesebreite: 46ch;
   --rail: 164px;
   --gasse: 64px;
   --kopfhoehe: 66px;
@@ -213,7 +218,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   color: var(--akzent); font-weight: 500;
 }
 .vorspann {
-  margin-top: var(--s-md); max-width: 52ch;
+  margin-top: var(--s-md); max-width: 47ch;   /* gemessen 62 Zeichen */
   font-size: clamp(1.05rem, 1rem + .35vw, 1.2rem);
   line-height: 1.6; color: var(--text-leise);
 }
@@ -414,7 +419,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 }
 .auf h1 em { font-style: normal; color: var(--akzent); }
 .auf__satz {
-  margin-top: var(--s-lg); max-width: 56ch;
+  margin-top: var(--s-lg); max-width: 53ch;   /* gemessen 62 Zeichen */
   font-size: clamp(1.05rem, 1rem + .45vw, 1.25rem);
   line-height: 1.6; color: var(--text-leise);
   text-wrap: pretty;   /* verhindert ein einzelnes Wort in der letzten Zeile */
@@ -422,6 +427,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 .auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-sm); margin-top: var(--s-xl); }
 .auf__hinweis {
   margin-top: var(--s-md); font-size: .85rem; color: var(--text-leise);
+  max-width: 47ch;   /* hatte gar keine Begrenzung: 85 Zeichen je Zeile */
 }
 
 @media (prefers-reduced-motion: reduce) {

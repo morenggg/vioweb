@@ -97,7 +97,10 @@
 
   --rand: 20px;
   --feld: 1200px;
-  --lesebreite: 62ch;
+  /* ch ist die Breite der Null und damit breiter als ein
+     Durchschnittsbuchstabe. 62ch ergaben gemessen 82 Zeichen je Zeile,
+     nicht 62. 46ch trifft die Vorgabe aus den Richtlinien. */
+  --lesebreite: 46ch;
   --rail: 164px;
   --gasse: 64px;
   --kopfhoehe: 66px;

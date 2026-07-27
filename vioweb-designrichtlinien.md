@@ -119,7 +119,12 @@ bei Bedarf, geregelt über `unicode-range`.
 - Überschriften 800, Fließtext 400, Zwischenüberschriften 700
 - Laufweite bei großen Überschriften `-0.028em` bis `-0.032em`
 - Zeilenhöhe Fließtext **1.65**, Überschriften 1.12
-- Fließtext höchstens **62 Zeichen** je Zeile
+- Fließtext höchstens **62 Zeichen** je Zeile.
+  **Achtung bei `ch`:** Die Einheit misst die Breite der Null, nicht die
+  eines Durchschnittsbuchstabens. `62ch` ergaben gemessen **82 Zeichen**
+  je Zeile. Der Faktor liegt bei rund 1,32. Für Grundschriftgröße trifft
+  `46ch` die Vorgabe, für größere Schriften entsprechend mehr. Im Zweifel
+  nachmessen statt rechnen
 - Keine langen Versalstrecken, keine extrem fetten Textblöcke
 - Alle Größen über `clamp()` — keine starren Pixelwerte für Schrift
 
