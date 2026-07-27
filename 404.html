@@ -243,6 +243,21 @@ body.starr .kopf { z-index: 110; background: transparent; border-bottom-color: t
 .marke {
   position: relative; z-index: 115;
   display: flex; align-items: center; gap: .65rem; text-decoration: none;
+  transition: opacity var(--schnell) var(--verlauf), visibility 0s;
+}
+/* Bei offenem Menue wird das Logo im Kopfbereich ausgeblendet, damit es
+   sich nicht mit der Menuetafel ueberlagert. Ueber opacity und
+   visibility statt display: das Element behaelt seinen Platz, es gibt
+   also keinen Layout-Shift, und visibility nimmt es zugleich aus
+   Tabreihenfolge und Vorlesereihenfolge.
+   Die Verzoegerung auf visibility laesst zuerst die Blende laufen und
+   schaltet danach hart um — sonst waere das Logo sofort weg und die
+   Blende liefe ins Leere. Das Logo in der Fusszeile bleibt unberuehrt. */
+body.starr .kopf .marke {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--schnell) var(--verlauf),
+              visibility 0s linear var(--schnell);
 }
 /* Das Zeichen hat eine weisse Haelfte, die auf hellem Grund verschwindet.
    Es liegt deshalb auf einer dunklen Kachel — das Zeichen selbst bleibt
