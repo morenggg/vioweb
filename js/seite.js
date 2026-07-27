@@ -1,11 +1,12 @@
 /* =========================================================================
    Vioweb — das gesamte JavaScript der Seite.
 
-   Vier Teile, mehr nicht:
+   Fuenf Teile, mehr nicht:
      1. Kontaktformular
-     2. Off-Canvas-Menue (Fokusfang, Scroll-Sperre, Ausblenden)
+     2. Mobilmenue (Fokusfang, Scroll-Sperre, Ausblenden)
      3. Haarlinie unter dem Kopfbereich beim Scrollen
      4. Dezentes Einblenden der Abschnitte
+     5. Fortschrittsbalken am oberen Rand
 
    Teil 2 bis 4 sind Zugaben. Ohne JavaScript bleibt die Seite vollstaendig
    bedienbar: das Menue ist ein <details> und oeffnet nativ, das Formular
@@ -74,13 +75,24 @@
 
   /* Fehler stehen neben dem betroffenen Feld und sagen, was fehlt —
      nicht "Ungueltige Eingabe". */
+  /* Bei "neue Website" gibt es noch keine Adresse — dann ist das Feld
+     freiwillig. Bei "bestehende Website pruefen" ist es Pflicht. */
+  function adressePflicht() {
+    var gewaehlt = formular.querySelector('[name="anliegen"]:checked');
+    return !gewaehlt || /bestehende/i.test(gewaehlt.value);
+  }
+
   function pruefen() {
     var ersterFehler = null;
     var adresse = adresseAufraeumen(felder.adresse.value);
 
     if (!felder.adresse.value.trim()) {
-      fehlerZeigen(felder.adresse, 'Trag hier die Adresse deiner Website ein, zum Beispiel beispiel.de');
-      ersterFehler = ersterFehler || felder.adresse;
+      if (adressePflicht()) {
+        fehlerZeigen(felder.adresse, 'Trag hier die Adresse deiner Website ein, zum Beispiel beispiel.de');
+        ersterFehler = ersterFehler || felder.adresse;
+      } else {
+        fehlerLoeschen(felder.adresse);
+      }
     } else if (!istAdresse(adresse)) {
       fehlerZeigen(felder.adresse, 'Das sieht noch nicht nach einer Adresse aus. So sollte sie aussehen: beispiel.de');
       ersterFehler = ersterFehler || felder.adresse;
@@ -170,6 +182,24 @@
     var daten = angaben();
     if (endpunkt) perEndpunkt(daten); else perMail(daten);
   });
+
+  /* Beschriftung und Pflichtmarke folgen der Auswahl. Ohne das stuende
+     "Pflicht" an einem Feld, das gerade keines ist. */
+  function anliegenUebernehmen() {
+    var pflicht = adressePflicht();
+    var marke = formular.querySelector('#feld-adresse .pflicht');
+    var beschriftung = formular.querySelector('label[for="adresse"]');
+    if (marke) marke.hidden = !pflicht;
+    if (beschriftung) {
+      beschriftung.childNodes[0].nodeValue =
+        pflicht ? 'Adresse deiner Website ' : 'Bestehende Adresse, falls vorhanden ';
+    }
+    if (!pflicht) fehlerLoeschen(felder.adresse);
+  }
+  Array.prototype.forEach.call(
+    formular.querySelectorAll('[name="anliegen"]'),
+    function (r) { r.addEventListener('change', anliegenUebernehmen); });
+  anliegenUebernehmen();
 
   felder.adresse.addEventListener('blur', function () {
     if (!felder.adresse.value.trim()) return;
@@ -329,4 +359,38 @@
   window.setTimeout(function () {
     bloecke.forEach(function (el) { el.classList.add('da'); });
   }, 2000);
+})();
+
+
+/* =========================================================================
+   5. Fortschrittsbalken am oberen Rand.
+
+   Der Balken liegt fest ueber der Seite und nimmt keinen Platz im Fluss
+   ein — er kann deshalb nichts verschieben. Aktualisiert wird nur einmal
+   pro Bildaufbau ueber requestAnimationFrame; ein Scroll-Ereignis loest
+   sonst dutzende Neuberechnungen pro Sekunde aus.
+   ========================================================================= */
+(function () {
+  'use strict';
+  var balken = document.getElementById('fortschritt');
+  if (!balken) return;
+
+  var wartet = false;
+
+  function messen() {
+    wartet = false;
+    var hoehe = document.documentElement.scrollHeight - window.innerHeight;
+    var anteil = hoehe > 0 ? Math.min(Math.max(window.scrollY / hoehe, 0), 1) : 0;
+    balken.style.transform = 'scaleX(' + anteil.toFixed(4) + ')';
+  }
+
+  function anstossen() {
+    if (wartet) return;
+    wartet = true;
+    window.requestAnimationFrame(messen);
+  }
+
+  window.addEventListener('scroll', anstossen, { passive: true });
+  window.addEventListener('resize', anstossen, { passive: true });
+  messen();
 })();

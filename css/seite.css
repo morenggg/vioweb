@@ -3,259 +3,326 @@
    Nicht-blockierend geladen. Kritisches CSS steht inline im <head>.
 
      1. Abschnitte und Grossschrift
-     2. Warum von Hand  (.drei)
-     3. Pruefpunkte     (.index)
-     4. Ablauf          (.weg)
-     5. Umfang          (.wahl)
-     6. Vertrauensband  (.band)
-     7. Fragen          (.fragen)
-     8. Kontakt und Formular
-     9. Fusszeile
-    10. Textseiten
-    11. Desktop ab 1080 px
-    12. Einblenden
+     2. Vertrauensband
+     3. Zwei Wege
+     4. Was geprueft wird
+     5. Kurzcheck und Check-up
+     6. Nach der Analyse (dunkler Abschnitt)
+     7. Neue Website
+     8. Ablauf
+     9. Fragen
+    10. Kontakt und Formular
+    11. Fusszeile
+    12. Textseiten
+    13. Desktop ab 1040 px
+    14. Einblenden
    ========================================================================= */
 
-/* Erlaubt das Animieren auf height:auto — ohne das bleibt jede
-   Aufklapp-Animation eine Naeherung mit fester Hoehe. */
 :root { interpolate-size: allow-keywords; }
 
 /* --------------------------------------- 1. Abschnitte und Grossschrift */
-.teil { border-top: 1px solid var(--linie); padding-block: 72px; }
-.teil--flaeche { background: var(--grund-2); }
+.teil { padding-block: var(--s-2xl); border-top: 1px solid var(--linie); }
+.teil--ruhig { background: var(--flaeche-ruhig); border-top-color: transparent; }
 
-/* Grosse Schrift traegt die Seite. Deutlich groesser als ueblich, dafuer
-   deutlich weniger Text darunter. */
+/* Die wenigen dunklen Flaechen. Bewusst sparsam: sie setzen einen Akzent,
+   sie tragen die Seite nicht. */
+.teil--dunkel {
+  background: var(--dunkel); color: var(--text-hell);
+  border-top-color: transparent;
+}
+.teil--dunkel .vorspann { color: var(--text-hell-leise); }
+.teil--dunkel .gross em { color: var(--akzent-hell); }
+.kicker--hell { color: var(--akzent-hell); }
+
 .gross {
-  font-size: clamp(2.1rem, 1.35rem + 3.4vw, 4.2rem);
-  font-weight: 700; line-height: 1.02; letter-spacing: -.034em;
-  max-width: 15ch;
+  font-size: clamp(1.75rem, 1.25rem + 2.2vw, 2.9rem);
+  font-weight: 800; letter-spacing: -.028em; line-height: 1.12;
+  max-width: 20ch;
 }
-.gross em { font-style: normal; color: var(--akzent-hell); }
+.gross em { font-style: normal; color: var(--akzent); }
 
-/* ------------------------------------------------ 2. Warum von Hand */
-.drei { margin-top: 48px; display: grid; }
-.drei li {
-  display: grid; grid-template-columns: 46px minmax(0, 1fr);
-  align-items: start;
-  padding-block: 26px;
-  border-top: 1px solid var(--linie);
-  font-size: clamp(1.05rem, .95rem + .6vw, 1.35rem);
-  line-height: 1.4;
-  max-width: 34ch;
-}
-.drei__nr {
-  font-family: var(--schrift-technik); font-size: .62rem;
-  letter-spacing: .18em; color: var(--akzent-hell);
-  padding-top: .5em;
-}
-
-/* ---------------------------------------------------- 3. Pruefpunkte */
-.index { margin-top: 48px; display: grid; }
-.index li {
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  align-items: baseline;
-  padding-block: 18px;
-  border-top: 1px solid var(--linie);
-}
-.index li:last-child { border-bottom: 1px solid var(--linie); }
-.index__nr {
-  font-family: var(--schrift-technik); font-size: .62rem;
-  letter-spacing: .18em; color: var(--text-still);
-}
-.index b {
-  font-size: 1.1rem; font-weight: 700; letter-spacing: -.015em;
-  display: block;
-}
-.index i {
-  display: block; margin-top: 4px;
-  font-style: normal; font-size: .95rem; color: var(--text-leise);
-}
-
-/* --------------------------------------------------------- 4. Ablauf */
-.weg { margin-top: 48px; display: grid; }
-.weg li {
-  padding-block: 24px;
-  border-top: 1px solid var(--linie);
-}
-.weg__nr {
-  font-family: var(--schrift-technik); font-size: .62rem;
-  letter-spacing: .18em; color: var(--akzent-hell);
-  display: block; margin-bottom: 10px;
-}
-.weg h3 {
-  font-size: clamp(1.25rem, 1.05rem + .8vw, 1.6rem);
-  font-weight: 700; letter-spacing: -.022em; line-height: 1.15;
-}
-.weg p { margin-top: 6px; color: var(--text-leise); font-size: .98rem; max-width: 30ch; }
-
-/* --------------------------------------------------------- 5. Umfang */
-.wahl { margin-top: 48px; display: grid; }
-.wahl li {
-  position: relative;
-  padding: 30px 0 30px 56px;
-  border-top: 1px solid var(--linie);
-}
-.wahl__mark {
-  position: absolute; left: 0; top: 34px;
-  width: 32px; height: 32px;
-  display: grid; place-items: center;
-  border: 1px solid var(--linie-hell);
-  font-family: var(--schrift-technik); font-size: .78rem;
-  color: var(--text-leise);
-}
-.wahl h3 {
-  font-size: clamp(1.3rem, 1.1rem + .9vw, 1.75rem);
-  font-weight: 700; letter-spacing: -.024em; line-height: 1.15;
-}
-.wahl p { margin-top: 10px; color: var(--text-leise); max-width: 40ch; }
-
-/* Genau eine Stufe traegt den Akzent. Der Balken sitzt ueber negativen
-   Rand ausserhalb der Textkante, damit die Zeile nicht einrueckt. */
-.wahl--betont {
-  border-left: 3px solid var(--akzent-voll);
-  padding-left: 53px; margin-left: -3px;
-  background: linear-gradient(90deg, rgba(98,38,250,.07), rgba(98,38,250,0) 60%);
-}
-.wahl--betont .wahl__mark { border-color: var(--akzent-voll); color: var(--akzent-hell); }
-
-/* ------------------------------------------------- 6. Vertrauensband */
+/* ------------------------------------------------- 2. Vertrauensband */
 .band {
-  border-top: 1px solid var(--linie);
   background: var(--flaeche);
-  box-shadow: var(--kante-licht);
-  padding-block: 40px;
+  border-block: 1px solid var(--linie);
+  padding-block: var(--s-xl);
 }
-.band__liste { display: grid; gap: 26px; }
+.band__liste { display: grid; gap: var(--s-lg); }
 .band__liste b {
-  display: block; font-size: 1rem; font-weight: 700; letter-spacing: -.012em;
-  padding-left: 16px; position: relative;
-}
-.band__liste b::before {
-  content: ""; position: absolute; left: 0; top: .55em;
-  width: 6px; height: 6px; background: var(--akzent-voll);
+  display: block; font-size: .98rem; font-weight: 700; letter-spacing: -.012em;
 }
 .band__liste span {
-  display: block; margin-top: 4px; padding-left: 16px;
-  font-size: .9rem; color: var(--text-leise);
+  display: block; margin-top: .25rem;
+  font-size: .9rem; line-height: 1.55; color: var(--text-leise);
 }
 
-/* --------------------------------------------------------- 7. Fragen
-   Kein Standard-Akkordeon: grosse Schrift, viel Luft, ein Strich statt
-   eines Plus-Zeichens. Die Antwort faehrt ueber ::details-content weich
-   auf. Browser ohne Unterstuetzung oeffnen ohne Bewegung — der Inhalt ist
-   in jedem Fall erreichbar. */
-.fragen { margin-top: 48px; border-top: 1px solid var(--linie); }
-.fragen details { border-bottom: 1px solid var(--linie); }
+/* --------------------------------------------------------- 3. Zwei Wege */
+.wege { margin-top: var(--s-xl); display: grid; gap: var(--s-lg); }
+.weg {
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--rund-gross);
+  padding: var(--s-lg);
+}
+.weg__kopf {
+  font-size: .78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .09em; color: var(--akzent);
+}
+.weg__liste { margin-top: var(--s-md); display: grid; gap: .55rem; counter-reset: schritt; }
+.weg__liste li {
+  position: relative; padding-left: 1.9rem;
+  font-size: .96rem; line-height: 1.5;
+}
+.weg__liste li::before {
+  counter-increment: schritt; content: counter(schritt);
+  position: absolute; left: 0; top: .1em;
+  width: 1.25rem; height: 1.25rem;
+  display: grid; place-items: center;
+  border-radius: 50%; background: var(--akzent-zart); color: var(--akzent);
+  font-size: .68rem; font-weight: 700;
+}
+.verweis {
+  display: inline-flex; align-items: center; gap: .4rem;
+  margin-top: var(--s-lg); min-height: 44px;
+  font-size: .9rem; font-weight: 700; color: var(--akzent);
+  text-decoration: none;
+}
+.verweis:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-.fragen summary {
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr) 34px;
-  align-items: baseline;
-  gap: 0 8px;
-  padding-block: 28px;
+/* ------------------------------------------------ 4. Was geprueft wird */
+/* Bewusst keine Karten: acht Kacheln nebeneinander waeren genau die
+   Baukastenoptik, die hier nicht vorkommen soll. Stattdessen eine
+   redaktionelle Liste mit Haarlinien. */
+.pruef { margin-top: var(--s-xl); display: grid; }
+.pruef > div { padding-block: var(--s-md); border-top: 1px solid var(--linie); }
+.pruef > div:first-child { border-top: 0; }
+.pruef dt { font-size: 1.02rem; font-weight: 700; letter-spacing: -.014em; }
+.pruef dd {
+  margin: .3rem 0 0; max-width: 52ch;
+  font-size: .95rem; line-height: 1.55; color: var(--text-leise);
+}
+
+/* -------------------------------------------- 5. Kurzcheck und Check-up */
+.karten { margin-top: var(--s-xl); display: grid; gap: var(--s-lg); }
+.karte {
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--rund-gross);
+  padding: var(--s-lg);
+  display: flex; flex-direction: column;
+}
+/* Genau eine Karte traegt den Akzent — nicht beide. */
+.karte--betont { border-color: var(--akzent); box-shadow: var(--hebung); }
+
+.karte__marke {
+  align-self: flex-start;
+  padding: .25rem .6rem; border-radius: 999px;
+  background: var(--flaeche-ruhig);
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-leise);
+}
+.karte--betont .karte__marke { background: var(--akzent-zart); color: var(--akzent); }
+.karte h3 {
+  margin-top: var(--s-md);
+  font-size: clamp(1.3rem, 1.1rem + .8vw, 1.6rem);
+  font-weight: 800; letter-spacing: -.022em;
+}
+.karte__satz {
+  margin-top: .5rem; color: var(--text-leise);
+  font-size: .96rem; line-height: 1.55; max-width: 42ch;
+}
+.karte__liste { margin-top: var(--s-lg); display: grid; gap: .6rem; }
+.karte__liste li {
+  position: relative; padding-left: 1.6rem;
+  font-size: .95rem; line-height: 1.5;
+}
+/* Haken als CSS-Form statt Icon-Datei. */
+.karte__liste li::before {
+  content: ""; position: absolute; left: .15rem; top: .42em;
+  width: .42rem; height: .72rem;
+  border: solid var(--akzent); border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.karte .knopf { margin-top: var(--s-lg); align-self: flex-start; }
+.karte__fuss {
+  margin-top: var(--s-md); font-size: .84rem; color: var(--text-leise);
+  max-width: 40ch;
+}
+
+/* ------------------------------------------------- 6. Nach der Analyse */
+.optionen { margin-top: var(--s-xl); display: grid; }
+.optionen li {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr);
+  align-items: start;
+  padding-block: var(--s-md);
+  border-top: 1px solid var(--linie-dunkel);
+  font-size: .98rem; line-height: 1.55; color: var(--text-hell-leise);
+  max-width: 56ch;
+}
+/* Der Beschreibungstext steht in einem <div>, damit er nicht als eigenes
+   anonymes Rasterelement in die schmale Nummernspalte rutscht. */
+.optionen li > span {
+  font-family: var(--schrift-technik); font-size: .68rem;
+  letter-spacing: .12em; color: var(--akzent-hell); padding-top: .35em;
+}
+.optionen b {
+  display: block; color: var(--text-hell);
+  font-weight: 700; letter-spacing: -.012em; margin-bottom: .15rem;
+}
+
+/* ----------------------------------------------------- 7. Neue Website */
+.leistungsliste {
+  margin-top: var(--s-xl); display: grid; gap: .7rem;
+}
+.leistungsliste li {
+  position: relative; padding-left: 1.6rem;
+  font-size: .98rem;
+}
+.leistungsliste li::before {
+  content: ""; position: absolute; left: .15rem; top: .42em;
+  width: .42rem; height: .72rem;
+  border: solid var(--akzent); border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.leistungsliste + .auf__aktionen { margin-top: var(--s-xl); }
+
+/* ---------------------------------------------------------- 8. Ablauf */
+.schritte { margin-top: var(--s-xl); display: grid; }
+.schritte li { padding-block: var(--s-md); border-top: 1px solid var(--linie); }
+.schritte__nr {
+  font-family: var(--schrift-technik); font-size: .68rem;
+  letter-spacing: .12em; color: var(--akzent); margin-bottom: .35rem;
+}
+.schritte h3 { font-size: 1.08rem; font-weight: 700; letter-spacing: -.016em; }
+.schritte li p:last-child {
+  margin-top: .3rem; font-size: .95rem; line-height: 1.55;
+  color: var(--text-leise); max-width: 46ch;
+}
+
+/* ---------------------------------------------------------- 9. Fragen
+   Ruhiges Accordion: klare Trennlinien, grosse Klickflaeche, weiche
+   Bewegung ueber ::details-content. Keine verschachtelten Karten. */
+.fragen { margin-top: var(--s-xl); border-top: 1px solid var(--linie); }
+.frage { border-bottom: 1px solid var(--linie); }
+
+.frage summary {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-lg);
+  padding-block: var(--s-md);
+  min-height: 60px;
   cursor: pointer; list-style: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.fragen summary:hover { color: var(--akzent-hell); }
-.fragen__nr {
-  font-family: var(--schrift-technik); font-size: .62rem;
-  letter-spacing: .18em; color: var(--text-still);
+.frage summary:hover { color: var(--akzent); }
+.frage__text {
+  font-size: clamp(1rem, .95rem + .35vw, 1.14rem);
+  font-weight: 700; letter-spacing: -.016em; line-height: 1.35;
 }
-.fragen__text {
-  font-size: clamp(1.2rem, 1rem + 1vw, 1.9rem);
-  font-weight: 700; letter-spacing: -.026em; line-height: 1.15;
+/* Plus, das beim Oeffnen zum Minus wird. */
+.frage__zeichen { position: relative; width: 18px; height: 18px; flex: none; }
+.frage__zeichen::before, .frage__zeichen::after {
+  content: ""; position: absolute; background: currentColor; border-radius: 1px;
+  transition: transform var(--mittel) var(--verlauf), opacity var(--schnell) linear;
 }
-/* Ein Strich, der sich beim Oeffnen dreht — kein Plus, kein Winkel. */
-.fragen__zeichen {
-  position: relative; justify-self: end; align-self: center;
-  width: 20px; height: 20px;
-}
-.fragen__zeichen::before, .fragen__zeichen::after {
-  content: ""; position: absolute; left: 0; top: 9px;
-  width: 20px; height: 1.5px; background: currentColor;
-  transition: transform var(--mittel-zeit) var(--verlauf);
-}
-.fragen__zeichen::after { transform: rotate(90deg); }
-.fragen details[open] .fragen__zeichen::before { transform: rotate(180deg); }
-.fragen details[open] .fragen__zeichen::after { transform: rotate(180deg); }
+.frage__zeichen::before { left: 0; top: 8px; width: 18px; height: 2px; }
+.frage__zeichen::after  { left: 8px; top: 0; width: 2px; height: 18px; }
+.frage[open] .frage__zeichen::after { transform: scaleY(0); opacity: 0; }
 
-.fragen__antwort { padding: 0 34px 34px 46px; }
-.fragen__antwort p {
-  color: var(--text-leise);
-  font-size: 1.05rem; line-height: 1.55; max-width: 42ch;
+.frage__antwort { padding-bottom: var(--s-lg); }
+.frage__antwort p {
+  color: var(--text-leise); max-width: var(--lesebreite);
+  font-size: 1rem; line-height: 1.65;
 }
 
 @supports (interpolate-size: allow-keywords) {
-  .fragen details::details-content {
-    block-size: 0;
-    overflow: hidden;
-    transition: block-size var(--mittel-zeit) var(--verlauf),
-                content-visibility var(--mittel-zeit) allow-discrete;
+  .frage::details-content {
+    block-size: 0; overflow: hidden;
+    transition: block-size var(--mittel) var(--verlauf),
+                content-visibility var(--mittel) allow-discrete;
   }
-  .fragen details[open]::details-content { block-size: auto; }
+  .frage[open]::details-content { block-size: auto; }
 }
 
-/* ---------------------------------------------- 8. Kontakt und Formular */
-.kontakt { border-top: 1px solid var(--linie); padding-block: 72px; }
+/* -------------------------------------------- 10. Kontakt und Formular */
+.kontakt { padding-block: var(--s-2xl); border-top: 1px solid var(--linie); }
 .kontakt__flaeche {
   background: var(--flaeche);
   border: 1px solid var(--linie);
-  border-left: 3px solid var(--akzent-voll);
-  box-shadow: var(--kante-licht);
-  padding: 40px 22px 44px;
+  border-radius: var(--rund-gross);
+  box-shadow: var(--hebung);
+  padding: var(--s-xl) var(--s-lg);
 }
-.kontakt__satz {
-  margin-top: 20px; font-size: 1.08rem;
-  color: var(--text-leise); max-width: 32ch;
-}
+.kontakt__wort .gross { margin-top: var(--s-md); }
 .kontakt__still {
-  margin-top: 20px; font-size: .88rem; color: var(--text-still); max-width: 30ch;
+  margin-top: var(--s-lg); font-size: .88rem;
+  color: var(--text-leise); max-width: 38ch;
 }
 
-.formular { margin-top: 40px; }
-.feldgruppe { margin-bottom: 20px; }
+.formular { margin-top: var(--s-xl); }
+
+.anliegen { border: 0; padding: 0; margin: 0 0 var(--s-lg); }
+.anliegen legend {
+  padding: 0; margin-bottom: .6rem;
+  font-size: .8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text-leise);
+}
+.anliegen__wahl { display: grid; gap: .55rem; }
+.anliegen__wahl label {
+  display: flex; align-items: center; gap: .7rem;
+  min-height: 52px; padding: .5rem .9rem;
+  border: 1px solid var(--linie-kraeftig); border-radius: var(--rund);
+  background: var(--grund);
+  font-size: .95rem; font-weight: 600; cursor: pointer;
+  transition: border-color var(--schnell) var(--verlauf),
+              background-color var(--schnell) var(--verlauf);
+}
+.anliegen__wahl label:hover { border-color: var(--akzent); }
+.anliegen__wahl input { width: 20px; height: 20px; accent-color: var(--akzent); flex: none; }
+.anliegen__wahl label:has(input:checked) {
+  border-color: var(--akzent); background: var(--akzent-zart);
+}
+
+.feldgruppe { margin-bottom: var(--s-md); }
 .feldgruppe > label:not(.haken) {
-  display: block;
-  font-family: var(--schrift-struktur);
-  font-size: .8rem; text-transform: uppercase; letter-spacing: .1em;
-  margin-bottom: 8px;
+  display: block; margin-bottom: .4rem;
+  font-size: .8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text-leise);
 }
 .pflicht {
-  font-family: var(--schrift-technik); font-size: .6rem;
-  letter-spacing: .18em; color: var(--akzent-hell); margin-left: 8px;
+  margin-left: .4rem; font-size: .7rem; letter-spacing: .04em;
+  color: var(--akzent);
 }
 
 .formular input[type="url"],
 .formular input[type="email"],
 .formular input[type="text"],
 .formular textarea {
-  display: block; width: 100%; min-height: 54px;
-  padding: 14px 16px;
+  display: block; width: 100%; min-height: 52px;
+  padding: .8rem .9rem;
   background: var(--grund);
-  border: 1px solid var(--linie-hell);
-  border-radius: 0; color: var(--text);
+  border: 1px solid var(--linie-feld);
+  border-radius: var(--rund);
+  color: var(--text);
   transition: border-color var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
+              box-shadow var(--schnell) var(--verlauf);
 }
-.formular textarea { min-height: 104px; resize: vertical; line-height: 1.5; }
-.formular input:hover, .formular textarea:hover { background: var(--grund-2); }
+.formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
+.formular input:hover, .formular textarea:hover { border-color: var(--text-leise); }
 .formular input:focus-visible, .formular textarea:focus-visible {
-  border-color: var(--akzent-hell); outline-offset: 1px;
+  border-color: var(--akzent); outline-offset: 1px;
 }
-.formular ::placeholder { color: var(--text-still); }
+.formular ::placeholder { color: var(--text-leise); opacity: 1; }
 .formular [aria-invalid="true"] { border-color: var(--schlecht); }
 
-.hinweis { margin-top: 7px; font-size: .8rem; color: var(--text-still); }
+.hinweis { margin-top: .4rem; font-size: .82rem; color: var(--text-leise); }
 .fehler {
-  margin-top: 7px; font-size: .86rem; font-weight: 700;
-  color: #FF8A8F;   /* heller als --schlecht, sonst keine 4,5:1 */
+  margin-top: .4rem; font-size: .86rem; font-weight: 700; color: var(--schlecht);
 }
 .fehler:empty { display: none; }
 
-@media (min-width: 600px) {
-  .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+@media (min-width: 620px) {
+  .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-md); }
+  .anliegen__wahl { grid-template-columns: 1fr 1fr; }
 }
 
 /* Falle gegen automatische Eintraege. Nicht display:none — manche
@@ -265,47 +332,40 @@
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-.feldgruppe--haken { margin-top: 28px; }
+.feldgruppe--haken { margin-top: var(--s-lg); }
 .haken {
-  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .8rem;
   align-items: start; cursor: pointer;
-  font-size: .92rem; line-height: 1.5;
-  text-transform: none; letter-spacing: normal;
+  font-size: .92rem; line-height: 1.55; text-transform: none; letter-spacing: normal;
 }
-.haken input {
-  width: 22px; height: 22px; margin-top: 1px;
-  accent-color: var(--akzent-voll); cursor: pointer;
-}
-.haken a { color: var(--akzent-hell); }
+.haken input { width: 22px; height: 22px; margin-top: 1px; accent-color: var(--akzent); cursor: pointer; }
+.haken a { color: var(--akzent); }
 
-.formular__senden { margin-top: 10px; }
+.formular__senden { margin-top: var(--s-sm); }
 .formular__senden[aria-disabled="true"] { opacity: .6; cursor: progress; }
 
 .meldung {
-  margin-top: 22px; padding: 16px 18px;
-  border-left: 3px solid var(--akzent-voll);
-  background: rgba(98, 38, 250, .1);
-  font-size: .95rem;
+  margin-top: var(--s-lg); padding: var(--s-md);
+  border: 1px solid var(--akzent); border-radius: var(--rund);
+  background: var(--akzent-zart);
+  font-size: .95rem; line-height: 1.55;
 }
 .meldung:empty { display: none; }
-.meldung--fehler { border-left-color: #FF8A8F; background: rgba(193, 39, 45, .12); }
-.meldung--hinweis { border-left-color: var(--linie-hell); background: var(--grund-3); }
-.meldung a { color: var(--akzent-hell); }
+.meldung--fehler { border-color: var(--schlecht); background: #FEF2F2; }
+.meldung--hinweis { border-color: var(--linie-kraeftig); background: var(--flaeche-ruhig); }
+.meldung a { color: var(--akzent); }
 
-/* ------------------------------------------------------- 9. Fusszeile */
-.fuss { border-top: 1px solid var(--linie); padding-block: 56px 32px; }
-.fuss__raster { display: grid; gap: 40px; }
-.fuss__marke .marke { margin-bottom: 12px; }
-.fuss__marke p {
-  color: var(--text-still); font-size: .84rem;
-  font-family: var(--schrift-struktur);
-  text-transform: uppercase; letter-spacing: .1em;
+/* ------------------------------------------------------ 11. Fusszeile */
+.fuss {
+  background: var(--flaeche); border-top: 1px solid var(--linie);
+  padding-block: var(--s-2xl) var(--s-lg);
 }
+.fuss__raster { display: grid; gap: var(--s-xl); }
+.fuss__marke .marke { margin-bottom: .7rem; }
+.fuss__marke p { color: var(--text-leise); font-size: .9rem; max-width: 34ch; }
 .fuss__block h2 {
-  font-family: var(--schrift-technik);
-  font-size: .62rem; font-weight: 400;
-  text-transform: uppercase; letter-spacing: .22em;
-  color: var(--text-still); margin-bottom: 6px;
+  font-size: .78rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--text); margin-bottom: .2rem;
 }
 .fuss__block ul { display: grid; }
 .fuss__block a {
@@ -313,135 +373,106 @@
   font-size: .92rem; color: var(--text-leise); text-decoration: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.fuss__block a:hover { color: var(--text); }
+.fuss__block a:hover { color: var(--akzent); }
 .fuss__unten {
-  margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--linie);
-  display: flex; flex-wrap: wrap; gap: 8px 32px; justify-content: space-between;
-  font-size: .78rem; color: var(--text-still);
+  margin-top: var(--s-xl); padding-top: var(--s-md);
+  border-top: 1px solid var(--linie);
+  display: flex; flex-wrap: wrap; gap: .4rem var(--s-xl);
+  justify-content: space-between;
+  font-size: .82rem; color: var(--text-leise);
 }
 
-/* ----------------------------------------------------- 10. Textseiten */
-.dokument { padding-block: 48px 80px; }
+/* ----------------------------------------------------- 12. Textseiten */
+.dokument { padding-block: var(--s-xl) var(--s-3xl); }
 .dokument h1 {
-  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.4rem);
-  font-weight: 700; line-height: 1.04; letter-spacing: -.03em; max-width: 16ch;
+  font-size: clamp(1.9rem, 1.4rem + 2vw, 2.8rem);
+  font-weight: 800; letter-spacing: -.028em; line-height: 1.12; max-width: 18ch;
 }
 .dokument h2 {
-  margin-top: 44px;
-  font-family: var(--schrift-struktur);
-  font-size: 1rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .1em;
+  margin-top: var(--s-xl); font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -.01em;
 }
-.dokument h3 { margin-top: 26px; font-size: 1.05rem; font-weight: 700; }
+.dokument h3 { margin-top: var(--s-lg); font-size: 1rem; font-weight: 700; }
 .dokument p, .dokument li {
-  margin-top: 14px; max-width: 54ch; color: var(--text-leise);
+  margin-top: var(--s-sm); max-width: var(--lesebreite); color: var(--text-leise);
+  line-height: 1.7;
 }
-.dokument a { color: var(--akzent-hell); }
-.dokument ul.liste { margin-top: 6px; }
-.dokument ul.liste li { position: relative; padding-left: 20px; }
+/* Nicht auf Knoepfe anwenden: sonst gewinnt diese Regel gegen
+   .knopf--voll und der Text verschwindet auf der lila Flaeche. */
+.dokument a:not(.knopf) { color: var(--akzent); }
+.dokument ul.liste { margin-top: .3rem; }
+.dokument ul.liste li { position: relative; padding-left: 1.2rem; }
 .dokument ul.liste li::before {
-  content: ""; position: absolute; left: 0; top: .62em;
-  width: 7px; height: 7px; background: var(--akzent-voll);
+  content: ""; position: absolute; left: 0; top: .72em;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--akzent);
 }
 .luecke {
-  color: var(--text); background: rgba(98, 38, 250, .18);
-  border-bottom: 1px solid var(--akzent-voll);
-  padding: 1px 5px;
-  font-family: var(--schrift-technik); font-size: .86em; letter-spacing: .04em;
+  background: var(--akzent-zart); color: var(--akzent);
+  border-bottom: 1px solid var(--akzent);
+  padding: 1px 5px; border-radius: 3px;
+  font-family: var(--schrift-technik); font-size: .86em;
 }
 .warnung {
-  margin-top: 28px; padding: 18px 20px;
-  border-left: 3px solid var(--mittel);
-  background: rgba(217, 138, 0, .1);
+  margin-top: var(--s-lg); padding: var(--s-md);
+  border: 1px solid var(--mittel); border-radius: var(--rund);
+  background: #FFFBEB;
 }
 .warnung p { margin-top: 0; color: var(--text); max-width: 58ch; }
 
 /* =========================================================================
-   11. Desktop ab 1080 px — eigene Komposition, nicht das Handy in breit.
+   13. Desktop ab 1040 px
    ========================================================================= */
-@media (min-width: 1080px) {
+@media (min-width: 1040px) {
+  .teil    { padding-block: var(--s-3xl); }
+  .kontakt { padding-block: var(--s-3xl); }
+  .band    { padding-block: var(--s-2xl); }
 
-  .auf__raster { align-items: center; }
+  .band__liste { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-lg); }
 
-  /* Unterschiedliche Dichte statt fuenfmal derselbe Abstand. */
-  .teil        { padding-block: 128px; }
-  .teil--eng   { padding-block: 88px; }
-  .kontakt     { padding-block: 152px; }
-  .band        { padding-block: 56px; }
+  .wege { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-xl); }
+  .weg { padding: var(--s-xl); }
 
-  /* --- Warum von Hand: eine Zeile pro Aussage, sehr grosszuegig ------- */
-  .drei { margin-top: 72px; }
-  .drei li { padding-block: 34px; max-width: 44ch; }
+  .pruef { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-2xl); }
+  .pruef > div { padding-block: var(--s-lg); }
+  .pruef > div:nth-child(2) { border-top: 1px solid var(--linie); }
 
-  /* --- Pruefpunkte: zwei Spalten, durchlaufende Linien ---------------- */
-  .index {
-    margin-top: 72px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 72px;
-  }
-  .index li:nth-child(2) { border-top: 1px solid var(--linie); }
-  .index li:nth-last-child(2) { border-bottom: 1px solid var(--linie); }
+  .karten { grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: var(--s-xl); align-items: start; }
+  .karte { padding: var(--s-xl); }
 
-  /* --- Ablauf: drei Spalten ------------------------------------------- */
-  .weg {
-    margin-top: 72px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: 56px;
-  }
-  .weg li { padding-block: 32px; }
+  .optionen li { padding-block: var(--s-lg); grid-template-columns: 3.5rem minmax(0, 1fr); }
 
-  /* --- Umfang: Titel links, Text rechts -------------------------------- */
-  .wahl { margin-top: 72px; }
-  .wahl li {
-    display: grid;
-    grid-template-columns: 56px minmax(0, 300px) minmax(0, 1fr);
-    column-gap: 48px;
-    align-items: start;
-    padding: 44px 0;
-  }
-  .wahl__mark { position: static; }
-  .wahl p { margin-top: 0; }
-  .wahl--betont { padding-left: 24px; margin-left: -27px; }
+  .leistungsliste { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s-2xl); }
 
-  /* --- Vertrauensband: vier Spalten ------------------------------------ */
-  .band__liste { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; }
+  .schritte { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s-xl); }
+  .schritte li { padding-block: var(--s-lg); }
 
-  /* --- Fragen: sehr viel Luft ------------------------------------------ */
-  .fragen { margin-top: 72px; }
-  .fragen summary { padding-block: 38px; grid-template-columns: 56px minmax(0, 1fr) 40px; }
-  .fragen__antwort { padding: 0 40px 40px 56px; }
+  .fragen { margin-top: var(--s-2xl); }
+  .frage summary { padding-block: var(--s-lg); }
 
-  /* --- Kontakt: Wort links, Formular rechts ---------------------------- */
   .kontakt__flaeche {
-    display: grid;
-    grid-template-columns: minmax(0, .9fr) minmax(0, 1fr);
-    column-gap: 88px; align-items: start;
-    padding: 88px 72px 92px;
+    display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
+    column-gap: var(--s-2xl); align-items: start;
+    padding: var(--s-2xl);
   }
   .kontakt__wort { display: flex; flex-direction: column; }
-  .kontakt__still { margin-top: auto; padding-top: 56px; }
+  .kontakt__still { margin-top: auto; padding-top: var(--s-xl); }
   .formular { margin-top: 0; }
 
-  /* --- Fusszeile: vier Spalten ----------------------------------------- */
-  .fuss { padding-block: 80px 40px; }
-  .fuss__raster {
-    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
-    gap: 64px;
-  }
+  .fuss__raster { grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)); gap: var(--s-2xl); }
 
-  .dokument { padding-block: 72px 112px; }
+  .dokument { padding-block: var(--s-2xl) var(--s-4xl); }
 }
 
 /* =========================================================================
-   12. Einblenden
+   14. Einblenden
 
    Ueber JavaScript, nicht ueber animation-timeline: view(). Bei der
    CSS-Variante bleibt Inhalt auf opacity 0 stehen, wenn er den definierten
-   Bereich nie durchlaeuft — im Test war einmal ein ganzer Abschnitt
-   unsichtbar. Hier wird der Ausgangszustand erst gesetzt, wenn das Skript
-   laeuft; dazu ein Sicherheitsnetz nach zwei Sekunden.
+   Bereich nie durchlaeuft. Der unsichtbare Ausgangszustand wird deshalb
+   erst gesetzt, wenn das Skript laeuft; dazu ein Sicherheitsnetz nach
+   zwei Sekunden.
    ========================================================================= */
-.bereit .zeigen { opacity: 0; transform: translateY(12px); }
+.bereit .zeigen { opacity: 0; transform: translateY(10px); }
 .bereit .zeigen.da {
   opacity: 1; transform: none;
   transition: opacity var(--lang) var(--verlauf), transform var(--lang) var(--verlauf);
@@ -451,14 +482,11 @@
 }
 
 
-/* ------------------------------------------- 13. Nur auf den Textseiten */
-.nur-klein { display: inline-flex; }
-@media (min-width: 1000px) { .nur-klein { display: none; } }
-
-.fuss__zeile { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+/* --------------------------------------- 15. Nur auf den Textseiten */
+.fuss__zeile { display: flex; flex-wrap: wrap; gap: .2rem var(--s-lg); }
 .fuss__zeile a {
   display: inline-flex; align-items: center; min-height: 44px;
-  font-size: .84rem; color: var(--text-still); text-decoration: none;
+  font-size: .88rem; color: var(--text-leise); text-decoration: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.fuss__zeile a:hover { color: var(--text); }
+.fuss__zeile a:hover { color: var(--akzent); }

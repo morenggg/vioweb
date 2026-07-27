@@ -1,11 +1,10 @@
 # Vioweb — Website
 
 Statische Website für Vioweb. Handgeschriebenes HTML, CSS und JavaScript.
-Kein Framework, kein npm, kein Build-Schritt. Zum Bearbeiten reicht ein
-Texteditor, zum Anschauen ein Doppelklick auf `index.html`.
+Kein Framework, kein npm, kein Build-Schritt.
 
-Die Seite hat genau eine Aufgabe: Der Besucher trägt seine Website-Adresse
-in das Formular ein und fragt den kostenlosen Kurz-Check an.
+Die Seite hat zwei Aufgaben: Wer eine Website hat, fragt den kostenlosen
+Kurzcheck an. Wer keine hat, fragt eine neue Website an.
 
 ---
 
@@ -15,29 +14,38 @@ in das Formular ein und fragt den kostenlosen Kurz-Check an.
 index.html            Startseite
 impressum.html        Pflichtangaben — enthält Platzhalter
 datenschutz.html      Pflichtangaben — enthält Platzhalter
-danke.html            Bestätigung, nur ohne JavaScript erreichbar
+danke.html            Bestätigung nach dem Absenden
 404.html              Fehlerseite
-robots.txt
+robots.txt            sperrt derzeit ALLES — siehe LAUNCH_CHECKLIST.md
 sitemap.xml
+site.webmanifest
 .nojekyll             schaltet die Jekyll-Verarbeitung von GitHub Pages ab
-CNAME                 eigene Domain für GitHub Pages — nicht löschen
-site.webmanifest      Name, Farben und Symbole fürs Ablegen am Startbildschirm
+CNAME                 eigene Domain — nicht löschen
 css/seite.css         alles unterhalb der Falz
-js/seite.js           Formular, Off-Canvas-Menü, Kopfzeile, Einblenden
-img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopf, Fuß, Wasserzeichen
-img/favicon-32.png    Browser-Reiter
-img/favicon-192.png   Manifest
-img/favicon-512.png   Manifest, auf vollem Grund
-img/maskable-512.png  Android, mit Sicherheitszone
-img/apple-touch-icon.png   iOS-Startbildschirm, 180 × 180
-img/og-bild.png       Vorschaubild für soziale Netzwerke, 1200 × 630
+js/seite.js           Formular, Menü, Kopfzeile, Einblenden, Fortschrittsbalken
+fonts/                Manrope, lokal (SIL OFL 1.1)
+img/                  Firmenzeichen, Favicons, Vorschaubild
 SEO.md                alle SEO-Maßnahmen mit Begründung
 LAUNCH_CHECKLIST.md   Prüfliste für den Livegang
 ```
 
 > **Die Seite ist derzeit für Suchmaschinen gesperrt.** In `robots.txt`
-> steht `Disallow: /`. Das ist Absicht während der Entwicklung — und
-> Punkt 1 in `LAUNCH_CHECKLIST.md`.
+> steht `Disallow: /`. Das ist Punkt 1 in `LAUNCH_CHECKLIST.md`.
+
+---
+
+## Lokal ansehen
+
+Ein Doppelklick auf `index.html` reicht **nicht mehr** — über `file://`
+blockiert der Browser die Schriftdateien (CORS). Stattdessen:
+
+```
+cd vioweb
+python3 -m http.server 8099
+```
+
+Dann `http://127.0.0.1:8099/` aufrufen. Alle Prüfungen laufen ebenfalls
+über diesen Weg.
 
 ---
 
@@ -47,11 +55,14 @@ Das echte Zeichen ist eingebaut. Die Quelldatei war ein 1024 × 1024 großes
 PNG, an dem zwei Dinge nicht stimmten und die vor dem Einbau behoben
 wurden:
 
-- Ein **ein Pixel breiter grauer Rahmen** lief um die gesamte Fläche. Auf
-  dem dunklen Grund hätte er als graues Kästchen um das Logo gestanden,
-  bei 32 px im Kopfbereich deutlich sichtbar.
+- Ein **ein Pixel breiter grauer Rahmen** lief um die gesamte Fläche.
 - **88 % der Fläche war leer.** Ungeschnitten wäre das Zeichen im
   Kopfbereich auf etwa 19 px Höhe geschrumpft.
+
+**Offener Punkt:** Das Zeichen hat eine **weiße Hälfte**. Auf dem jetzt
+hellen Hintergrund verschwindet sie. Es liegt deshalb auf einer dunklen
+Kachel — das Zeichen selbst bleibt unverändert, das Layout passt sich an.
+Eine eigene Logovariante für helle Hintergründe wäre die saubere Lösung.
 
 Daraus entstanden die drei Dateien oben. Verhältnis des Zeichens nach dem
 Zuschnitt: **1,649 : 1** (breiter als hoch) — davon hängen die Größen im
@@ -274,6 +285,6 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - `prefers-reduced-motion` blendet nichts aus
 - JSON-LD gültig
 
-Gesamtgröße der Startseite: **100 KB** unkomprimiert, verteilt auf fünf
-Anfragen — davon 32 KB Bilddateien. HTML, CSS und JavaScript komprimiert
-der Server auf einen Bruchteil.
+Gesamtgröße der Startseite: **138 KB** unkomprimiert, verteilt auf sechs
+Anfragen — davon 25 KB die Schriftdatei und 31 KB das Firmenzeichen. HTML,
+CSS und JavaScript komprimiert der Server auf einen Bruchteil.

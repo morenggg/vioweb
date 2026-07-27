@@ -1,264 +1,229 @@
 # Vioweb — Designrichtlinien
 
 > Verbindliche Grundlage für jede Gestaltungsentscheidung.
-> Die Werte stammen aus dem bestehenden Erscheinungsbild (Instagram,
-> PDF-Berichte, Facebook) und sind kein Vorschlag.
 
-Version 3.0 · löst die zweite Fassung ab
+Version 4.0 · helles Erscheinungsbild, löst Version 3 ab
+
+> **Kehrtwende gegenüber Version 1 bis 3.** Die waren dunkel, abgeleitet
+> aus Instagram und den PDF-Berichten. Auf ausdrückliche Entscheidung des
+> Betreibers ist die Website jetzt hell. Das Erscheinungsbild auf Instagram
+> bleibt davon unberührt — wer beides nebeneinander sieht, merkt den Bruch.
+> Wenn die Website hell bleibt, gehört das Instagram-Profil mittelfristig
+> angeglichen.
 
 ---
 
 ## 1. Haltung
 
-Die Seite hat genau eine Aufgabe: Der Besucher trägt seine Website-Adresse
-in das Kontaktformular ein und fragt den kostenlosen Kurz-Check an. Alles
-andere zahlt darauf ein oder fliegt raus.
+Die Seite hat zwei Aufgaben, nicht mehr:
+
+1. Wer eine Website hat, fragt den kostenlosen Kurzcheck an.
+2. Wer keine hat, fragt eine neue Website an.
+
+Alles zahlt auf eines der beiden ein oder fliegt raus.
 
 Der Betreiber prüft fremde Websites gegen genau die Punkte, die auf dieser
 Seite selbst gelten. Eine Seite, die langsam ist, fremde Server anfragt oder
 sich nicht mit der Tastatur bedienen lässt, widerlegt jedes Versprechen auf
-ihr. Das ist hier keine Ästhetikfrage, sondern eine Glaubwürdigkeitsfrage.
+ihr. Das ist keine Ästhetikfrage, sondern eine Glaubwürdigkeitsfrage.
 
 ---
 
 ## 2. Zielgruppe und Sprache
 
-Kleine und mittlere Betriebe in Deutschland: Handwerk, Dienstleister,
-Vereine, Praxen. **Keine Entwickler.**
+Kleine und mittlere Betriebe, Vereine und Selbstständige. **Keine
+Entwickler.**
 
 - **Du**, nicht Sie. **Wir**, nicht ich. Durchgehend.
 - Kurze Hauptsätze, ein Gedanke pro Satz.
 - Kein Fachjargon. Keine englischen Begriffe, wo es deutsche gibt.
 - Konkret statt allgemein: „Drei Sekunden Ladezeit" statt „schlechte Performance".
-- Folgen benennen, nicht Methoden: „Ob dich findet, wer dich sucht" statt
-  „Meta-Tags und strukturierte Daten".
-- **Keine erfundenen Zahlen.** Steht eine Zahl auf der Seite, muss sie
-  belegbar sein. Fehlt eine Angabe, kommt ein sichtbar markierter
-  Platzhalter hin — nichts Erfundenes.
+- **Keine erfundenen Zahlen, Kunden, Bewertungen oder Erfolgsquoten.**
+  Fehlt eine Angabe, kommt ein sichtbar markierter Platzhalter hin.
+- **Keine Preise erfinden.** Der Check-up hat einen Preis, aber keinen
+  hinterlegten — die Seite sagt deshalb nur, dass er vor der Beauftragung
+  genannt wird.
 
-Feste Formulierungen:
-
-> Analysieren. Optimieren. Entwickeln.
-> Der erste Check kostet nichts.
+Verbotene Wendungen: „digitale Exzellenz", „maßgeschneiderte Lösungen",
+„Next Level", „Ihre Vision, unsere Mission", „revolutionieren",
+„einzigartige digitale Erlebnisse".
 
 ---
 
 ## 3. Farben
 
-Dunkles Erscheinungsbild. Lila ist die einzige Akzentfarbe.
+**Hell.** Warmes Off-White als Hauptfläche, dunkle Bereiche nur als
+gezielter Akzent.
 
 | Zweck | Hex | Variable |
 |---|---|---|
-| Hintergrund | `#060609` | `--grund` |
-| Hintergrund, Stufe 2 | `#0A0A0F` | `--grund-2` |
-| Hintergrund, Stufe 3 | `#101017` | `--grund-3` |
-| Hintergrund, Stufe 4 | `#16161F` | `--grund-4` |
-| Text hell | `#FFFFFF` | `--text` |
-| Text gedämpft | `#9EA1A9` | `--text-leise` |
-| Text still | `#7E818B` | `--text-still` |
-| Linien | `#282830` | `--linie` |
-| Akzent hell | `#9B54FC` | `--akzent-hell` |
-| Akzent kräftig | `#6226FA` | `--akzent-voll` |
-| Lichtschein | `#240D4E` | `--schein` |
+| Hauptfläche | `#F7F7FA` | `--grund` |
+| Karten, erhöhte Flächen | `#FFFFFF` | `--flaeche` |
+| ruhige Abschnitte | `#F0EFF6` | `--flaeche-ruhig` |
+| dunkler Abschnitt | `#1C1824` | `--dunkel` |
+| Text | `#17151D` | `--text` |
+| Text gedämpft | `#625F6B` | `--text-leise` |
+| Text auf Dunkel | `#EFEDF3` | `--text-hell` |
+| Akzent | `#7C3AED` | `--akzent` |
+| Akzent, Hover | `#6D28D9` | `--akzent-tief` |
+| Akzentfläche, sehr zart | `#EDE9FE` | `--akzent-zart` |
+| Akzent auf Dunkel | `#C4B5FD` | `--akzent-hell` |
 
-Ampelfarben nur, wenn tatsächlich eine Bewertung dargestellt wird:
-`#2E7D32` grün · `#D98A00` gelb · `#C1272D` rot. Sonst keine weiteren Farben.
+### Gemessene Kontraste
 
-### Die beiden Lila sind nicht austauschbar
+| Kombination | Wert |
+|---|---|
+| `#17151D` auf `#F7F7FA` | 17,1:1 |
+| `#625F6B` auf `#F7F7FA` | 5,8:1 |
+| `#7C3AED` auf `#F7F7FA` | 5,3:1 |
+| Weiß auf `#7C3AED` | 5,7:1 |
+| `#EFEDF3` auf `#1C1824` | 16,3:1 |
 
-Gemessen gegen `#060609`:
+**Formularrahmen brauchen einen eigenen Wert.** Die dekorative Haarlinie
+`rgba(23,21,29,.10)` erreicht gegen den Grund nur 1,25:1 — für
+Bedienelemente verlangt WCAG 1.4.11 aber 3:1. Deshalb `--linie-feld:
+#8B8894` an allen Eingabefeldern.
 
-| Farbe | Kontrast | Erlaubt für |
-|---|---|---|
-| `#FFFFFF` | 19,4:1 | alles |
-| `#9EA1A9` | 7,8:1 | Fließtext |
-| `#9B54FC` | 4,9:1 | **Text**, Akzentwörter, Verweise |
-| `#6226FA` | **3,1:1** | **nur Flächen**, Balken, Punkte, Rahmen |
-| Weiß auf `#6226FA` | 6,6:1 | Schaltflächen |
+### Regeln für Lila
 
-`#7E818B` erreicht 5,2:1 und ist die unterste zulässige Textstufe. Ein
-früherer Versuch mit `#6E717B` lag bei 4,15:1 und wurde von der Prüfung
-gefangen — unter 4,5:1 geht keine Textfarbe, egal wie klein die Schrift.
-
-`#6226FA` erreicht als Textfarbe die geforderten 4,5:1 nicht und wird
-deshalb **nie** für Text verwendet — auch nicht für kleine Beschriftungen.
-Umgekehrt bleibt `#6226FA` die Farbe des Balkens, der Aufzählungspunkte und
-der vollflächigen Schaltfläche.
-
-Fehlermeldungen im Formular laufen auf `#FF8A8F` statt `#C1272D`: Rot auf
-Schwarz erreicht sonst die 4,5:1 nicht.
-
-### Ein Akzent pro Abschnitt
-
-Meist ein einzelnes Wort in der Schlagzeile. Nie zwei lila Hervorhebungen
-in derselben Überschrift, nie eine ganze Zeile in Lila.
+- Höchstens **eine** betonte Fläche pro Abschnitt
+- Verboten: großflächige Verläufe, Neon, Glaseffekte als Selbstzweck,
+  eingefärbte Icon-Sets
+- Dunkle Flächen sind Akzent, nicht Grundton: **höchstens ein dunkler
+  Abschnitt** auf der Startseite
 
 ---
 
 ## 4. Schrift
 
-Systemschriften. Keine geladenen Schriftdateien, keine Schriften von fremden
-Servern. Drei Rollen, klar getrennt:
+**Manrope**, lokal eingebunden. Variable Datei, Gewichte 400 bis 800.
 
-| Rolle | Stack | Einsatz |
-|---|---|---|
-| Schlagzeile | `"Helvetica Neue", Helvetica, Arial, sans-serif` | H1, H2, H3, Fließtext |
-| Struktur | `"Arial Narrow", "Helvetica Neue Condensed", "Liberation Sans Narrow", Arial` | Versal-Beschriftungen, Formularlabels, Claim |
-| Technik | `ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono"` | Kicker, Nummern, technische Angaben |
+```
+--schrift: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
+           Roboto, "Helvetica Neue", Arial, sans-serif;
+```
 
-**Bekannte Grenze:** Die schmale Grotesk existiert nicht auf jedem System.
-Android und manche Linux-Systeme fallen auf normal breite Schrift zurück.
-Das ist bewusst in Kauf genommen — der Preis einer geladenen Schriftdatei
-wäre höher als der Gewinn. Alle Layouts müssen deshalb auch dann tragen,
-wenn die Struktur-Schrift normal breit rendert.
+Monospace nur für Nummern und technische Marker.
+
+**Warum lokal und nicht per Google Fonts:** Ein `<link>` zu
+`fonts.googleapis.com` würde bei jedem Aufruf eine Anfrage an einen fremden
+Server auslösen — genau das, was diese Website nicht tut. Die Dateien liegen
+in `fonts/`, Lizenz ist die SIL OFL 1.1, Selbsthosting ist erlaubt.
+
+Nur der lateinische Grundschnitt (24,8 KB) wird vorgeladen; er deckt Deutsch
+mit Umlauten und ß vollständig ab. Die erweiterte Datei holt der Browser nur
+bei Bedarf, geregelt über `unicode-range`.
 
 ### Regeln
 
-- Schlagzeilen: fett (700), Laufweite `-0.02em` bis `-0.03em`, Zeilenhöhe 1.02–1.06
-- Versalien bekommen **immer** zusätzliche Laufweite:
-  Struktur `+0.1em`, Technik `+0.2em` bis `+0.28em`
-- Fließtext höchstens **52 Zeichen** pro Zeile (`max-width: 52ch`)
-- Zeilenhöhe Fließtext 1.65
-- Nie Versalien über lange Textstrecken
+- Überschriften 800, Fließtext 400, Zwischenüberschriften 700
+- Laufweite bei großen Überschriften `-0.028em` bis `-0.032em`
+- Zeilenhöhe Fließtext **1.65**, Überschriften 1.12
+- Fließtext höchstens **62 Zeichen** je Zeile
+- Keine langen Versalstrecken, keine extrem fetten Textblöcke
+- Alle Größen über `clamp()` — keine starren Pixelwerte für Schrift
 
 ---
 
-## 5. Layout
+## 5. Layout und Abstände
 
 - **Alles linksbündig auf einer festen Kante. Nichts wird zentriert.**
-  Das gilt auch für Innenpolster von Klickflächen: Sie dürfen die Kante
-  nicht verschieben, notfalls über negative Außenabstände ausgleichen.
-- Seitenrand: 22 px bis 520 px, 28 px bis 900 px, darüber 56 px
-- Inhaltsbreite höchstens 1280 px
-- **Rechts bleibt bewusst Luft.** Text füllt die Fläche nie ganz aus
-- Wiederkehrend: der Balken **68 × 5 px** in `#6226FA` unter der Kicker-Zeile,
-  in jedem Abschnitt
-- Abschnitte werden durch Haarlinien in `#282830` getrennt, nicht durch Flächen
+  Das gilt auch für Innenpolster von Klickflächen
+- Seitenrand: 20 px bis 560 px, 28 px bis 900 px, darüber 48 px
+- Inhaltsbreite höchstens **1200 px**
+- **Rechts bleibt Luft.** Der Satzspiegel endet vor dem Rand — das heißt
+  nicht, dass das Layout einspaltig bleibt
 
-### Das Zwei-Kanten-Raster ab 1100 px
+### Abstandssystem
 
-Bis 1100 px ist die Seite einspaltig — auf dem Handy ist das richtig.
-Darüber bekommt sie eine **eigene Komposition**. Das einspaltige Layout
-einfach in die Breite zu ziehen war der Fehler der ersten Fassung: bei
-1920 px nutzte der Inhalt nur 52 % der Breite, alle fünf Abschnitte waren
-identisch aufgebaut, und die Seite las sich als hochskaliertes Handy-Layout.
-
-„Rechts bleibt Luft" heißt: **der Satzspiegel endet vor dem Rand** — nicht,
-dass das Layout einspaltig bleibt.
-
-- **Rail links** (`--rail: 168px`), Abstand `--gasse: 72px`, dann die
-  Inhaltsspalte. In der Rail stehen Kicker und Balken, in der Spalte Titel
-  und Inhalt. Beide Kanten sind über alle Abschnitte hinweg dieselben
-- **Container 1280 px**, Raster ab **1080 px**
-- **Fließtext bleibt bei 52 Zeichen.** Die Breite wird über Struktur
-  genutzt, nicht über längere Zeilen: mehrspaltige Listen, ein
-  dreiteiliges Leistungsraster, der zweispaltige Check-Block
-- **Stichwortlisten sind kein Fließtext** — für sie gilt die
-  52-Zeichen-Grenze nicht, sie laufen dreispaltig über die volle Breite
-- **Die Abschnitte sind unterschiedlich dicht.** 88 px (eng), 128 px
-  (normal), 152 px (Kontakt), 56 px (Band). Immer derselbe Abstand ist
-  das deutlichste Zeichen dafür, dass niemand gestaltet hat
-- **Jeder Abschnitt hat eine eigene Komposition.** Kein zweiter Abschnitt
-  ist wie der davor aufgebaut: Aussagenliste, zweispaltiger Index,
-  dreispaltige Schrittfolge, Bänder mit Marke, Vertrauensband, große
-  Fragen, zweispaltiger Kontaktblock
-- **Der Check-Block bricht das Raster bewusst:** dort läuft die Rail über
-  dem Inhalt, damit die beiden Spalten genug Breite haben. Er ist der
-  einzige Abschnitt, der das darf
-
-### Tiefe entsteht durch Licht, nicht durch Schatten
-
-Auf schwarzem Grund wirkt ein Schlagschatten wie ein Fleck. Erhöhte
-Flächen bekommen deshalb:
+Nur diese Werte, keine Zwischengrößen:
 
 ```css
---kante-licht: inset 0 1px 0 rgba(255, 255, 255, .055);
---flaeche: linear-gradient(180deg, var(--grund-3) 0%, var(--grund-2) 100%);
+--s-xs: .5rem;   --s-sm: .75rem;  --s-md: 1rem;   --s-lg: 1.5rem;
+--s-xl: 2.5rem;  --s-2xl: 4rem;   --s-3xl: 6rem;  --s-4xl: 8rem;
 ```
 
-Eine Haarlinie oben plus ein sehr flacher Verlauf nach unten. Das ist der
-einzige zulässige Verlauf — vollflächige Farbverläufe bleiben verboten.
+Große Abstände zwischen Abschnitten (`--s-2xl` mobil, `--s-3xl` ab
+1040 px), kleine innerhalb zusammengehöriger Inhalte.
 
-### Signaturelement
+### Zwei-Kanten-Raster ab 1040 px
 
-Das Firmenzeichen liegt groß mit **7,5 % Deckkraft** als Wasserzeichen im
-Hintergrund des Aufmachers, dahinter ein weicher radialer Lichtschein in
-`#240D4E`.
+Bis 1040 px ist die Seite einspaltig. Darüber: **Rail links**
+(`--rail: 164px`, Abstand `--gasse: 64px`) mit dem Kicker, rechts der
+Inhalt. Beide Kanten sind über alle Abschnitte hinweg dieselben.
 
-Zwei harte Bedingungen:
+**Jeder Abschnitt hat eine eigene Komposition.** Kein zweiter Abschnitt
+ist wie der davor aufgebaut: Bandleiste, zwei Wege als Karten,
+redaktionelle Definitionsliste, Kartenvergleich, dunkler Abschnitt mit
+Nummernliste, Häkchenliste, dreispaltige Schrittfolge, Accordion,
+zweispaltiger Kontaktblock.
 
-1. **Nur am rechten Rand angeschnitten.** Wird das Zeichen an zwei Rändern
-   gleichzeitig beschnitten, wirkt es als dunkler Block statt als Form.
-   Umgesetzt über `right: -12%`, Breite `min(56vw, 620px)`, vertikal auf
-   38 % gesetzt. Das Zeichen ist **breiter als hoch (1,649 : 1)** und stößt
-   damit weder oben noch unten an.
-2. **Der Schein hat keine sichtbare Kante.** Der Verlauf läuft über sieben
-   Stufen bis auf null aus. Weniger Stufen erzeugen einen sichtbaren Ring.
-3. **Der Text darüber muss lesbar bleiben.** Schein und Zeichen zusammen
-   ergeben am hellsten Punkt `rgb(50,31,87)`. Der gedämpfte Fließtext
-   erreicht darauf 5,53:1 (Handy) und 5,90:1 (Desktop). Wird die Deckkraft
-   des Wasserzeichens (aktuell 7,5 %) oder die Stärke des Scheins erhöht,
-   ist dieser Wert neu zu messen.
+### Nicht alles ist eine Karte
 
-### Das Zeichen ist eine Rastergrafik
+Karten gibt es an genau drei Stellen: die zwei Wege, der Vergleich
+Kurzcheck/Check-up und der Kontaktblock. Alles andere ist redaktionell —
+Überschrift, Text, Haarlinien, Weißraum.
 
-Es hat zwei Farben und weiche Verläufe, wird also **nicht** über
-`currentColor` eingefärbt. Größen laufen deshalb über die Höhe
-(Kopfbereich) beziehungsweise die Breite (Wasserzeichen), das
-Seitenverhältnis folgt aus den `width`/`height`-Angaben im Markup — die
-verhindern zugleich jeden Layoutsprung beim Laden.
+Acht Prüfbereiche als acht Kacheln wären genau die Baukastenoptik, die
+hier nicht vorkommen soll. Sie stehen deshalb als Definitionsliste mit
+Haarlinien.
+
+### Formen
+
+- Radien: **10 px** normal, **16 px** für Karten. Keine Pillen außer bei
+  kleinen Marken
+- Ein einziger, sehr flacher Schatten (`--hebung`) und nur auf betonten
+  Karten
+- Rahmen statt Schatten, wo es geht
 
 ---
 
 ## 6. Bewegung
 
-Höchstens ein dezentes Einblenden beim Scrollen. Nichts, was hüpft oder
-blinkt. Dauer 150–400 ms.
+- Fortschrittsbalken oben, 3 px, `transform: scaleX()`, einmal je
+  Bildaufbau über `requestAnimationFrame`
+- Einblenden beim Scrollen, sehr dezent
+- Hover auf Knöpfen und Verweisen, der Pfeil rückt 3 px
+- Mobilmenü fährt von rechts ein
+- Accordion über `::details-content`
 
-**Umgesetzt über JavaScript, nicht über `animation-timeline: view()`.**
-Die reine CSS-Variante wurde getestet und wieder entfernt: Läuft ein
-Element den definierten Bereich nie durch — weil die Seite gerade nicht
-scrollt oder jemand über einen Anker hineinspringt — bleibt es auf
-`opacity: 0` stehen. Im Test war ein kompletter Abschnitt unsichtbar.
+Dauer 160 ms (schnell), 280 ms (mittel), 460 ms (lang).
+`prefers-reduced-motion: reduce` schaltet alles ab.
 
-Die jetzige Lösung setzt den unsichtbaren Ausgangszustand erst, wenn das
-Skript läuft und `IntersectionObserver` vorhanden ist. Dazu ein
-Sicherheitsnetz: Was nach zwei Sekunden nicht ausgelöst hat, wird
-sichtbar geschaltet. **Sichtbarkeit von Inhalt darf nie vom Zustand einer
-Animation abhängen.**
-
-`prefers-reduced-motion: reduce` schaltet alle Bewegung ab.
+**Kein Einblenden über `animation-timeline: view()`.** Getestet und wieder
+entfernt: Läuft ein Element den Bereich nie durch, bleibt es auf
+`opacity: 0` stehen — im Test war ein ganzer Abschnitt unsichtbar. Der
+unsichtbare Ausgangszustand wird deshalb erst gesetzt, wenn das Skript
+läuft, plus Sicherheitsnetz nach zwei Sekunden.
 
 ---
 
 ## 6a. Zwei Bausteine mit eigenen Regeln
 
-### Off-Canvas-Menü
+### Mobilmenü
 
-Fährt von rechts ein, dahinter ein weichgezeichneter Schleier. Grundlage
-ist ein `<details>` — ohne JavaScript öffnet und schließt es nativ.
+Fährt von rechts ein, dahinter ein dunkler Schleier. Grundlage ist ein
+`<details>` — ohne JavaScript öffnet es nativ.
 
-Zwei Fallen, beide beim Testen aufgetreten und behoben:
+Drei Fallen, alle beim Testen aufgetreten:
 
-1. **Der Kopfbereich muss über der Tafel liegen** (`z-index: 110` bei
-   offenem Menü). Sonst verdeckt die Tafel den Schließen-Knopf und das
-   Menü lässt sich nicht mehr zuklappen.
-2. **Marke und Schließen-Knopf brauchen `z-index: 115`.** Schleier und
-   Tafel liegen im selben Stapelkontext des Kopfbereichs und würden das
-   Logo sonst überdecken.
+1. **`backdrop-filter` am Kopfbereich macht ihn zum Bezugsrahmen für
+   `position: fixed`.** Tafel und Schleier waren dadurch auf die Kopfzeile
+   eingesperrt. Bei offenem Menü wird der Filter deshalb abgeschaltet.
+2. **Der Kopfbereich muss über der Tafel liegen**, sonst verdeckt sie den
+   Schließen-Knopf.
+3. **Marke und Knopf brauchen `z-index: 115`**, weil Schleier und Tafel im
+   selben Stapelkontext liegen.
 
-Die Punkte laufen versetzt ein (130 ms Abstand) — das meint Reihenfolge,
-nicht Dekoration. Bei `prefers-reduced-motion` entfällt alles.
+### Das Firmenzeichen auf hellem Grund
 
-### Fragen
+Das Zeichen hat eine **weiße Hälfte**, die auf `#F7F7FA` verschwindet. Es
+liegt deshalb auf einer dunklen Kachel (`--dunkel`, Radius 8 px). Das
+Zeichen selbst bleibt unverändert — das Layout passt sich an, nicht
+umgekehrt.
 
-**Kein Standard-Akkordeon.** Große Schrift (bis 1,9 rem), sehr viel Luft
-(38 px Innenabstand), eine laufende Nummer in der Rail und ein Strich, der
-sich beim Öffnen dreht — kein Plus, kein Winkel, kein Icon.
-
-Die Antwort fährt über `::details-content` mit `interpolate-size:
-allow-keywords` weich auf. Browser ohne Unterstützung öffnen ohne
-Bewegung; der Inhalt ist in jedem Fall erreichbar.
+**Besser wäre eine eigene Logovariante für helle Hintergründe.** Solange
+die fehlt, bleibt die Kachel.
 
 ---
 
