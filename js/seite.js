@@ -155,12 +155,12 @@
       .then(function (a) { if (!a.ok) throw new Error('Status ' + a.status); })
       .then(function () {
         formular.reset();
-        meldungZeigen('Angekommen. Wir sehen uns die Seite an und melden uns — ' +
+        meldungZeigen('Angekommen. Wir sehen uns die Seite an und melden uns, ' +
           'in der Regel innerhalb von ein bis zwei Werktagen.');
       })
       .catch(function () {
-        meldungZeigen('Das hat gerade nicht geklappt. Versuch es bitte noch einmal ' +
-          '— oder schreib uns direkt an ' + mailAdresse + '.', 'fehler');
+        meldungZeigen('Das hat gerade nicht geklappt. Versuch es bitte noch einmal, ' +
+          'oder schreib uns direkt an ' + mailAdresse + '.', 'fehler');
       })
       .then(function () {
         knopf.removeAttribute('aria-disabled');

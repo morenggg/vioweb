@@ -429,6 +429,24 @@
 
   .band__liste { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-lg); }
 
+  /* Drei der fuenf Ueberschriften laufen zweizeilig, zwei einzeilig.
+     Dadurch begann der Fliesstext auf zwei verschiedenen Hoehen und die
+     Reihe sah aus wie eine Treppe. Ueber subgrid teilen sich alle fuenf
+     Eintraege dieselben zwei Zeilen des Elternrasters: Ueberschriften
+     oben, Fliesstext auf einer gemeinsamen Kante. Ohne feste Hoehen,
+     die beim naechsten Textwechsel wieder brechen wuerden.
+     Browser ohne subgrid behalten die bisherige Darstellung. */
+  @supports (grid-template-rows: subgrid) {
+    .band__liste {
+      grid-template-rows: auto auto;
+      column-gap: var(--s-lg); row-gap: .25rem;
+    }
+    .band__liste li {
+      display: grid; grid-row: span 2; grid-template-rows: subgrid;
+    }
+    .band__liste span { margin-top: 0; }
+  }
+
   .wege { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-xl); }
   .weg { padding: var(--s-xl); }
 
