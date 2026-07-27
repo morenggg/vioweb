@@ -276,7 +276,7 @@ werden — die Liste steht in der README.
 ## 9. Zugänglichkeit
 
 - Kontrast mindestens 4,5:1 für Fließtext, 3:1 für Bedienelemente
-- Sichtbarer Fokusrahmen: 2 px `#9B54FC`, 3 px Abstand
+- Sichtbarer Fokusrahmen: 2 px `#7C3AED`, 3 px Abstand
 - Sinnvolle Überschriftenhierarchie, genau eine `<h1>` pro Seite
 - Jedes Formularfeld hat ein `<label>`. Platzhalter ersetzen kein Label
 - Bedienbarkeit vollständig per Tastatur
@@ -310,7 +310,10 @@ existiert, kommt nicht ins Menü.
 
 - [ ] 360 px, 768 px und 1280 px ohne horizontalen Überlauf
 - [ ] Nichts zentriert, alles auf der linken Kante
-- [ ] Ein Akzent pro Abschnitt, `#6226FA` nirgends als Textfarbe
+- [ ] Hoechstens drei farbige Woerter auf der ganzen Seite
+- [ ] Nicht alle Abschnitte gleich aufgebaut (Randspalte wechselt)
+- [ ] Kein Geviertstrich im sichtbaren Text
+- [ ] Kein Kurzsatz als Schlusspointe hinter einem laengeren Satz
 - [ ] Wasserzeichen nur rechts angeschnitten, Schein ohne Kante
 - [ ] **Null Anfragen an fremde Server**
 - [ ] Kontraste beider Lila geprüft

@@ -48,10 +48,19 @@ Keine Quick Fixes, keine Hacks, keine doppelten Bausteine, keine Libraries.
 
 ## Gestaltung in drei Sätzen
 
-Dunkel, linksbündig, typografisch. Lila ist die einzige Akzentfarbe, und
-zwar `#9B54FC` für Text und `#6226FA` für Flächen — die beiden sind nicht
-austauschbar. Ein Akzent pro Abschnitt, meist ein einzelnes Wort in der
-Schlagzeile.
+Hell, linksbündig, typografisch. Lila ist die einzige Akzentfarbe,
+`#7C3AED` auf hellem Grund und `#C4B5FD` auf den dunklen Bändern.
+
+**Der Akzent ist selten.** Auf der ganzen Startseite gibt es genau drei
+farbige Wörter: im Aufmacher, im Vergleich, im Kontakt. Nicht einer je
+Abschnitt — das war die frühere Regel, und acht gleich gebaute
+Überschriften hintereinander haben die Seite wie eine Vorlage aussehen
+lassen.
+
+**Abschnitte sind nicht gleich gebaut.** Vier haben eine Randspalte mit
+Beschriftung, drei laufen über die volle Breite ohne. Die Verteilung ist
+absichtlich unregelmäßig; ein strenger Wechsel wäre nur das nächste
+Muster.
 
 Alles Weitere, inklusive der verworfenen Muster, steht in
 `vioweb-designrichtlinien.md`.
