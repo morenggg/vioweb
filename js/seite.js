@@ -1,8 +1,15 @@
 /* =========================================================================
-   Vioweb — Versand des Kontaktformulars.
+   Vioweb — das gesamte JavaScript der Seite.
 
-   Diese Datei macht ausschliesslich das Formular. Der Rest der Seite
-   funktioniert vollstaendig ohne JavaScript.
+   Drei Dinge, mehr nicht:
+     1. Versand des Kontaktformulars
+     2. Haarlinie unter dem Kopfbereich, sobald gescrollt wird
+     3. dezentes Einblenden der Abschnitte
+
+   Punkt 2 und 3 sind reine Zugaben. Ohne JavaScript ist die Seite
+   vollstaendig nutzbar und nichts ist versteckt.
+
+   --- 1. Kontaktformular -------------------------------------------------
 
    Drei Wege, in dieser Reihenfolge:
      1. Endpunkt hinterlegt  -> Versand per fetch, Antwort an Ort und Stelle
@@ -231,4 +238,89 @@
       if (feld.getAttribute('aria-invalid') === 'true') fehlerLoeschen(feld);
     });
   });
+})();
+
+
+/* =========================================================================
+   2. Kopfbereich: Haarlinie erst, wenn die Seite gescrollt ist.
+   ========================================================================= */
+(function () {
+  'use strict';
+  var kopf = document.getElementById('kopf');
+  if (!kopf || !('IntersectionObserver' in window)) return;
+
+  var wache = document.createElement('div');
+  wache.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none';
+  wache.setAttribute('aria-hidden', 'true');
+  document.body.prepend(wache);
+
+  new IntersectionObserver(function (eintraege) {
+    kopf.classList.toggle('ist-gescrollt', !eintraege[0].isIntersecting);
+  }).observe(wache);
+})();
+
+/* =========================================================================
+   2b. Aufklappmenue schliessen, sobald ein Ziel gewaehlt wurde.
+
+   Das Menue funktioniert als <details> vollstaendig ohne JavaScript. Es
+   bliebe dann nach dem Antippen eines Verweises aber offen stehen und
+   wuerde den Inhalt verdecken, zu dem gerade gesprungen wurde. Diese
+   Ergaenzung behebt genau das — und nur das.
+   ========================================================================= */
+(function () {
+  'use strict';
+  var menue = document.querySelector('.menue');
+  if (!menue) return;
+
+  menue.addEventListener('click', function (e) {
+    if (e.target.closest('a')) menue.removeAttribute('open');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (menue.hasAttribute('open') && !menue.contains(e.target)) {
+      menue.removeAttribute('open');
+    }
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape' || !menue.hasAttribute('open')) return;
+    menue.removeAttribute('open');
+    var knopf = menue.querySelector('summary');
+    if (knopf) knopf.focus();
+  });
+})();
+
+/* =========================================================================
+   3. Einblenden beim Scrollen.
+
+   Der Ausgangszustand (unsichtbar) wird erst gesetzt, wenn dieses Skript
+   laeuft UND IntersectionObserver vorhanden ist. Damit kann kein Inhalt
+   unsichtbar haengen bleiben — genau das war der Fehler der frueheren
+   reinen CSS-Loesung ueber animation-timeline: view().
+   ========================================================================= */
+(function () {
+  'use strict';
+  if (!('IntersectionObserver' in window)) return;
+
+  var bloecke = document.querySelectorAll('.abschnitt .spalte, .tafel, .check__flaeche');
+  if (!bloecke.length) return;
+
+  document.documentElement.classList.add('js-bereit');
+  bloecke.forEach(function (el) { el.classList.add('einblenden'); });
+
+  var beobachter = new IntersectionObserver(function (eintraege, selbst) {
+    eintraege.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('ist-da');
+      selbst.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -6% 0px' });
+
+  bloecke.forEach(function (el) { beobachter.observe(el); });
+
+  /* Sicherheitsnetz: Was nach zwei Sekunden noch nicht ausgeloest hat,
+     wird sichtbar geschaltet. Kein Inhalt darf an einer Animation haengen. */
+  window.setTimeout(function () {
+    bloecke.forEach(function (el) { el.classList.add('ist-da'); });
+  }, 2000);
 })();

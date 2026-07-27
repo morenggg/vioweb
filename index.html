@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Vioweb — Websites prüfen, verbessern und neu bauen</title>
-<meta name="description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit und sagen dir im Klartext, was zu tun ist. Der erste Check kostet nichts.">
+<title>Vioweb — Website persönlich prüfen lassen statt Standardbericht</title>
+<meta name="description" content="Wir sehen uns deine Website selbst an: Nutzerführung, Vertrauen, Technik, Sichtbarkeit. Du bekommst eine Reihenfolge statt einer Liste — und auf Wunsch die Umsetzung dazu.">
 <link rel="canonical" href="https://vioweb.de/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#060609">
@@ -14,29 +14,29 @@
 <meta property="og:site_name" content="Vioweb">
 <meta property="og:locale" content="de_DE">
 <meta property="og:url" content="https://vioweb.de/">
-<meta property="og:title" content="Vioweb — Websites prüfen, verbessern und neu bauen">
-<meta property="og:description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit. Der erste Check kostet nichts.">
+<meta property="og:title" content="Vioweb — Website persönlich prüfen lassen">
+<meta property="og:description" content="Kein automatischer Bericht: Wir sehen uns deine Seite selbst an und sagen dir, was zuerst dran ist. Auf Wunsch setzen wir es um.">
 <meta property="og:image" content="https://vioweb.de/img/og-bild.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Vioweb — Analysieren. Optimieren. Entwickeln.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vioweb — Websites prüfen, verbessern und neu bauen">
-<meta name="twitter:description" content="Wir prüfen deine Website auf Ladezeit, Rechtssicherheit und Auffindbarkeit. Der erste Check kostet nichts.">
+<meta name="twitter:title" content="Vioweb — Website persönlich prüfen lassen">
+<meta name="twitter:description" content="Kein automatischer Bericht: Wir sehen uns deine Seite selbst an und sagen dir, was zuerst dran ist.">
 <meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
 
 <link rel="icon" href="img/favicon.png" sizes="any">
 <link rel="apple-touch-icon" href="img/favicon.png">
 
 <!-- =====================================================================
-     KRITISCHES CSS — deckt alles oberhalb der Falz ab (Werte, Basis,
-     Kopfbereich, Aufmacher). Der Rest kommt nicht-blockierend aus
+     KRITISCHES CSS — alles oberhalb der Falz (Werte, Basis, Kopfbereich,
+     Aufmacher samt Berichtstafel). Der Rest kommt nicht-blockierend aus
      css/seite.css.
 
      Der Werte-Block (:root) steht bewusst in jeder HTML-Datei. Ohne
-     Build-Schritt ist das die einzige Moeglichkeit, kritisches CSS
-     inline zu halten. Wird eine Farbe geaendert, muss sie in allen
-     HTML-Dateien geaendert werden — die Liste steht in der README.
+     Build-Schritt ist das die einzige Moeglichkeit, kritisches CSS inline
+     zu halten. Wird ein Wert geaendert, muss er in allen HTML-Dateien
+     geaendert werden — die Liste steht in der README.
      ===================================================================== -->
 <style>
 /* ---------------------------------------------------------------- Werte */
@@ -45,9 +45,11 @@
 
   --grund:        #060609;
   --grund-2:      #0B0B10;
+  --grund-3:      #101017;
   --text:         #FFFFFF;
   --text-leise:   #9EA1A9;
   --linie:        #282830;
+  --linie-hell:   #3A3A46;
   --akzent-hell:  #9B54FC;  /* Text und Akzentwoerter — 4,9:1 auf --grund */
   --akzent-voll:  #6226FA;  /* nur Flaechen, Linien, Punkte — kein Text */
   --schein:       #240D4E;
@@ -56,23 +58,23 @@
   --mittel:#D98A00;
   --schlecht:#C1272D;
 
-  /* Systemschriften. Umstellung auf lokale Dateien: nur diese drei
-     Zeilen aendern und die @font-face-Regeln ergaenzen. */
   --schrift-schlag:    "Helvetica Neue", Helvetica, Arial, sans-serif;
   --schrift-struktur:  "Arial Narrow", "Helvetica Neue Condensed",
                        "Liberation Sans Narrow", Arial, sans-serif;
   --schrift-technik:   ui-monospace, "SF Mono", Menlo, Consolas,
                        "Liberation Mono", monospace;
 
-  --rand: 24px;
+  --rand: 20px;
   --feld: 1240px;
   --lesebreite: 52ch;
-  --rail: 180px;      /* linke Meta-Spalte ab 1100px */
-  --gasse: 64px;      /* Abstand Rail zur Inhaltsspalte */
+  --rail: 180px;
+  --gasse: 64px;
+  --kopfhoehe: 72px;
 
   --dauer: 200ms;
   --verlauf: cubic-bezier(.22, 1, .36, 1);
 }
+@media (min-width: 480px) { :root { --rand: 24px; } }
 @media (min-width: 900px) { :root { --rand: 64px; } }
 
 /* ---------------------------------------------------------------- Basis */
@@ -82,7 +84,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 32px;
+  scroll-padding-top: calc(var(--kopfhoehe) + 24px);
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
@@ -99,6 +101,7 @@ img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
 ul, ol { list-style: none; padding: 0; }
 button, input, textarea { font: inherit; color: inherit; }
+summary::-webkit-details-marker { display: none; }
 
 :focus-visible { outline: 2px solid var(--akzent-hell); outline-offset: 3px; }
 
@@ -108,8 +111,8 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 
 .sprungmarke-inhalt {
-  position: absolute; left: var(--rand); top: 16px; z-index: 20;
-  transform: translateY(-250%);
+  position: absolute; left: var(--rand); top: 12px; z-index: 60;
+  transform: translateY(-300%);
   background: var(--akzent-voll); color: #FFF;
   padding: 12px 18px; text-decoration: none; font-size: .9rem;
   transition: transform var(--dauer) var(--verlauf);
@@ -122,13 +125,8 @@ button, input, textarea { font: inherit; color: inherit; }
   margin-inline: auto; padding-inline: var(--rand);
 }
 
-/* Redaktionelles Zwei-Kanten-Raster.
-   Auf dem Handy laufen Rail und Inhalt untereinander — dort ist einspaltig
-   richtig, und daran wird nichts geaendert. Ab 1100px stellt sich die Rail
-   links daneben. Das nutzt die Breite, haelt die feste linke Kante und
-   laesst rechts trotzdem echte Luft, weil die Inhaltsspalte vor dem Rand
-   endet. Beide Kanten sind ueber alle Abschnitte hinweg dieselben. */
-.rail { margin-bottom: 26px; }
+/* Zwei-Kanten-Raster: mobil untereinander, ab 1100px nebeneinander. */
+.rail { margin-bottom: 24px; }
 .spalte > :first-child { margin-top: 0; }
 
 @media (min-width: 1100px) {
@@ -163,74 +161,108 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 .knopf--voll { background: var(--akzent-voll); color: #FFFFFF; }
 .knopf--voll:hover { background: var(--akzent-hell); color: #060609; }
-.knopf--rand { border-color: var(--linie); color: var(--text); }
+.knopf--rand { border-color: var(--linie-hell); color: var(--text); }
 .knopf--rand:hover { border-color: var(--akzent-hell); color: var(--akzent-hell); }
+.knopf--klein { min-height: 44px; padding: 10px 20px; font-size: .875rem; }
 
-/* -------------------------------------------------------- Kopfbereich */
-.kopf { padding-block: 28px 0; }
-.kopf__inhalt {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 24px; flex-wrap: wrap;
+/* --------------------------------------------- Kopfbereich, klebend */
+.kopf {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--grund);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dauer) var(--verlauf);
 }
-.marke { display: flex; align-items: flex-start; gap: 14px; text-decoration: none; }
-/* Rastergrafik mit eigenen Farben: keine Einfaerbung ueber currentColor.
-   Hoehe steuert die Groesse, Breite folgt dem Seitenverhaeltnis 1,649. */
-.marke__zeichen { height: 32px; width: auto; flex: none; margin-top: 3px; }
+@supports (backdrop-filter: blur(1px)) {
+  .kopf { background: rgba(6, 6, 9, .78); backdrop-filter: saturate(160%) blur(14px); }
+}
+.kopf.ist-gescrollt { border-bottom-color: var(--linie); }
+
+.kopf__inhalt {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; min-height: var(--kopfhoehe);
+}
+.marke { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+/* Rastergrafik mit eigenen Farben: keine Einfaerbung ueber currentColor. */
+.marke__zeichen { height: 28px; width: auto; flex: none; }
 .marke__name {
-  display: block; font-size: 1.35rem; font-weight: 700;
+  display: block; font-size: 1.2rem; font-weight: 700;
   letter-spacing: .02em; line-height: 1.1;
 }
 .marke__claim {
-  display: block; font-family: var(--schrift-struktur);
+  display: none; font-family: var(--schrift-struktur);
   font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--akzent-hell); margin-top: 3px;
+  color: var(--akzent-hell); margin-top: 2px;
 }
-@media (min-width: 460px) { .marke__claim { font-size: .78rem; } }
+@media (min-width: 620px) { .marke__claim { display: block; } }
 
-/* Negativer Rand, damit der Text der Marken optisch auf derselben linken
-   Kante sitzt wie alles andere. */
-.sprungmarken { display: flex; gap: 4px; margin-top: 6px; margin-inline: -12px; }
-.sprungmarken a {
-  display: inline-flex; align-items: center; min-height: 44px;
-  padding-inline: 12px;
-  font-family: var(--schrift-technik);
-  font-size: .7rem; text-transform: uppercase; letter-spacing: .2em;
-  color: var(--text-leise); text-decoration: none;
-  transition: color var(--dauer) var(--verlauf);
+.nav { display: none; }
+@media (min-width: 1000px) {
+  .nav { display: flex; align-items: center; gap: 4px; }
+  .nav a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    padding-inline: 14px; font-size: .875rem;
+    color: var(--text-leise); text-decoration: none;
+    transition: color var(--dauer) var(--verlauf);
+  }
+  .nav a:hover { color: var(--text); }
+  .nav .knopf { margin-left: 12px; color: #FFFFFF; }
+  .nav .knopf:hover { color: #060609; }
 }
-.sprungmarken a:hover { color: var(--text); }
+
+/* Aufklappmenue ohne JavaScript. */
+.menue { position: relative; }
+@media (min-width: 1000px) { .menue { display: none; } }
+.menue > summary {
+  display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; margin-right: -10px;
+  cursor: pointer; list-style: none; color: var(--text);
+}
+.menue > summary svg { width: 22px; height: 22px; }
+.menue__zu { display: none; }
+.menue[open] > summary .menue__auf { display: none; }
+.menue[open] > summary .menue__zu { display: block; }
+
+.menue__inhalt {
+  position: absolute; right: -10px; top: calc(100% + 14px);
+  width: min(84vw, 300px);
+  background: var(--grund-2);
+  border: 1px solid var(--linie);
+  padding: 8px;
+  display: grid; gap: 2px;
+}
+.menue__inhalt a {
+  display: flex; align-items: center; min-height: 48px;
+  padding-inline: 14px; text-decoration: none; font-size: 1rem;
+}
+.menue__inhalt a:hover { background: var(--grund-3); }
+.menue__inhalt .knopf { margin-top: 8px; }
 
 /* ----------------------------------------------------------- Aufmacher */
-.aufmacher {
-  position: relative; overflow: hidden;
-  display: flex; align-items: center;
-  min-height: clamp(560px, 82svh, 780px);
-  padding-block: 72px 96px;
-}
-/* Lichtschein: viele Stufen, damit keine sichtbare Kante entsteht. */
+.aufmacher { position: relative; overflow: hidden; padding-block: 56px 72px; }
+@media (min-width: 1100px) { .aufmacher { padding-block: 96px 120px; } }
+
 .aufmacher__schein {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    radial-gradient(58% 62% at 76% 44%,
-      rgba(36, 13, 78, .95) 0%,  rgba(36, 13, 78, .72) 18%,
-      rgba(36, 13, 78, .46) 34%, rgba(36, 13, 78, .26) 50%,
-      rgba(36, 13, 78, .11) 64%, rgba(36, 13, 78, .03) 80%,
+    radial-gradient(62% 68% at 78% 38%,
+      rgba(36, 13, 78, .92) 0%,  rgba(36, 13, 78, .70) 18%,
+      rgba(36, 13, 78, .44) 34%, rgba(36, 13, 78, .25) 50%,
+      rgba(36, 13, 78, .10) 64%, rgba(36, 13, 78, .03) 80%,
       rgba(36, 13, 78, 0) 100%);
 }
-/* Wasserzeichen: nur am rechten Rand angeschnitten. Oben und unten bleibt
-   Luft, damit die Form als W lesbar bleibt und nicht als dunkler Block. */
+/* Wasserzeichen: nur am rechten Rand angeschnitten, oben und unten bleibt
+   Luft, damit die Form als W lesbar bleibt. */
 .aufmacher__zeichen {
-  position: absolute; right: -9%; top: 50%; transform: translateY(-50%);
-  width: min(58vw, 620px); height: auto;
-  opacity: .11; pointer-events: none;
+  position: absolute; right: -10%; top: 42%; transform: translateY(-50%);
+  width: min(52vw, 560px); height: auto;
+  opacity: .09; pointer-events: none;
 }
 .aufmacher__inhalt { position: relative; }
-/* Die Spitzenwerte der clamp() steigen, die Startwerte nicht: bei 390px
-   greift weiterhin der mittlere Term, dort aendert sich nichts. */
+
 .aufmacher h1 {
-  font-size: clamp(2.6rem, 1.7rem + 3.9vw, 5.6rem);
-  font-weight: 700; line-height: 1.0; letter-spacing: -.032em;
-  max-width: 14ch;
+  font-size: clamp(2.4rem, 1.55rem + 3.7vw, 4.9rem);
+  font-weight: 700; line-height: 1.02; letter-spacing: -.032em;
+  max-width: 17ch;
 }
 .aufmacher h1 em { font-style: normal; color: var(--akzent-hell); }
 
@@ -238,12 +270,70 @@ button, input, textarea { font: inherit; color: inherit; }
   margin-top: 24px; max-width: var(--lesebreite);
   font-size: 1.06rem; color: var(--text-leise);
 }
-.aktionen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.aktionen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+
+.aufmacher__fuss {
+  margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px 24px;
+  font-size: .85rem; color: var(--text-leise);
+}
+.aufmacher__fuss li { display: flex; align-items: center; gap: 8px; }
+.aufmacher__fuss li::before {
+  content: ""; width: 6px; height: 6px; flex: none;
+  background: var(--akzent-voll);
+}
 
 @media (min-width: 1100px) {
   .vorspann { font-size: 1.2rem; margin-top: 30px; }
-  .aktionen { margin-top: 44px; }
-  .aufmacher { min-height: clamp(620px, 86svh, 860px); }
+  .aktionen { margin-top: 40px; }
+}
+
+/* --------------------------------------------- Berichtstafel im Aufmacher
+   Zeigt den Aufbau eines Berichts — die drei Dringlichkeitsstufen und was
+   in ihnen landet. Bewusst keine Messwerte und keine erfundenen Befunde:
+   die Tafel erklaert die Arbeitsweise, sie behauptet nichts. */
+.tafel {
+  margin-top: 48px;
+  border: 1px solid var(--linie);
+  background: linear-gradient(180deg, rgba(16,16,23,.9), rgba(11,11,16,.75));
+}
+@media (min-width: 1100px) { .tafel { margin-top: 0; } }
+
+.tafel__kopf {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 20px;
+  border-bottom: 1px solid var(--linie);
+}
+.tafel__titel {
+  font-family: var(--schrift-struktur);
+  font-size: .8rem; text-transform: uppercase; letter-spacing: .1em;
+}
+.tafel__marke {
+  font-family: var(--schrift-technik); font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .18em;
+  color: var(--akzent-hell);
+  border: 1px solid rgba(155, 84, 252, .4);
+  padding: 3px 8px; flex: none;
+}
+.stufe { padding: 18px 20px; border-top: 1px solid var(--linie); }
+.stufe:first-of-type { border-top: 0; }
+.stufe__rang {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--schrift-technik); font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .2em;
+  color: var(--text-leise);
+}
+.stufe__punkt { width: 8px; height: 8px; flex: none; }
+.stufe--hoch  .stufe__punkt { background: var(--schlecht); }
+.stufe--mittel .stufe__punkt { background: var(--mittel); }
+.stufe--klein .stufe__punkt { background: var(--gut); }
+.stufe p { margin-top: 8px; font-size: .96rem; max-width: 40ch; }
+.stufe span {
+  display: block; margin-top: 4px;
+  font-size: .8rem; color: var(--text-leise);
+}
+.tafel__fuss {
+  padding: 14px 20px; border-top: 1px solid var(--linie);
+  font-size: .8rem; color: var(--text-leise);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -262,7 +352,7 @@ button, input, textarea { font: inherit; color: inherit; }
 <body>
 <a class="sprungmarke-inhalt" href="#inhalt">Zum Inhalt springen</a>
 
-<header class="kopf">
+<header class="kopf" id="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="/">
       <img class="marke__zeichen" src="img/zeichen.webp" alt=""
@@ -272,10 +362,36 @@ button, input, textarea { font: inherit; color: inherit; }
         <span class="marke__claim">Analysieren. Optimieren. Entwickeln.</span>
       </span>
     </a>
-    <nav class="sprungmarken" aria-label="Schnellzugriff">
-      <a href="#leistungen">Leistungen</a>
-      <a href="#check">Check anfragen</a>
+
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#warum">Warum persönlich</a>
+      <a href="#pruefung">Was wir ansehen</a>
+      <a href="#ablauf">Ablauf</a>
+      <a href="#umfang">Umfang</a>
+      <a href="#fragen">Fragen</a>
+      <a class="knopf knopf--voll knopf--klein" href="#kontakt">Ersteinschätzung</a>
     </nav>
+
+    <details class="menue">
+      <summary aria-label="Menü öffnen und schließen">
+        <svg class="menue__auf" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"/>
+        </svg>
+        <svg class="menue__zu" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </summary>
+      <nav class="menue__inhalt" aria-label="Menü">
+        <a href="#warum">Warum persönlich</a>
+        <a href="#pruefung">Was wir ansehen</a>
+        <a href="#ablauf">Ablauf</a>
+        <a href="#umfang">Umfang</a>
+        <a href="#fragen">Fragen</a>
+        <a class="knopf knopf--voll" href="#kontakt">Ersteinschätzung anfragen</a>
+      </nav>
+    </details>
   </div>
 </header>
 
@@ -287,112 +403,183 @@ button, input, textarea { font: inherit; color: inherit; }
     <img class="aufmacher__zeichen" src="img/zeichen.webp" alt=""
          width="480" height="291" fetchpriority="low">
 
-    <div class="feld raster aufmacher__inhalt">
-      <div class="rail">
-        <p class="kicker">Website-Prüfung und Entwicklung</p>
+    <div class="feld aufmacher__inhalt aufmacher__raster">
+      <div class="aufmacher__wort">
+        <p class="kicker">Website-Analyse und Umsetzung</p>
         <span class="balken" aria-hidden="true"></span>
+
+        <h1>Deine Website, <em>persönlich</em> angesehen.</h1>
+
+        <p class="vorspann">
+          Kein automatischer Bericht. Wir gehen deine Seite selbst durch —
+          Nutzerführung, Vertrauen, Technik, Sichtbarkeit — und sagen dir in
+          normalen Worten, was zuerst dran ist. Auf Wunsch bringen wir es
+          auch gleich in Ordnung.
+        </p>
+
+        <div class="aktionen">
+          <a class="knopf knopf--voll" href="#kontakt">Ersteinschätzung anfragen</a>
+          <a class="knopf knopf--rand" href="#ablauf">So läuft das ab</a>
+        </div>
+
+        <ul class="aufmacher__fuss" role="list">
+          <li>Erste Einschätzung kostenlos</li>
+          <li>Keine Zugangsdaten nötig</li>
+          <li>Keine Bindung</li>
+        </ul>
       </div>
 
-      <div class="spalte">
-      <h1>Websites, die <em>überzeugen</em>.</h1>
+      <!-- Erklaert den Aufbau eines Berichts. Keine Messwerte, keine
+           erfundenen Befunde — nur die Arbeitsweise. -->
+      <aside class="tafel" aria-labelledby="tafel-titel">
+        <div class="tafel__kopf">
+          <p class="tafel__titel" id="tafel-titel">So ist ein Bericht aufgebaut</p>
+          <span class="tafel__marke">Aufbau</span>
+        </div>
 
-      <p class="vorspann">
-        Wir prüfen bestehende Seiten auf Tempo, Rechtssicherheit und
-        Auffindbarkeit. Wenn sich ein Neubau eher lohnt als jede Reparatur,
-        sagen wir dir das — und bauen ihn.
-      </p>
+        <div class="stufe stufe--hoch">
+          <p class="stufe__rang"><span class="stufe__punkt" aria-hidden="true"></span>Zuerst</p>
+          <p>
+            Was Besucher abspringen lässt, bevor sie verstanden haben, was du
+            anbietest.
+            <span>Nutzerführung · Vertrauen · Verständlichkeit</span>
+          </p>
+        </div>
 
-      <div class="aktionen">
-        <a class="knopf knopf--voll" href="#check">Kostenlosen Check anfragen</a>
-        <a class="knopf knopf--rand" href="#leistungen">Was wir machen</a>
-      </div>
-      </div>
+        <div class="stufe stufe--mittel">
+          <p class="stufe__rang"><span class="stufe__punkt" aria-hidden="true"></span>Danach</p>
+          <p>
+            Was dich Anfragen kostet, ohne dass es jemandem sofort auffällt.
+            <span>Kontaktwege · Mobile Bedienung · Ladezeit</span>
+          </p>
+        </div>
+
+        <div class="stufe stufe--klein">
+          <p class="stufe__rang"><span class="stufe__punkt" aria-hidden="true"></span>Wenn Zeit ist</p>
+          <p>
+            Was sauber sein sollte, aber selten über eine Anfrage entscheidet.
+            <span>Technische Feinheiten · Aufräumarbeiten</span>
+          </p>
+        </div>
+
+        <p class="tafel__fuss">
+          Jeder Punkt mit Begründung, geschätztem Aufwand und einem konkreten
+          Vorschlag.
+        </p>
+      </aside>
     </div>
   </section>
 
-  <!-- ==================================================== Leistungen -->
-  <section class="abschnitt abschnitt--weit" id="leistungen">
+  <!-- ================================================ Warum persönlich -->
+  <section class="abschnitt" id="warum">
     <div class="feld raster">
       <div class="rail">
-        <p class="kicker">Leistungen</p>
+        <p class="kicker">Warum persönlich</p>
         <span class="balken" aria-hidden="true"></span>
       </div>
 
       <div class="spalte">
-      <h2 class="titel">Drei Wege, in dieser <em>Reihenfolge</em>.</h2>
+        <h2 class="titel">Ein grüner Wert heißt noch nicht, dass die Seite <em>funktioniert</em>.</h2>
+        <p class="vorspann">
+          Kostenlose Werkzeuge sind ein guter Anfang. Sie messen aber nur, was
+          sich messen lässt — und lassen dich mit dem Ergebnis allein.
+        </p>
 
-      <ol class="leistungen" role="list">
-        <li class="leistung">
-          <p class="leistung__nummer" aria-hidden="true">01</p>
-          <div class="leistung__inhalt">
-            <h3>Analyse</h3>
+        <ul class="gegen" role="list">
+          <li>
+            <h3>Werkzeuge messen Technik, nicht Verständlichkeit</h3>
             <p>
-              Wir gehen deine Seite durch: Ladezeit auf dem Handy, Impressum
-              und Datenschutz, Auffindbarkeit bei Google, den Weg vom Besuch
-              zur Anfrage. Du bekommst einen Bericht in Klartext — mit einer
-              Reihenfolge, was zuerst dran ist und was warten kann.
+              Ob ein Besucher in fünf Sekunden begreift, was du anbietest,
+              taucht in keiner Messung auf. Genau daran scheitern die meisten
+              Seiten.
             </p>
-          </div>
-        </li>
-        <li class="leistung">
-          <p class="leistung__nummer" aria-hidden="true">02</p>
-          <div class="leistung__inhalt">
-            <h3>Optimierung</h3>
+          </li>
+          <li>
+            <h3>Eine Liste mit vierzig Punkten ist keine Reihenfolge</h3>
             <p>
-              Die gefundenen Punkte beheben wir an deiner bestehenden Seite.
-              Kein Neubau, kein neues System, kein Umzug. Du behältst, was
-              schon läuft.
+              Standardberichte werfen alles in einen Topf. Was davon deine
+              Anfragen kostet und was egal ist, steht nicht drin.
             </p>
-          </div>
-        </li>
-        <li class="leistung">
-          <p class="leistung__nummer" aria-hidden="true">03</p>
-          <div class="leistung__inhalt">
-            <h3>Neubau</h3>
+          </li>
+          <li>
+            <h3>Vertrauen lässt sich nicht automatisch prüfen</h3>
             <p>
-              Wenn die Grundlage nicht mehr trägt, bauen wir neu. Handarbeit
-              statt Baukasten — und nur dann, wenn sich das für dich eher
-              rechnet als jede weitere Reparatur.
+              Fehlende Ansprechpartner, veraltete Angaben, ein Impressum aus
+              dem Baukasten — das erkennt kein Werkzeug, aber jeder Kunde.
             </p>
-          </div>
-        </li>
-      </ol>
+          </li>
+          <li>
+            <h3>Was für einen Onlineshop richtig ist, ist für dich vielleicht falsch</h3>
+            <p>
+              Ein Handwerksbetrieb braucht etwas anderes als ein Verein.
+              Deshalb bewerten wir jeden Punkt im Zusammenhang mit deinem
+              Betrieb, nicht nach Checkliste.
+            </p>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- =============================================== Was wir prüfen -->
+  <!-- ================================================ Was wir ansehen -->
   <section class="abschnitt abschnitt--flaeche" id="pruefung">
     <div class="feld raster">
       <div class="rail">
-        <p class="kicker">Was wir prüfen</p>
+        <p class="kicker">Was wir ansehen</p>
         <span class="balken" aria-hidden="true"></span>
       </div>
 
       <div class="spalte">
-      <h2 class="titel">Zwölf Punkte, die <em>Besucher kosten</em>.</h2>
+        <h2 class="titel">Zehn Bereiche, jeder mit <em>Blick auf deinen Betrieb</em>.</h2>
 
-      <ul class="punkte" role="list">
-        <li>Ladezeit</li>
-        <li>Bilder &amp; Video</li>
-        <li>Seitengewicht</li>
-        <li>Impressum</li>
-        <li>Datenschutz</li>
-        <li>Schriften &amp; Karten</li>
-        <li>Google-Auftritt</li>
-        <li>Tote Links</li>
-        <li>Seitentitel</li>
-        <li>Bedienung am Handy</li>
-        <li>Weg zum Kontakt</li>
-        <li>Sicherheit</li>
-      </ul>
-      <p class="punkte__mehr">… und einiges mehr.</p>
+        <dl class="bereiche">
+          <div>
+            <dt>Nutzerführung</dt>
+            <dd>Findet ein Besucher ohne Umweg das, wofür er gekommen ist?</dd>
+          </div>
+          <div>
+            <dt>Gestaltung</dt>
+            <dd>Wirkt die Seite so professionell, wie du arbeitest?</dd>
+          </div>
+          <div>
+            <dt>Mobile Darstellung</dt>
+            <dd>Funktioniert sie auf dem Handy wirklich — nicht nur irgendwie.</dd>
+          </div>
+          <div>
+            <dt>Ladezeit</dt>
+            <dd>Wie lange dauert es bis zum ersten sichtbaren Inhalt?</dd>
+          </div>
+          <div>
+            <dt>Technische Qualität</dt>
+            <dd>Fehler im Aufbau, tote Verweise, unsichere Einbindungen.</dd>
+          </div>
+          <div>
+            <dt>Auffindbarkeit</dt>
+            <dd>Findet dich Google für das, was du tatsächlich anbietest?</dd>
+          </div>
+          <div>
+            <dt>Barrierearmut</dt>
+            <dd>Kontrast, Schriftgrößen, Bedienung mit der Tastatur.</dd>
+          </div>
+          <div>
+            <dt>Vertrauen</dt>
+            <dd>Erkennt ein Fremder, wer hinter der Seite steht?</dd>
+          </div>
+          <div>
+            <dt>Kontaktwege</dt>
+            <dd>Wie viele Schritte trennen einen Besucher von der Anfrage?</dd>
+          </div>
+          <div>
+            <dt>Verständlichkeit</dt>
+            <dd>Steht dort, was du machst — oder Werbesprache?</dd>
+          </div>
+        </dl>
       </div>
     </div>
   </section>
 
   <!-- ======================================================== Ablauf -->
-  <section class="abschnitt abschnitt--eng" id="ablauf">
+  <section class="abschnitt" id="ablauf">
     <div class="feld raster">
       <div class="rail">
         <p class="kicker">Ablauf</p>
@@ -400,33 +587,246 @@ button, input, textarea { font: inherit; color: inherit; }
       </div>
 
       <div class="spalte">
-      <h2 class="titel">Was nach dem Absenden <em>passiert</em>.</h2>
-      <p class="vorspann ablauf__text">
-        Du schickst uns die Adresse deiner Website. Wir schauen sie uns an und
-        melden uns mit dem, was uns auffällt. Was daraus wird, entscheidest
-        du — wir rufen nicht hinterher.
-      </p>
+        <h2 class="titel">Sechs Schritte, <em>ohne Überraschungen</em>.</h2>
+
+        <ol class="schritte" role="list">
+          <li>
+            <p class="schritte__nr" aria-hidden="true">01</p>
+            <h3>Kurz sprechen</h3>
+            <p>Was macht dein Betrieb, wen willst du erreichen, was stört dich?</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">02</p>
+            <h3>Seite durchgehen</h3>
+            <p>Technisch gemessen und von Hand angesehen — auf Rechner und Handy.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">03</p>
+            <h3>Einordnen</h3>
+            <p>Jeder Befund wird auf deinen Betrieb bezogen, nicht auf eine Checkliste.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">04</p>
+            <h3>Reihenfolge festlegen</h3>
+            <p>Was zuerst, was danach, was kann warten — mit Aufwand dazu.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">05</p>
+            <h3>Ergebnis besprechen</h3>
+            <p>Du bekommst den Bericht und wir gehen ihn gemeinsam durch.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">06</p>
+            <h3>Umsetzen — wenn du willst</h3>
+            <p>Selbst, mit deiner Agentur oder von uns. Du entscheidest.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== Umfang -->
+  <section class="abschnitt abschnitt--flaeche" id="umfang">
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Umfang</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
+        <h2 class="titel">Nur die Analyse — oder gleich <em>erledigt</em>.</h2>
+        <p class="vorspann">
+          Du bist nach der Einschätzung zu nichts verpflichtet. Wenn du willst,
+          machen wir aber auch weiter.
+        </p>
+
+        <ol class="stufen" role="list">
+          <li class="stufen__zeile">
+            <div class="stufen__kopf">
+              <p class="stufen__nr" aria-hidden="true">A</p>
+              <h3>Nur die Analyse</h3>
+            </div>
+            <p class="stufen__text">
+              Du bekommst den Bericht mit Reihenfolge, Begründungen und
+              konkreten Vorschlägen. Damit kann jeder weiterarbeiten — auch
+              deine bisherige Agentur.
+            </p>
+            <p class="stufen__fuer">Für alle, die selbst umsetzen</p>
+          </li>
+
+          <li class="stufen__zeile">
+            <div class="stufen__kopf">
+              <p class="stufen__nr" aria-hidden="true">B</p>
+              <h3>Analyse und Begleitung</h3>
+            </div>
+            <p class="stufen__text">
+              Dazu gehen wir den Bericht gemeinsam durch, klären Rückfragen
+              und schauen uns die Änderungen an, bevor sie live gehen.
+            </p>
+            <p class="stufen__fuer">Für alle, die jemanden im Rücken wollen</p>
+          </li>
+
+          <li class="stufen__zeile stufen__zeile--betont">
+            <div class="stufen__kopf">
+              <p class="stufen__nr" aria-hidden="true">C</p>
+              <h3>Analyse und Umsetzung</h3>
+            </div>
+            <p class="stufen__text">
+              Wir arbeiten die Punkte an deiner bestehenden Seite ab. Trägt die
+              Grundlage nicht mehr, bauen wir neu — aber nur, wenn sich das für
+              dich eher rechnet als jede weitere Reparatur.
+            </p>
+            <p class="stufen__fuer">Für alle, die es einfach erledigt haben wollen</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================== Vertrauen -->
+  <section class="abschnitt abschnitt--eng" id="vertrauen">
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Wie wir arbeiten</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
+        <h2 class="titel">Was du von uns <em>erwarten</em> kannst.</h2>
+
+        <ul class="haltung" role="list">
+          <li>
+            <h3>Ein Ansprechpartner</h3>
+            <p>Du sprichst immer mit derselben Person. Kein Ticketsystem.</p>
+          </li>
+          <li>
+            <h3>Verständlich statt Fachbegriffe</h3>
+            <p>Wenn du etwas nicht verstehst, ist der Bericht schlecht — nicht du.</p>
+          </li>
+          <li>
+            <h3>Keine Laufzeit</h3>
+            <p>Kein Abo, keine Kündigungsfrist. Jeder Schritt einzeln entschieden.</p>
+          </li>
+          <li>
+            <h3>Diese Seite hält sich selbst daran</h3>
+            <p>
+              Kein Tracking, keine Cookies, keine fremden Server. Deshalb siehst
+              du hier auch kein Einwilligungsbanner.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= Fragen -->
+  <section class="abschnitt" id="fragen">
+    <div class="feld raster">
+      <div class="rail">
+        <p class="kicker">Häufige Fragen</p>
+        <span class="balken" aria-hidden="true"></span>
+      </div>
+
+      <div class="spalte">
+        <h2 class="titel">Was du vermutlich <em>wissen willst</em>.</h2>
+
+        <div class="fragen">
+          <details name="fragen">
+            <summary>Was genau wird bei meiner Website geprüft?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Die zehn Bereiche weiter oben — von der Nutzerführung bis zur
+              Auffindbarkeit. Was davon bei dir Gewicht hat, hängt von deinem
+              Betrieb ab. Bei einem Verein zählt anderes als bei einem
+              Onlineshop.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Läuft das automatisch ab?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Nur zum Teil. Messwerte wie Ladezeit oder technische Fehler
+              erheben wir mit den üblichen Werkzeugen — das ist schneller und
+              genauer als jede Handarbeit. Bewertet, gewichtet und in eine
+              Reihenfolge gebracht wird danach von Hand.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Bekomme ich nur einen Bericht?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Nein. Zum Bericht gehört ein Gespräch, in dem wir ihn gemeinsam
+              durchgehen. Und wenn du willst, setzen wir die Punkte danach
+              direkt um.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Könnt ihr die Probleme auch gleich beheben?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Ja. Wir arbeiten die Punkte an deiner bestehenden Seite ab, in
+              dem System, das du schon nutzt. Ein Neubau kommt nur zur Sprache,
+              wenn er günstiger ist als das Reparieren — und wir begründen das.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Muss ich Zugangsdaten herausgeben?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Für die Einschätzung nicht. Wir sehen uns die Seite so an, wie
+              deine Besucher sie sehen. Zugänge brauchen wir erst, wenn wir
+              tatsächlich etwas ändern sollen.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Werden Änderungen sofort veröffentlicht?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Nein. Nichts geht live, bevor du es gesehen und freigegeben hast.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Wie läuft die Kontaktaufnahme ab?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Du schickst uns die Adresse deiner Website über das Formular
+              unten oder per E-Mail. Wir melden uns mit einer ersten
+              Einschätzung und einem Vorschlag, wie es weitergehen könnte.
+            </p>
+          </details>
+
+          <details name="fragen">
+            <summary>Lohnt sich das auch für eine ältere Website?<span class="fragen__zeichen" aria-hidden="true"></span></summary>
+            <p>
+              Gerade dann. Bei älteren Seiten bringen oft wenige gezielte
+              Änderungen mehr als ein kompletter Neubau — das sagen wir dir
+              aber erst, nachdem wir sie gesehen haben.
+            </p>
+          </details>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ================================================ Kontaktformular -->
-  <section class="check" id="check">
+  <section class="check" id="kontakt">
     <div class="feld">
       <div class="check__flaeche raster">
         <div class="rail">
-          <p class="kicker">Kostenloser Erstcheck</p>
+          <p class="kicker">Ersteinschätzung</p>
           <span class="balken" aria-hidden="true"></span>
         </div>
 
         <div class="spalte check__zwei">
         <div class="check__wort">
-          <h2 class="titel">Der erste Check <em>kostet nichts</em>.</h2>
+          <h2 class="titel">Schick uns die <em>Adresse</em>. Den Rest machen wir.</h2>
           <p class="vorspann">
-            Trag die Adresse deiner Website ein. Alles Weitere ist freiwillig.
+            Wir sehen uns deine Seite an und melden uns mit dem, was uns
+            auffällt. Kostenlos und unverbindlich — was daraus wird,
+            entscheidest du.
           </p>
           <p class="check__ruhe">
-            Erster Check, unverbindlich. Mehr als die Adresse brauchen wir nicht.
+            Mehr als die Adresse und eine E-Mail brauchen wir nicht. Kein
+            Verkaufsgespräch, wir rufen nicht hinterher.
           </p>
         </div>
 
@@ -446,7 +846,7 @@ button, input, textarea { font: inherit; color: inherit; }
              =============================================================== -->
         <form class="formular" id="check-formular" novalidate
               method="post" enctype="text/plain"
-              action="mailto:kontakt@vioweb.de?subject=Kostenloser%20Check"
+              action="mailto:kontakt@vioweb.de?subject=Ersteinsch%C3%A4tzung"
               data-endpunkt=""
               data-mail="kontakt@vioweb.de">
 
@@ -481,9 +881,9 @@ button, input, textarea { font: inherit; color: inherit; }
           </div>
 
           <div class="feldgruppe">
-            <label for="nachricht">Nachricht</label>
+            <label for="nachricht">Was stört dich am meisten?</label>
             <textarea id="nachricht" name="nachricht" rows="4"
-                      placeholder="Gibt es etwas, das dich besonders stört?"></textarea>
+                      placeholder="Zum Beispiel: kaum Anfragen, obwohl die Seite Besucher hat."></textarea>
           </div>
 
           <!-- Falle gegen automatische Eintraege. Menschen sehen das Feld
@@ -508,7 +908,7 @@ button, input, textarea { font: inherit; color: inherit; }
           </div>
 
           <button class="knopf knopf--voll formular__senden" type="submit">
-            Domain schicken
+            Ersteinschätzung anfragen
           </button>
 
           <p class="meldung" id="formular-meldung" role="status"></p>
@@ -526,68 +926,126 @@ button, input, textarea { font: inherit; color: inherit; }
     </div>
   </section>
 
-  <!-- ======================================================= Kontakt -->
-  <section class="abschnitt" id="kontakt">
-    <div class="feld raster">
-      <div class="rail">
-        <p class="kicker">Kontakt</p>
-        <span class="balken" aria-hidden="true"></span>
-      </div>
-
-      <div class="spalte">
-      <h2 class="titel">Lieber direkt <em>schreiben</em>?</h2>
-
-      <dl class="kontaktliste">
-        <div>
-          <dt>E-Mail</dt>
-          <dd><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></dd>
-        </div>
-        <div>
-          <dt>Instagram</dt>
-          <dd><a href="https://www.instagram.com/vio.web/" rel="noopener">@vio.web</a></dd>
-        </div>
-        <div>
-          <dt>Einzugsgebiet</dt>
-          <dd>Deutschlandweit, ansässig in Torgau</dd>
-        </div>
-      </dl>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer class="fuss">
-  <div class="feld fuss__inhalt">
-    <p class="fuss__marke">VIOWEB</p>
-    <nav class="fuss__marken" aria-label="Rechtliches">
-      <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
+  <div class="feld fuss__raster">
+    <div class="fuss__marke">
+      <a class="marke" href="/">
+        <img class="marke__zeichen" src="img/zeichen.webp" alt=""
+             width="480" height="291">
+        <span><span class="marke__name">VIOWEB</span></span>
+      </a>
+      <p>Websites prüfen, verbessern und neu bauen — für kleine und mittlere
+        Betriebe in ganz Deutschland.</p>
+    </div>
+
+    <nav class="fuss__block" aria-labelledby="fuss-seite">
+      <h2 id="fuss-seite">Seite</h2>
+      <ul role="list">
+        <li><a href="#warum">Warum persönlich</a></li>
+        <li><a href="#pruefung">Was wir ansehen</a></li>
+        <li><a href="#ablauf">Ablauf</a></li>
+        <li><a href="#umfang">Umfang</a></li>
+        <li><a href="#fragen">Häufige Fragen</a></li>
+      </ul>
     </nav>
+
+    <div class="fuss__block">
+      <h2 id="fuss-kontakt">Kontakt</h2>
+      <ul role="list" aria-labelledby="fuss-kontakt">
+        <li><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></li>
+        <li><a href="https://www.instagram.com/vio.web/" rel="noopener">Instagram @vio.web</a></li>
+        <li><a href="#kontakt">Ersteinschätzung anfragen</a></li>
+      </ul>
+    </div>
+
+    <nav class="fuss__block" aria-labelledby="fuss-recht">
+      <h2 id="fuss-recht">Rechtliches</h2>
+      <ul role="list">
+        <li><a href="impressum.html">Impressum</a></li>
+        <li><a href="datenschutz.html">Datenschutz</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="feld fuss__unten">
+    <p>© 2026 Vioweb</p>
+    <p>Deutschlandweit, ansässig in Torgau</p>
   </div>
 </footer>
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "@id": "https://vioweb.de/#betrieb",
-  "name": "Vioweb",
-  "url": "https://vioweb.de/",
-  "email": "kontakt@vioweb.de",
-  "description": "Prüfung, Optimierung und Neubau von Websites für kleine und mittlere Betriebe.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "[STRASSE UND HAUSNUMMER EINTRAGEN]",
-    "postalCode": "[POSTLEITZAHL EINTRAGEN]",
-    "addressLocality": "Torgau",
-    "addressCountry": "DE"
-  },
-  "areaServed": { "@type": "Country", "name": "Deutschland" },
-  "sameAs": ["https://www.instagram.com/vio.web/"]
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://vioweb.de/#betrieb",
+      "name": "Vioweb",
+      "url": "https://vioweb.de/",
+      "email": "kontakt@vioweb.de",
+      "description": "Persönliche Prüfung, Optimierung und Neubau von Websites für kleine und mittlere Betriebe.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "[STRASSE UND HAUSNUMMER EINTRAGEN]",
+        "postalCode": "[POSTLEITZAHL EINTRAGEN]",
+        "addressLocality": "Torgau",
+        "addressCountry": "DE"
+      },
+      "areaServed": { "@type": "Country", "name": "Deutschland" },
+      "sameAs": ["https://www.instagram.com/vio.web/"]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://vioweb.de/#fragen",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Was genau wird bei meiner Website geprüft?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Die zehn Bereiche weiter oben — von der Nutzerführung bis zur Auffindbarkeit. Was davon bei dir Gewicht hat, hängt von deinem Betrieb ab. Bei einem Verein zählt anderes als bei einem Onlineshop." }
+        },
+        {
+          "@type": "Question",
+          "name": "Läuft das automatisch ab?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nur zum Teil. Messwerte wie Ladezeit oder technische Fehler erheben wir mit den üblichen Werkzeugen — das ist schneller und genauer als jede Handarbeit. Bewertet, gewichtet und in eine Reihenfolge gebracht wird danach von Hand." }
+        },
+        {
+          "@type": "Question",
+          "name": "Bekomme ich nur einen Bericht?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nein. Zum Bericht gehört ein Gespräch, in dem wir ihn gemeinsam durchgehen. Und wenn du willst, setzen wir die Punkte danach direkt um." }
+        },
+        {
+          "@type": "Question",
+          "name": "Könnt ihr die Probleme auch gleich beheben?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Ja. Wir arbeiten die Punkte an deiner bestehenden Seite ab, in dem System, das du schon nutzt. Ein Neubau kommt nur zur Sprache, wenn er günstiger ist als das Reparieren — und wir begründen das." }
+        },
+        {
+          "@type": "Question",
+          "name": "Muss ich Zugangsdaten herausgeben?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Für die Einschätzung nicht. Wir sehen uns die Seite so an, wie deine Besucher sie sehen. Zugänge brauchen wir erst, wenn wir tatsächlich etwas ändern sollen." }
+        },
+        {
+          "@type": "Question",
+          "name": "Werden Änderungen sofort veröffentlicht?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nein. Nichts geht live, bevor du es gesehen und freigegeben hast." }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie läuft die Kontaktaufnahme ab?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Du schickst uns die Adresse deiner Website über das Formular unten oder per E-Mail. Wir melden uns mit einer ersten Einschätzung und einem Vorschlag, wie es weitergehen könnte." }
+        },
+        {
+          "@type": "Question",
+          "name": "Lohnt sich das auch für eine ältere Website?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Gerade dann. Bei älteren Seiten bringen oft wenige gezielte Änderungen mehr als ein kompletter Neubau — das sagen wir dir aber erst, nachdem wir sie gesehen haben." }
+        }
+      ]
+    }
+  ]
 }
 </script>
 
-<script src="js/formular.js" defer></script>
+<script src="js/seite.js" defer></script>
 </body>
 </html>

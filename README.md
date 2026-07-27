@@ -22,7 +22,7 @@ sitemap.xml
 .nojekyll             schaltet die Jekyll-Verarbeitung von GitHub Pages ab
 CNAME                 eigene Domain für GitHub Pages — nicht löschen
 css/seite.css         alles unterhalb der Falz
-js/formular.js        ausschließlich der Formularversand
+js/seite.js           Formularversand, Menü, Einblenden
 img/zeichen.webp      Firmenzeichen, 480 × 291 — Kopfbereich und Wasserzeichen
 img/favicon.png       Firmenzeichen quadratisch, 180 × 180 — Browser-Reiter
 img/og-bild.png       Vorschaubild für soziale Netzwerke, 1200 × 630
@@ -79,7 +79,7 @@ Vorgabe — die Domain war bekannt, der Teil davor nicht. Stimmt die Adresse
 nicht, in diesen Dateien ersetzen:
 
 - `index.html` — im Formular (`action` und `data-mail`), im
-  `<noscript>`-Block, im Abschnitt Kontakt, im JSON-LD
+  `<noscript>`-Block, in der Fußzeile, im JSON-LD
 - `impressum.html`, `datenschutz.html`, `danke.html`
 
 Der Grund für die Annahme statt eines Platzhalters: Ohne funktionierende
@@ -251,12 +251,14 @@ Automatisiert in Chromium, alle fünf Seiten bei 360, 768 und 1280 px:
 - Fließtext über dem Wasserzeichen: 5,04:1 (mobil) und 5,41:1 (Desktop),
   gemessen am hellsten Punkt von Lichtschein und Zeichen
 - Formular in allen drei Wegen: mit Endpunkt, per E-Mail, ohne JavaScript
+- Aufklappmenü: öffnen, Linkklick, Escape, Klick daneben, Fokusrückgabe
+- Kein Abschnitt bleibt beim Einblenden unsichtbar (320, 390 und 1440 px)
 - Leeres Absenden erzeugt drei Fehler in Klartext neben den Feldern
 - `beispiel.de` wird zu `https://beispiel.de` ergänzt
 - Honeypot bricht still ab; Honeypot und `_redirect` werden nicht versendet
 - `prefers-reduced-motion` blendet nichts aus
 - JSON-LD gültig
 
-Gesamtgröße der Startseite: **79,5 KB**, verteilt auf fünf Anfragen —
-davon 30,6 KB das Firmenzeichen und 11,9 KB das Favicon. Ohne die beiden
-Bilddateien wären es 38,6 KB.
+Gesamtgröße der Startseite: **109,6 KB** unkomprimiert, verteilt auf fünf
+Anfragen — davon 42,5 KB die beiden Bilddateien. HTML, CSS und JavaScript
+komprimiert der Server auf einen Bruchteil.

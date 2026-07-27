@@ -121,8 +121,8 @@ wenn die Struktur-Schrift normal breit rendert.
 - **Alles linksbündig auf einer festen Kante. Nichts wird zentriert.**
   Das gilt auch für Innenpolster von Klickflächen: Sie dürfen die Kante
   nicht verschieben, notfalls über negative Außenabstände ausgleichen.
-- Seitenrand: 24 px auf dem Handy, 64 px ab 900 px Breite
-- Inhaltsbreite höchstens 1120 px
+- Seitenrand: 20 px bis 480 px, 24 px bis 900 px, darüber 64 px
+- Inhaltsbreite höchstens 1240 px
 - **Rechts bleibt bewusst Luft.** Text füllt die Fläche nie ganz aus
 - Wiederkehrend: der Balken **68 × 5 px** in `#6226FA` unter der Kicker-Zeile,
   in jedem Abschnitt
@@ -149,7 +149,7 @@ dass das Layout einspaltig bleibt.
 - **Stichwortlisten sind kein Fließtext** — für sie gilt die
   52-Zeichen-Grenze nicht, sie laufen dreispaltig über die volle Breite
 - **Die Abschnitte sind unterschiedlich dicht.** 88 px (eng), 112 px
-  (normal), 152 px (weit), 160 px (Check). Fünfmal derselbe Abstand ist
+  (normal), 148 px (weit), 152 px (Kontakt). Immer derselbe Abstand ist
   das deutlichste Zeichen dafür, dass niemand gestaltet hat
 - **Der Check-Block bricht das Raster bewusst:** dort läuft die Rail über
   dem Inhalt, damit die beiden Spalten genug Breite haben. Er ist der
@@ -157,7 +157,7 @@ dass das Layout einspaltig bleibt.
 
 ### Signaturelement
 
-Das Firmenzeichen liegt groß mit **11 % Deckkraft** als Wasserzeichen im
+Das Firmenzeichen liegt groß mit **9 % Deckkraft** als Wasserzeichen im
 Hintergrund des Aufmachers, dahinter ein weicher radialer Lichtschein in
 `#240D4E`.
 
@@ -165,17 +165,16 @@ Zwei harte Bedingungen:
 
 1. **Nur am rechten Rand angeschnitten.** Wird das Zeichen an zwei Rändern
    gleichzeitig beschnitten, wirkt es als dunkler Block statt als Form.
-   Umgesetzt über `right: -9%`, vertikal zentriert, Breite
-   `min(58vw, 620px)`. Das Zeichen ist **breiter als hoch (1,649 : 1)**,
-   bei 620 px also 376 px hoch — es passt damit sicher in die Mindesthöhe
-   von 560 px, ohne oben oder unten anzustoßen.
+   Umgesetzt über `right: -10%`, Breite `min(52vw, 560px)`, vertikal auf
+   42 % gesetzt. Das Zeichen ist **breiter als hoch (1,649 : 1)** und stößt
+   damit weder oben noch unten an.
 2. **Der Schein hat keine sichtbare Kante.** Der Verlauf läuft über sieben
    Stufen bis auf null aus. Weniger Stufen erzeugen einen sichtbaren Ring.
 3. **Der Text darüber muss lesbar bleiben.** Schein und Zeichen zusammen
-   ergeben am hellsten Punkt `rgb(57,39,90)`. Der gedämpfte Fließtext
-   erreicht darauf 5,04:1 (Handy) und 5,41:1 (Desktop). Wird die Deckkraft
-   des Wasserzeichens oder die Stärke des Scheins erhöht, ist dieser Wert
-   neu zu messen.
+   ergeben am hellsten Punkt `rgb(52,33,84)`. Der gedämpfte Fließtext
+   erreicht darauf 5,45:1 (Handy) und 5,73:1 (Desktop). Wird die Deckkraft
+   des Wasserzeichens (aktuell 9 %) oder die Stärke des Scheins erhöht, ist
+   dieser Wert neu zu messen.
 
 ### Das Zeichen ist eine Rastergrafik
 
@@ -190,11 +189,19 @@ verhindern zugleich jeden Layoutsprung beim Laden.
 ## 6. Bewegung
 
 Höchstens ein dezentes Einblenden beim Scrollen. Nichts, was hüpft oder
-blinkt. Dauer 150–300 ms.
+blinkt. Dauer 150–400 ms.
 
-Umgesetzt rein in CSS über `animation-timeline: view()`, ohne JavaScript.
-Browser ohne Unterstützung zeigen den Inhalt sofort — es darf keinen
-Zustand geben, in dem etwas unsichtbar hängen bleibt.
+**Umgesetzt über JavaScript, nicht über `animation-timeline: view()`.**
+Die reine CSS-Variante wurde getestet und wieder entfernt: Läuft ein
+Element den definierten Bereich nie durch — weil die Seite gerade nicht
+scrollt oder jemand über einen Anker hineinspringt — bleibt es auf
+`opacity: 0` stehen. Im Test war ein kompletter Abschnitt unsichtbar.
+
+Die jetzige Lösung setzt den unsichtbaren Ausgangszustand erst, wenn das
+Skript läuft und `IntersectionObserver` vorhanden ist. Dazu ein
+Sicherheitsnetz: Was nach zwei Sekunden nicht ausgelöst hat, wird
+sichtbar geschaltet. **Sichtbarkeit von Inhalt darf nie vom Zustand einer
+Animation abhängen.**
 
 `prefers-reduced-motion: reduce` schaltet alle Bewegung ab.
 
@@ -224,8 +231,11 @@ Diese Muster sind verworfen und dürfen nicht wieder auftauchen:
   Anfrage an einen fremden Server senden. Das ist die Kernaussage der
   Marke und nicht verhandelbar.
 - Kritisches CSS inline im `<head>`, der Rest nicht-blockierend nachgeladen
-- JavaScript ausschließlich für den Formularversand. Alles andere
-  funktioniert ohne
+- **JavaScript nur für drei Dinge:** Formularversand, Schließen des
+  Aufklappmenüs und das Einblenden beim Scrollen. Die letzten beiden sind
+  reine Zugaben — ohne JavaScript bleibt die Seite vollständig bedienbar
+  und nichts ist versteckt. Das Menü selbst ist ein `<details>` und
+  funktioniert ohne Skript
 - Gesamtgröße unter 500 KB, sichtbarer Inhalt unter 1,5 s bei gedrosseltem
   Mobilfunk
 - Bilder mit `width` und `height` im Markup, `loading="lazy"` außer im

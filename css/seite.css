@@ -2,127 +2,193 @@
    Vioweb — Stile unterhalb der Falz.
 
    Wird nicht-blockierend geladen. Das kritische CSS (Werte, Basis,
-   Kopfbereich, Aufmacher) steht inline im <head> der jeweiligen Seite.
-   Die Werte aus :root gelten hier mit.
+   Kopfbereich, Aufmacher, Berichtstafel) steht inline im <head> der
+   jeweiligen Seite. Die Werte aus :root gelten hier mit.
 
    Reihenfolge:
      1. Abschnitte und Titel
-     2. Leistungen
-     3. Was wir pruefen
+     2. Warum persoenlich
+     3. Was wir ansehen
      4. Ablauf
-     5. Kontaktformular
-     6. Kontakt
-     7. Fusszeile
-     8. Textseiten (Impressum, Datenschutz, Danke, 404)
-     9. Einblenden beim Scrollen
+     5. Umfang
+     6. Haltung
+     7. Fragen
+     8. Kontaktformular
+     9. Fusszeile
+    10. Textseiten
+    11. Desktop ab 1100 px
+    12. Einblenden beim Scrollen
    ========================================================================= */
 
 /* ------------------------------------------- 1. Abschnitte und Titel */
 .abschnitt {
   border-top: 1px solid var(--linie);
-  padding-block: 72px;
+  padding-block: 64px;
 }
-@media (min-width: 900px) { .abschnitt { padding-block: 104px; } }
+@media (min-width: 900px) { .abschnitt { padding-block: 96px; } }
 
 .abschnitt--flaeche { background: var(--grund-2); }
 
 .titel {
-  font-size: clamp(1.9rem, 1.35rem + 2.2vw, 3.6rem);
+  font-size: clamp(1.8rem, 1.3rem + 2.2vw, 3.4rem);
   font-weight: 700;
-  line-height: 1.04;
+  line-height: 1.05;
   letter-spacing: -.028em;
-  max-width: 18ch;
+  max-width: 20ch;
 }
-/* Ein Akzent pro Abschnitt: genau ein Wort in der Schlagzeile. */
+/* Ein Akzent pro Abschnitt: genau ein Wort oder eine Wendung. */
 .titel em { font-style: normal; color: var(--akzent-hell); }
 
-/* ------------------------------------------------------ 2. Leistungen */
-.leistungen { margin-top: 48px; }
+.abschnitt .vorspann { margin-top: 20px; }
 
-/* Einspaltig, auch auf dem Desktop. Eine Nummernspalte links wuerde den
-   Titel um ihre Breite einruecken — dann saessen die Leistungen nicht mehr
-   auf derselben Kante wie alles andere. Die Nummer steht deshalb ueber
-   dem Titel. */
-.leistung {
-  padding-block: 32px;
+/* ------------------------------------------------ 2. Warum persoenlich */
+.gegen { margin-top: 44px; display: grid; gap: 32px; }
+.gegen li { padding-top: 22px; border-top: 1px solid var(--linie); }
+.gegen h3 {
+  font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em;
+  line-height: 1.3;
+}
+.gegen p { margin-top: 10px; color: var(--text-leise); font-size: .96rem; }
+
+/* ------------------------------------------------- 3. Was wir ansehen */
+.bereiche { margin-top: 44px; display: grid; }
+.bereiche > div {
+  padding-block: 18px;
   border-top: 1px solid var(--linie);
 }
-.leistung:first-child { border-top: 0; padding-top: 0; }
-@media (min-width: 760px) { .leistung { padding-block: 40px; } }
-
-.leistung__nummer {
-  font-family: var(--schrift-technik);
-  font-size: .72rem;
-  letter-spacing: .22em;
-  color: var(--akzent-hell);
-  margin-bottom: 10px;
+.bereiche > div:first-child { border-top: 0; }
+.bereiche dt {
+  font-family: var(--schrift-struktur);
+  font-size: .95rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
 }
-
-.leistung__inhalt h3 {
-  font-size: clamp(1.35rem, 1.1rem + .9vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: -.02em;
-  line-height: 1.15;
-}
-.leistung__inhalt p {
-  margin-top: 12px;
-  max-width: var(--lesebreite);
-  color: var(--text-leise);
-}
-
-/* ------------------------------------------------- 3. Was wir pruefen */
-.punkte {
-  margin-top: 48px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 32px;
-  max-width: 720px;
-}
-.punkte li {
-  position: relative;
-  padding-left: 20px;
-  font-size: .98rem;
-}
-.punkte li::before {
-  content: "";
-  position: absolute;
-  left: 0; top: .68em;
-  width: 7px; height: 7px;
-  background: var(--akzent-voll);
-}
-.punkte__mehr {
-  margin-top: 28px;
-  color: var(--text-leise);
-  font-size: .95rem;
+.bereiche dd {
+  margin: 6px 0 0; color: var(--text-leise); font-size: .95rem;
+  max-width: 44ch;
 }
 
 /* ---------------------------------------------------------- 4. Ablauf */
-.ablauf__text { font-size: 1.12rem; }
-@media (min-width: 1100px) { .ablauf__text { font-size: 1.35rem; max-width: 46ch; } }
-
-/* ------------------------------------------------- 5. Kontaktformular */
-/* Der einzige Abschnitt, der visuell aus der Reihe tanzen darf. */
-.check {
-  border-top: 1px solid var(--linie);
-  padding-block: 72px;
+.schritte { margin-top: 44px; display: grid; gap: 28px; }
+.schritte li { padding-top: 20px; border-top: 1px solid var(--linie); }
+.schritte__nr {
+  font-family: var(--schrift-technik);
+  font-size: .68rem; letter-spacing: .22em;
+  color: var(--akzent-hell);
+  margin-bottom: 10px;
 }
+.schritte h3 {
+  font-size: 1.08rem; font-weight: 700; letter-spacing: -.01em;
+  line-height: 1.3;
+}
+.schritte li p:last-child {
+  margin-top: 8px; color: var(--text-leise); font-size: .95rem;
+  max-width: 40ch;
+}
+
+/* ---------------------------------------------------------- 5. Umfang */
+.stufen { margin-top: 44px; display: grid; }
+.stufen__zeile {
+  padding-block: 28px;
+  border-top: 1px solid var(--linie);
+}
+.stufen__kopf { display: flex; align-items: baseline; gap: 16px; }
+.stufen__nr {
+  font-family: var(--schrift-technik);
+  font-size: .8rem; letter-spacing: .18em;
+  color: var(--text-leise);
+  border: 1px solid var(--linie-hell);
+  width: 30px; height: 30px; flex: none;
+  display: grid; place-items: center;
+  letter-spacing: 0;
+}
+.stufen__zeile h3 {
+  font-size: clamp(1.25rem, 1.05rem + .8vw, 1.6rem);
+  font-weight: 700; letter-spacing: -.02em; line-height: 1.2;
+}
+.stufen__text {
+  margin-top: 14px; color: var(--text-leise);
+  max-width: var(--lesebreite); font-size: .98rem;
+}
+.stufen__fuer {
+  margin-top: 12px;
+  font-family: var(--schrift-technik);
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .16em;
+  color: var(--text-leise);
+}
+/* Genau eine Stufe traegt den Akzent — nicht alle drei.
+   Negativer Rand, damit der Balken links AUSSERHALB der Textkante sitzt.
+   Mit reinem padding-left waere die betonte Stufe gegenueber den anderen
+   beiden eingerueckt — das bricht die feste linke Kante. */
+.stufen__zeile--betont {
+  border-left: 3px solid var(--akzent-voll);
+  padding-left: 22px;
+  margin-left: -25px;
+}
+.stufen__zeile--betont .stufen__nr {
+  border-color: var(--akzent-voll); color: var(--akzent-hell);
+}
+.stufen__zeile--betont .stufen__fuer { color: var(--akzent-hell); }
+
+/* --------------------------------------------------------- 6. Haltung */
+.haltung { margin-top: 44px; display: grid; gap: 28px; }
+.haltung h3 {
+  font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em;
+  padding-left: 18px; position: relative; line-height: 1.35;
+}
+.haltung h3::before {
+  content: ""; position: absolute; left: 0; top: .62em;
+  width: 7px; height: 7px; background: var(--akzent-voll);
+}
+.haltung p {
+  margin-top: 8px; padding-left: 18px;
+  color: var(--text-leise); font-size: .95rem; max-width: 42ch;
+}
+
+/* ---------------------------------------------------------- 7. Fragen */
+.fragen { margin-top: 40px; }
+.fragen details { border-top: 1px solid var(--linie); }
+.fragen details:last-child { border-bottom: 1px solid var(--linie); }
+.fragen summary {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; padding-block: 20px; min-height: 44px;
+  font-size: 1.02rem; font-weight: 700; letter-spacing: -.01em;
+  cursor: pointer; list-style: none;
+}
+.fragen summary:hover { color: var(--akzent-hell); }
+/* Plus, das sich beim Oeffnen zum Minus dreht — reine CSS-Form, kein Icon. */
+.fragen__zeichen {
+  position: relative; width: 14px; height: 14px; flex: none;
+}
+.fragen__zeichen::before, .fragen__zeichen::after {
+  content: ""; position: absolute; background: var(--akzent-hell);
+  transition: transform var(--dauer) var(--verlauf);
+}
+.fragen__zeichen::before { left: 0; top: 6px; width: 14px; height: 2px; }
+.fragen__zeichen::after  { left: 6px; top: 0; width: 2px; height: 14px; }
+.fragen details[open] .fragen__zeichen::after { transform: scaleY(0); }
+.fragen details p {
+  padding-bottom: 24px; color: var(--text-leise);
+  max-width: var(--lesebreite); font-size: .96rem;
+}
+
+/* ------------------------------------------------- 8. Kontaktformular */
+/* Der einzige Abschnitt, der visuell aus der Reihe tanzen darf. */
+.check { border-top: 1px solid var(--linie); padding-block: 64px; }
 @media (min-width: 900px) { .check { padding-block: 104px; } }
 
 .check__flaeche {
   border-left: 4px solid var(--akzent-voll);
   background: linear-gradient(100deg,
-    rgba(98, 38, 250, .07) 0%,
+    rgba(98, 38, 250, .08) 0%,
     rgba(98, 38, 250, .03) 42%,
     rgba(98, 38, 250, 0) 78%);
-  padding: 40px 24px 44px;
+  padding: 40px 20px 44px;
 }
-@media (min-width: 900px) {
-  .check__flaeche { padding: 72px 64px 76px; }
-}
+@media (min-width: 900px) { .check__flaeche { padding: 72px 64px 76px; } }
 
-.formular { margin-top: 40px; max-width: 560px; }
+.formular { margin-top: 36px; max-width: 560px; }
 
-.feldgruppe { margin-bottom: 24px; }
+.feldgruppe { margin-bottom: 22px; }
 /* Nicht auf .haken anwenden: der Einwilligungstext ist ein ganzer Satz und
    darf nicht in Versalien laufen. */
 .feldgruppe > label:not(.haken) {
@@ -135,19 +201,15 @@
 }
 .pflicht {
   font-family: var(--schrift-technik);
-  font-size: .62rem;
-  letter-spacing: .18em;
-  color: var(--akzent-hell);
-  margin-left: 8px;
+  font-size: .62rem; letter-spacing: .18em;
+  color: var(--akzent-hell); margin-left: 8px;
 }
 
 .formular input[type="url"],
 .formular input[type="email"],
 .formular input[type="text"],
 .formular textarea {
-  display: block;
-  width: 100%;
-  min-height: 52px;
+  display: block; width: 100%; min-height: 52px;
   padding: 13px 16px;
   background: var(--grund);
   border: 1px solid var(--linie);
@@ -156,22 +218,15 @@
   transition: border-color var(--dauer) var(--verlauf);
 }
 .formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
-
-.formular input:hover, .formular textarea:hover { border-color: #3A3A46; }
+.formular input:hover, .formular textarea:hover { border-color: var(--linie-hell); }
 .formular input:focus-visible,
 .formular textarea:focus-visible { border-color: var(--akzent-hell); outline-offset: 1px; }
 .formular ::placeholder { color: #6B6E78; }
-
 .formular [aria-invalid="true"] { border-color: var(--schlecht); }
 
-.hinweis {
-  margin-top: 7px;
-  font-size: .82rem;
-  color: var(--text-leise);
-}
+.hinweis { margin-top: 7px; font-size: .82rem; color: var(--text-leise); }
 .fehler {
-  margin-top: 7px;
-  font-size: .87rem;
+  margin-top: 7px; font-size: .87rem;
   color: #FF8A8F;          /* heller als --schlecht, damit 4,5:1 erreicht wird */
   font-weight: 700;
 }
@@ -184,31 +239,21 @@
 /* Falle gegen automatische Eintraege. Nicht display:none — manche
    Programme fuellen nur sichtbare Felder, und genau die sollen anbeissen. */
 .falle {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-.feldgruppe--haken { margin-top: 32px; }
+.feldgruppe--haken { margin-top: 30px; }
 .haken {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 14px;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px;
   align-items: start;
-  text-transform: none;
-  letter-spacing: normal;
+  text-transform: none; letter-spacing: normal;
   font-family: var(--schrift-schlag);
-  font-size: .95rem;
-  line-height: 1.55;
-  cursor: pointer;
+  font-size: .95rem; line-height: 1.55; cursor: pointer;
 }
 .haken input {
-  width: 22px; height: 22px;
-  margin-top: 2px;
-  accent-color: var(--akzent-voll);
-  cursor: pointer;
+  width: 22px; height: 22px; margin-top: 2px;
+  accent-color: var(--akzent-voll); cursor: pointer;
 }
 .haken a { color: var(--akzent-hell); }
 
@@ -216,15 +261,12 @@
 .formular__senden[aria-disabled="true"] { opacity: .6; cursor: progress; }
 
 .check__ruhe {
-  margin-top: 26px;
-  font-size: .87rem;
-  color: var(--text-leise);
-  max-width: 40ch;
+  margin-top: 24px; font-size: .87rem;
+  color: var(--text-leise); max-width: 40ch;
 }
 
 .meldung {
-  margin-top: 22px;
-  padding: 16px 18px;
+  margin-top: 22px; padding: 16px 18px;
   border-left: 3px solid var(--akzent-voll);
   background: rgba(98, 38, 250, .08);
   font-size: .95rem;
@@ -234,93 +276,55 @@
 .meldung--hinweis { border-left-color: var(--linie); background: var(--grund-2); }
 .meldung a { color: var(--akzent-hell); }
 
-/* --------------------------------------------------------- 6. Kontakt */
-.kontaktliste {
-  margin-top: 44px;
-  display: grid;
-  gap: 28px;
+/* ------------------------------------------------------- 9. Fusszeile */
+.fuss { border-top: 1px solid var(--linie); padding-block: 48px 32px; }
+.fuss__raster { display: grid; gap: 36px; }
+.fuss__marke .marke { margin-bottom: 14px; }
+.fuss__marke p {
+  color: var(--text-leise); font-size: .92rem; max-width: 34ch;
 }
-@media (min-width: 760px) {
-  .kontaktliste { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 860px; }
-}
-.kontaktliste dt {
+.fuss__block h2 {
   font-family: var(--schrift-technik);
-  font-size: .68rem;
-  text-transform: uppercase;
-  letter-spacing: .22em;
+  font-size: .66rem; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .22em;
   color: var(--text-leise);
+  margin-bottom: 6px;
 }
-.kontaktliste dd {
-  margin: 8px 0 0;
-  font-size: 1.05rem;
-}
-.kontaktliste a {
+.fuss__block ul { display: grid; }
+.fuss__block a {
   display: inline-flex; align-items: center; min-height: 44px;
-  color: var(--akzent-hell);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--dauer) var(--verlauf);
-}
-.kontaktliste a:hover { border-bottom-color: var(--akzent-hell); }
-
-/* ------------------------------------------------------- 7. Fusszeile */
-.fuss {
-  border-top: 1px solid var(--linie);
-  padding-block: 36px 44px;
-}
-.fuss__inhalt {
-  display: flex; flex-wrap: wrap; gap: 16px 32px;
-  align-items: center; justify-content: space-between;
-}
-.fuss__marke {
-  font-family: var(--schrift-technik);
-  font-size: .7rem;
-  letter-spacing: .28em;
-  color: var(--text-leise);
-}
-.fuss__marken { display: flex; gap: 4px; margin-inline: -12px; }
-.fuss__marken a {
-  display: inline-flex; align-items: center; min-height: 44px;
-  padding-inline: 12px;
-  font-size: .88rem;
-  color: var(--text-leise);
-  text-decoration: none;
+  font-size: .92rem; color: var(--text-leise); text-decoration: none;
   transition: color var(--dauer) var(--verlauf);
 }
-.fuss__marken a:hover { color: var(--text); }
+.fuss__block a:hover { color: var(--text); }
 
-/* ------------------------------------------------------ 8. Textseiten */
-.dokument { padding-block: 56px 88px; }
-@media (min-width: 900px) { .dokument { padding-block: 72px 112px; } }
+.fuss__unten {
+  margin-top: 40px; padding-top: 24px;
+  border-top: 1px solid var(--linie);
+  display: flex; flex-wrap: wrap; gap: 8px 32px;
+  justify-content: space-between;
+  font-size: .8rem; color: var(--text-leise);
+}
+
+/* ----------------------------------------------------- 10. Textseiten */
+.dokument { padding-block: 48px 80px; }
+@media (min-width: 900px) { .dokument { padding-block: 64px 104px; } }
 
 .dokument h1 {
-  margin-top: 26px;
   font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
-  font-weight: 700;
-  line-height: 1.06;
-  letter-spacing: -.025em;
+  font-weight: 700; line-height: 1.06; letter-spacing: -.025em;
   max-width: 18ch;
 }
 .dokument h1 em { font-style: normal; color: var(--akzent-hell); }
-
 .dokument h2 {
-  margin-top: 48px;
+  margin-top: 44px;
   font-family: var(--schrift-struktur);
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .1em;
+  font-size: 1rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .1em;
 }
-.dokument h3 {
-  margin-top: 28px;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -.01em;
-}
+.dokument h3 { margin-top: 26px; font-size: 1.05rem; font-weight: 700; }
 .dokument p, .dokument li {
-  margin-top: 14px;
-  max-width: var(--lesebreite);
-  color: var(--text-leise);
+  margin-top: 14px; max-width: var(--lesebreite); color: var(--text-leise);
 }
 .dokument a { color: var(--akzent-hell); }
 
@@ -338,103 +342,90 @@
   border-bottom: 1px solid var(--akzent-voll);
   padding: 1px 5px;
   font-family: var(--schrift-technik);
-  font-size: .86em;
-  letter-spacing: .04em;
+  font-size: .86em; letter-spacing: .04em;
 }
-
 .warnung {
-  margin-top: 32px;
-  padding: 18px 20px;
+  margin-top: 28px; padding: 18px 20px;
   border-left: 4px solid var(--mittel);
   background: rgba(217, 138, 0, .1);
 }
 .warnung p { margin-top: 0; color: var(--text); max-width: 58ch; }
 
-/* --------------------------------------- 9. Kein Einblenden beim Scrollen
-   Hier stand ein reines CSS-Einblenden ueber animation-timeline: view().
-   Es ist entfernt worden, und zwar aus einem harten Grund:
-
-   Ein Element, das den definierten Bereich nie durchlaeuft — weil die
-   Seite gerade nicht scrollt, weil der Besucher ueber einen Anker
-   mitten hinein springt oder weil der Bildschirm hoch genug ist —
-   bleibt auf opacity: 0 stehen. Im Test war der komplette Abschnitt
-   "Leistungen" unsichtbar.
-
-   Sichtbarkeit von Inhalt darf nie vom Zustand einer Animation
-   abhaengen. Die Richtlinien erlauben das Einblenden ausdruecklich nur
-   als "hoechstens" — also verzichten wir darauf. Die Seite lebt von
-   Typografie und Raum, nicht von Bewegung. */
-
-
 /* =========================================================================
-   10. Desktop ab 1100 px
+   11. Desktop ab 1100 px
 
-   Bis hierher ist die Seite einspaltig — auf dem Handy ist das richtig und
-   bleibt unangetastet. Ab 1100 px bekommt sie eine eigene Komposition,
-   statt das Handy-Layout in die Breite zu ziehen:
-
-     - Rail links, Inhalt rechts (Grundraster im kritischen CSS)
-     - groessere Typografie mit mehr Abstand zwischen den Ebenen
-     - Listen laufen mehrspaltig ueber die volle Inhaltsbreite
-     - die Abschnitte sind unterschiedlich dicht statt alle gleich
-     - der Check-Block wird zweispaltig und damit zum Hoehepunkt
+   Bis hierher ist die Seite einspaltig — auf dem Handy ist das richtig.
+   Darueber bekommt sie eine eigene Komposition statt eines in die Breite
+   gezogenen Handy-Layouts.
    ========================================================================= */
 @media (min-width: 1100px) {
 
-  /* --- Rhythmus: nicht jeder Abschnitt gleich hoch --------------------- */
-  .abschnitt          { padding-block: 112px; }
-  .abschnitt--weit    { padding-block: 152px; }
-  .abschnitt--eng     { padding-block: 88px; }
-  .check              { padding-block: 160px; }
-
-  /* --- Leistungen: Nummer und Titel links, Beschreibung rechts ---------
-     display:contents loest den Zwischencontainer auf, damit Ueberschrift
-     und Absatz direkt im Raster der Leistung liegen. */
-  .leistungen { margin-top: 64px; }
-
-  .leistung {
+  /* --- Aufmacher: Wort links, Berichtstafel rechts --------------------- */
+  .aufmacher__raster {
     display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .8fr);
     column-gap: 72px;
-    align-items: start;
-    padding-block: 52px;
-  }
-  .leistung__nummer { grid-column: 1; grid-row: 1; margin-bottom: 12px; }
-  .leistung__inhalt { display: contents; }
-  .leistung__inhalt h3 {
-    grid-column: 1; grid-row: 2;
-    font-size: 2rem; line-height: 1.08; letter-spacing: -.025em;
-  }
-  /* Der Absatz beginnt in Zeile 2 — also auf Hoehe des Titels, nicht auf
-     Hoehe der Nummer. Sonst haengen Titel und Text sichtbar versetzt. */
-  .leistung__inhalt p {
-    grid-column: 2; grid-row: 2;
-    margin-top: 0; font-size: 1.06rem;
+    align-items: center;
   }
 
-  /* --- Zwoelf Punkte: drei Spalten ueber die volle Inhaltsbreite -------
-     Stichworte sind kein Fliesstext, fuer sie gilt die 52-Zeichen-Regel
-     nicht. */
-  .punkte {
+  /* --- Rhythmus: nicht jeder Abschnitt gleich hoch --------------------- */
+  .abschnitt       { padding-block: 112px; }
+  .abschnitt--weit { padding-block: 148px; }
+  .abschnitt--eng  { padding-block: 88px; }
+  .check           { padding-block: 152px; }
+
+  .abschnitt .vorspann { margin-top: 26px; }
+
+  /* --- Warum persoenlich: zwei Spalten --------------------------------- */
+  .gegen {
+    margin-top: 64px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 44px 64px;
+  }
+  .gegen h3 { font-size: 1.18rem; }
+
+  /* --- Was wir ansehen: zwei Spalten, durchlaufende Haarlinien --------- */
+  .bereiche {
+    margin-top: 64px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 64px;
+  }
+  .bereiche > div { padding-block: 20px; }
+  .bereiche > div:nth-child(2) { border-top: 0; }
+
+  /* --- Ablauf: drei Spalten -------------------------------------------- */
+  .schritte {
     margin-top: 64px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px 56px;
-    max-width: none;
-    font-size: 1.06rem;
+    gap: 40px 56px;
   }
-  .punkte li { padding-left: 24px; }
-  .punkte li::before { top: .7em; }
-  .punkte__mehr { margin-top: 40px; }
 
-  /* --- Kontakt --------------------------------------------------------- */
-  .kontaktliste { margin-top: 56px; max-width: none; gap: 40px; }
-  .kontaktliste dd { font-size: 1.15rem; }
+  /* --- Umfang: Kopf links, Text rechts ---------------------------------- */
+  .stufen { margin-top: 64px; }
+  .stufen__zeile {
+    display: grid;
+    grid-template-columns: minmax(0, 290px) minmax(0, 1fr);
+    column-gap: 64px;
+    padding-block: 40px;
+    align-items: start;
+  }
+  .stufen__kopf { grid-column: 1; grid-row: 1; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .stufen__text { grid-column: 2; grid-row: 1; margin-top: 0; }
+  .stufen__fuer { grid-column: 2; grid-row: 2; margin-top: 14px; }
+  .stufen__zeile--betont { padding-left: 28px; margin-left: -31px; }
 
-  /* --- Check: der einzige Abschnitt mit eigener Komposition ------------
-     Hier laeuft die Rail nicht seitlich, sondern ueber dem Inhalt. Sonst
-     bliebe fuer die beiden Spalten zu wenig Breite und die Ueberschrift
-     bricht auf vier Zeilen. Der Block darf als einziger aus der Reihe
-     tanzen — genau das nutzen wir hier. */
+  /* --- Haltung: zwei Spalten ------------------------------------------- */
+  .haltung {
+    margin-top: 64px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 64px;
+  }
+
+  /* --- Fragen ----------------------------------------------------------- */
+  .fragen { margin-top: 56px; }
+  .fragen summary { font-size: 1.1rem; padding-block: 24px; }
+
+  /* --- Check: eigene Komposition, Rail ueber dem Inhalt ---------------- */
   .check__flaeche { padding: 96px 80px 100px; }
   .check .raster { display: block; }
   .check .rail { margin-bottom: 56px; padding-top: 0; }
@@ -446,16 +437,41 @@
     align-items: stretch;
   }
   .check__wort { display: flex; flex-direction: column; }
-  .check__wort .titel { font-size: clamp(2rem, 1.2rem + 1.7vw, 3rem); }
+  .check__wort .titel { font-size: clamp(2rem, 1.2rem + 1.7vw, 2.9rem); }
   .check__wort .vorspann { max-width: 32ch; }
-  /* Das Formular ist deutlich hoeher als der Text daneben. Statt die
-     linke Spalte unten leer auslaufen zu lassen, sitzt die ruhige Zeile
-     am Fuss der Spalte — sie schliesst den Block ab, statt in der Luft
-     zu haengen. */
+  /* Das Formular ist deutlich hoeher als der Text daneben. Die ruhige
+     Zeile sitzt deshalb am Fuss der Spalte und schliesst den Block ab. */
   .check__ruhe { margin-top: auto; padding-top: 64px; max-width: 30ch; }
   .formular { margin-top: 0; max-width: none; }
 
-  /* --- Textseiten ------------------------------------------------------ */
-  .dokument h1 { font-size: clamp(2.6rem, 1.4rem + 2.6vw, 3.6rem); }
-  .dokument h2:first-of-type { margin-top: 0; }
+  /* --- Fusszeile: vier Spalten ----------------------------------------- */
+  .fuss { padding-block: 72px 40px; }
+  .fuss__raster {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: 64px;
+  }
+
+  /* --- Textseiten ------------------------------------------------------- */
+  .dokument h1 { font-size: clamp(2.4rem, 1.4rem + 2.4vw, 3.4rem); }
+}
+
+/* =========================================================================
+   12. Einblenden beim Scrollen
+
+   Bewusst ueber JavaScript und nicht ueber animation-timeline: view().
+   Der Grund steht in den Designrichtlinien: bei der CSS-Variante bleibt
+   Inhalt auf opacity 0 stehen, wenn er den definierten Bereich nie
+   durchlaeuft — im Test war einmal ein kompletter Abschnitt unsichtbar.
+
+   Hier wird der Ausgangszustand erst gesetzt, wenn das Skript laeuft und
+   IntersectionObserver vorhanden ist (.js-bereit). Ohne JavaScript ist
+   nichts versteckt.
+   ========================================================================= */
+.js-bereit .einblenden { opacity: 0; transform: translateY(10px); }
+.js-bereit .einblenden.ist-da {
+  opacity: 1; transform: none;
+  transition: opacity 380ms var(--verlauf), transform 380ms var(--verlauf);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-bereit .einblenden { opacity: 1; transform: none; }
 }
