@@ -57,15 +57,28 @@ Der Kurzcheck läuft von außen. Zugangsdaten sind dafür nicht nötig.
 
 ## Preise
 
-Der Kurzcheck ist kostenlos und unverbindlich. Für den ausführlichen Check-up
-und für die Umsetzung richtet sich der Preis nach dem Umfang der Website und
-wird vor der Beauftragung genannt, nicht danach. Feste Listenpreise werden
-öffentlich nicht ausgewiesen.
+Alle Preise stehen öffentlich auf
+[Leistungen und Preise](https://vioweb.de/leistungen.html).
+
+| Leistung | Preis |
+|---|---|
+| Kostenlose Website-Erstanalyse | 0 € |
+| Pro Website-Analyse | 85 €, bei späterer Optimierung voll anrechenbar |
+| Landingpage | ab 399 € |
+| Unternehmenswebsite, bis fünf Seiten | ab 699 € |
+| Website-Optimierung | ab 199 € |
+| SEO-Basis | ab 99 € |
+| Wartung Basic / Standard / Premium | 9 € / 19 € / ab 39 € im Monat |
+
+Was über den vereinbarten Umfang hinausgeht, wird vorher besprochen und
+beziffert. Versteckte Kosten gibt es nicht.
 
 ## Wichtige Seiten
 
 - [Startseite](https://vioweb.de/): Leistungen, Prüfbereiche, Vergleich von
   Kurzcheck und Check-up, Ablauf, häufige Fragen und Kontaktformular
+- [Leistungen und Preise](https://vioweb.de/leistungen.html): alle Preise,
+  Leistungsumfang je Paket, Wartungsstufen und Fragen zu den Preisen
 
 Impressum und Datenschutzerklärung sind über die Fußzeile der Startseite
 erreichbar. Sie sind **absichtlich nicht** zur Auswertung freigegeben, weil

@@ -101,6 +101,12 @@
   margin: .3rem 0 0; max-width: 52ch;
   font-size: .95rem; line-height: 1.55; color: var(--text-leise);
 }
+/* Auf dunklem Grund traegt --text-leise nur 2,79:1 und faellt damit unter
+   die geforderten 4,5:1. Die Liste braucht dort die hellen Textwerte und
+   die helle Trennlinie. */
+.teil--dunkel .pruef dt { color: var(--text-hell); }
+.teil--dunkel .pruef dd { color: var(--text-hell-leise); }
+.teil--dunkel .pruef > div { border-top-color: var(--linie-dunkel); }
 
 /* -------------------------------------------- 5. Kurzcheck und Check-up */
 .karten { margin-top: var(--s-xl); display: grid; gap: var(--s-lg); }
@@ -524,3 +530,147 @@
   transition: color var(--schnell) var(--verlauf);
 }
 .fuss__zeile a:hover { color: var(--akzent); }
+
+/* ==========================================================================
+   16. Angebote auf der Leistungsseite
+
+   Bewusst kein neues Kartenmodell: .angebot uebernimmt Flaeche, Rahmen,
+   Radius und Innenabstand von .karte und ergaenzt nur, was der Preis
+   braucht. Deshalb steht hier auch keine Farbe und kein Abstand, den es
+   nicht schon als Wert gibt.
+
+   Der Preis ist eine eigene typografische Groesse. Er soll auf den ersten
+   Blick lesbar sein, ohne dass die Karte zur Preisbox wird: gross, aber
+   ohne Farbe, ohne Rahmen, ohne Hintergrund.
+   ========================================================================== */
+
+.angebote { margin-top: var(--s-xl); display: grid; gap: var(--s-lg); }
+
+.angebot {
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--rund-gross);
+  padding: var(--s-lg);
+  display: flex; flex-direction: column;
+  transition: border-color var(--mittel) var(--verlauf),
+              box-shadow var(--mittel) var(--verlauf),
+              transform var(--mittel) var(--verlauf);
+}
+/* Der Hover hebt die Karte um zwei Pixel und legt einen sehr weichen
+   Schatten darunter. Mehr braucht es nicht; alles darueber wirkt wie eine
+   Vorlage. Auf Touch-Geraeten gibt es keinen Hover, deshalb steht der
+   Zustand hinter einer Abfrage und nicht als Dauerzustand in der Karte. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .angebot:hover { transform: translateY(-2px); }
+}
+@media (hover: hover) {
+  .angebot:hover { border-color: var(--linie-kraeftig); box-shadow: var(--hebung); }
+  .angebot--betont:hover { border-color: var(--akzent); }
+}
+
+/* Genau eine Karte je Reihe traegt den Akzent. */
+.angebot--betont { border-color: var(--akzent); box-shadow: var(--hebung); }
+
+.angebot__marke {
+  align-self: flex-start;
+  padding: .25rem .6rem; border-radius: 999px;
+  background: var(--flaeche-ruhig);
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-leise);
+  margin-bottom: var(--s-md);
+}
+.angebot--betont .angebot__marke { background: var(--akzent-zart); color: var(--akzent); }
+
+.angebot__titel {
+  font-size: clamp(1.25rem, 1.08rem + .7vw, 1.5rem);
+  font-weight: 800; letter-spacing: -.022em;
+}
+
+.angebot__preis {
+  margin-top: .35rem;
+  font-size: clamp(2.1rem, 1.7rem + 1.6vw, 3rem);
+  font-weight: 800; letter-spacing: -.038em; line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+.angebot__preis em { font-style: normal; color: var(--akzent); }
+.angebot__takt {
+  display: inline-block; margin-left: .25rem;
+  font-size: .85rem; font-weight: 600; letter-spacing: -.005em;
+  color: var(--text-leise);
+}
+
+.angebot__satz {
+  margin-top: var(--s-md); color: var(--text-leise);
+  font-size: .96rem; line-height: 1.55; max-width: 42ch;
+}
+
+.angebot__liste { margin-top: var(--s-lg); display: grid; gap: .55rem; }
+.angebot__liste li {
+  position: relative; padding-left: 1.6rem;
+  font-size: .95rem; line-height: 1.5;
+}
+.angebot__liste li::before {
+  content: ""; position: absolute; left: .15rem; top: .38em;
+  width: .42rem; height: .72rem;
+  border: solid var(--akzent); border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Der Anrechnungshinweis ist das staerkste Vertrauensargument auf der
+   Seite. Er bekommt eine ruhige Flaeche statt einer Farbe, damit er
+   auffaellt, ohne wie ein Werbeaufkleber zu wirken. */
+.angebot__hinweis {
+  margin-top: var(--s-lg);
+  padding: var(--s-sm) var(--s-md);
+  background: var(--akzent-zart);
+  border-radius: var(--rund);
+  font-size: .9rem; line-height: 1.5; font-weight: 600;
+  color: var(--akzent-tief);
+}
+
+/* Der Knopf sitzt immer unten, egal wie unterschiedlich lang die Listen
+   sind. Das haelt die Fusskante der Karten ruhig, ohne feste Hoehen. */
+/* Der Knopf sitzt an der Unterkante der Karte. Weil subgrid die Karten
+   einer Reihe auf gleiche Hoehe bringt, stehen dadurch auch die Knoepfe
+   auf einer Linie, obwohl die Listen unterschiedlich lang sind. */
+.angebot__rest > .knopf { margin-top: auto; align-self: flex-start; }
+.angebot__liste + .knopf,
+.angebot__hinweis + .knopf,
+.angebot__satz + .knopf { margin-top: var(--s-lg); }
+.angebot__rest > .angebot__liste + .knopf,
+.angebot__rest > .angebot__hinweis + .knopf,
+.angebot__rest > .angebot__satz + .knopf { margin-top: auto; padding-top: var(--s-lg); }
+.angebot--klein > :last-child { margin-bottom: 0; }
+
+/* Kopf und Rest sind zwei Bloecke, damit die Preise einer Reihe auf einer
+   Linie stehen koennen. Der Preis sitzt an der Unterkante des Kopfes; ist
+   ein Titel zweizeilig und der andere einzeilig, gleicht subgrid die
+   Kopfhoehe aus und die Preise bleiben buendig. Ohne feste Hoehen, die
+   beim naechsten Textwechsel wieder brechen wuerden. */
+.angebot__kopf { display: flex; flex-direction: column; }
+.angebot__kopf .angebot__preis { margin-top: auto; padding-top: .35rem; }
+.angebot__rest { display: flex; flex-direction: column; flex: 1; }
+.angebot__rest > :first-child { margin-top: var(--s-md); }
+
+@media (min-width: 860px) {
+  .angebote--paar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-lg); }
+  .angebote--drei { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .angebot { padding: var(--s-xl); }
+  .angebot--klein { padding: var(--s-lg); }
+
+  @supports (grid-template-rows: subgrid) {
+    .angebote--paar, .angebote--drei { grid-template-rows: auto 1fr; }
+    .angebot {
+      display: grid; grid-row: span 2; grid-template-rows: subgrid;
+      row-gap: 0;
+    }
+  }
+}
+
+/* ------------------------------------------------- Schlussaufforderung */
+.schluss {
+  padding-block: var(--s-3xl);
+  border-top: 1px solid var(--linie);
+}
+@media (min-width: 1040px) { .schluss { padding-block: var(--s-4xl); } }
+.schluss .vorspann { margin-top: var(--s-md); }
