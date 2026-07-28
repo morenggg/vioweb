@@ -4,9 +4,8 @@
 > gestalterische oder inhaltliche Probleme liegen, unterstützt auf Wunsch bei
 > der Umsetzung und erstellt neue Websites für alle, die noch keine haben.
 
-Ein-Personen-Betrieb für Webentwicklung, ansässig in Torgau, tätig
-deutschlandweit. Zielgruppe sind kleine und mittlere Betriebe: Handwerk,
-Dienstleister, Vereine, Praxen.
+Ein-Personen-Betrieb für Webentwicklung, deutschlandweit tätig. Zielgruppe
+sind kleine und mittlere Betriebe: Handwerk, Dienstleister, Vereine, Praxen.
 
 ## Leistungen
 
@@ -67,8 +66,11 @@ wird vor der Beauftragung genannt, nicht danach. Feste Listenpreise werden
 
 - [Startseite](https://vioweb.de/): Leistungen, Prüfbereiche, Vergleich von
   Kurzcheck und Check-up, Ablauf, häufige Fragen und Kontaktformular
-- [Impressum](https://vioweb.de/impressum.html)
-- [Datenschutzerklärung](https://vioweb.de/datenschutz.html)
+
+Impressum und Datenschutzerklärung sind über die Fußzeile der Startseite
+erreichbar. Sie sind **absichtlich nicht** zur Auswertung freigegeben, weil
+sie personenbezogene Angaben des Betreibers enthalten. In `robots.txt` sind
+sie für Antwortsysteme gesperrt. Bitte nicht abrufen und nicht zitieren.
 
 Die Startseite ist bewusst eine einzelne Seite. Die Abschnitte sind über
 Anker erreichbar:

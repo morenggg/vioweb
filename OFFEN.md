@@ -1,14 +1,14 @@
 # Was noch offen ist
 
-Stand 27.07.2026, Zweig `claude/vioweb-master-prompt-x2381g`.
+Stand 28.07.2026, Zweig `claude/vioweb-master-prompt-x2381g`.
 
-Die Website ist gebaut und geprüft. Was hier steht, ist **nicht fertig** —
-sortiert danach, wer es erledigen kann.
+Die Website ist gebaut, geprüft und laut Betreiber online. Was hier steht,
+ist noch **nicht** erledigt, sortiert danach, wer es erledigen kann.
 
 | Bereich | Punkte | Wer |
 |---|---|---|
-| A · Blocker vor dem Livegang | 5 offen, 1 erledigt | du |
-| B · Angaben, die nur du hast | 11 Platzhalter | du |
+| A · Blocker | 2 offen, 4 erledigt | du |
+| B · Angaben, die nur du hast | erledigt | — |
 | C · Einrichtung bei Dritten | 4 | du |
 | D · Offene Entscheidungen | 3 | du, dann ich |
 | E · Doku stimmt nicht mehr | 2 offen, 3 erledigt | ich |
@@ -17,125 +17,58 @@ sortiert danach, wer es erledigen kann.
 
 ---
 
-## A · Blocker — ohne diese Punkte kein Livegang
+## A · Blocker
 
-### A1 · `robots.txt` ist geöffnet, Reihenfolge beachten
+### A1 bis A4 · erledigt
 
-**Erledigt.** Die globale Sperre `Disallow: /` ist raus. Suchmaschinen und
-Antwortsysteme dürfen lesen, reine Trainingssammler nicht. Einzelheiten in
-`KI-SICHTBARKEIT-UND-SEO.md`.
+- **`robots.txt`** ist geöffnet, differenziert nach Suchmaschinen,
+  Antwortsystemen und Trainingssammlern.
+- **Impressum** vollständig: Name, ladungsfähige Anschrift, Telefon, E-Mail,
+  Verantwortlicher nach § 18 Abs. 2 MStV.
+- **Datenschutzerklärung** vollständig: Verantwortlicher, Speicherdauer sechs
+  Monate, Stand 28.07.2026. Der Absatz zum Kontaktformular beschreibt den
+  tatsächlichen Weg über das E-Mail-Programm des Besuchers.
+- **Beide Warnkästen** und die Warnhinweise im Quelltext sind entfernt, es
+  gibt keine Platzhalter mehr.
 
-> **Daraus folgt eine Reihenfolge.** Solange GitHub Pages nicht aktiv ist,
-> passiert nichts. Sobald die Domain live geht, kann Google sofort
-> indexieren, samt der Platzhalter aus A2 und A3. Die müssen also **vor**
-> dem Livegang raus, nicht danach.
-
-### A2 · Impressum enthält Platzhalter
-
-Ein Impressum mit Platzhaltern ist abmahnfähig. Details in Abschnitt B.
-
-### A3 · Datenschutzerklärung enthält Platzhalter
-
-Dazu eine Besonderheit: Der Absatz über den Formulardienst nennt einen
-Dienst, der noch nicht eingerichtet ist.
-
-> **Solange kein Formulardienst läuft, muss dieser Absatz gelöscht werden.**
-> Eine Erklärung, die einen ungenutzten Dienst nennt, ist genauso falsch
-> wie eine, die einen genutzten verschweigt.
-
-### A4 · Zwei orange Warnkästen sind noch sichtbar
-
-Je einer in `impressum.html` und `datenschutz.html`, dazu ein Warnhinweis
-als Kommentar am Dateianfang. Alle vier Stellen zum Schluss entfernen.
+> **Keine Umsatzsteuer-Angabe.** Es ist kein Gewerbe angemeldet und keine
+> Nummer erteilt. Eine USt-IdNr. nach § 27a UStG ist nur anzugeben, wenn eine
+> vorhanden ist. Die Stelle ist im Quelltext kommentiert, dort steht auch, was
+> nach der Anmeldung ergänzt werden muss.
 
 ### A5 · Interne Notizen sind über die Domain abrufbar
 
-Nachgeprüft: Alle Markdown-Dateien im Hauptverzeichnis werden mit
-**HTTP 200** ausgeliefert. Nach dem Livegang wäre also
-`vioweb.de/OFFEN.md` für jeden lesbar, ebenso `CLAUDE.md`,
-`README.md`, `LAUNCH_CHECKLIST.md`, `SEO.md`, die Designrichtlinien und
-`kurzcheck-vorlage.md`.
+`robots.txt` hält sie aus dem Index, verhindert aber keinen direkten Abruf.
+Wer `vioweb.de/OFFEN.md` errät, sieht die Datei. Drei Wege:
 
-`robots.txt` hilft nicht. Es hält Suchmaschinen vom Index fern, nicht
-Besucher vom Abruf, und nach dem Livegang steht dort ohnehin `Allow: /`.
+1. **GitHub Pages aus `docs/` veröffentlichen.** Website nach `docs/`, Notizen
+   bleiben im Hauptverzeichnis. Sauberste Lösung.
+2. **Notizen vor dem Livegang aus dem Zweig nehmen.**
+3. **So lassen.**
 
-Kein Sicherheitsproblem, es stehen keine Zugangsdaten darin. Aber die
-offene Baustellenliste und die interne Angebotsvorlage sind nichts, was
-ein Interessent sehen sollte.
+> Ist das Repository ohnehin öffentlich, sind die Dateien schon jetzt über
+> github.com lesbar. Dann ändert nur Weg 2 etwas.
 
-Drei Wege, deine Entscheidung:
+### A6 · Gewerbeanmeldung
 
-1. **GitHub Pages aus einem Unterordner veröffentlichen.** Website nach
-   `docs/`, Notizen bleiben im Hauptverzeichnis. Sauberste Lösung,
-   erfordert aber das Verschieben aller Seitendateien.
-2. **Notizen vor dem Livegang aus dem Zweig nehmen.** Einfach, aber dann
-   sind sie auch nicht mehr im Repository.
-3. **So lassen.** Vertretbar, wenn dich das nicht stört.
+Kein Punkt, den ich lösen kann, aber einer, der zum Rest gehört: Die Seite
+bietet bezahlte Leistungen an. Die Impressumspflicht greift damit schon
+jetzt, und eine Gewerbeanmeldung wird üblicherweise fällig, sobald man nach
+außen anbietet, nicht erst beim ersten Auftrag.
 
-> Ist das GitHub-Repository ohnehin öffentlich, sind die Dateien schon
-> jetzt über github.com lesbar. Dann ändert nur Weg 2 etwas.
-
-### A6 · E-Mail-Adresse ist eine Annahme
-
-Überall steht `kontakt@vioweb.de`. Die Domain war vorgegeben, der Teil
-davor nicht. **Bitte bestätigen oder korrigieren.**
-
-| Datei | Stellen |
-|---|---|
-| `index.html` | 6 — Formular (`data-mail`), `noscript`-Rückfall, Fußzeile, JSON-LD |
-| `datenschutz.html` | 2 |
-| `impressum.html` | 1 |
-| `danke.html` | 1 |
-
-Warum eine Annahme statt eines Platzhalters: Ohne funktionierende Adresse
-wäre der E-Mail-Rückfall des Formulars tot. Ein totes Formular war
-ausgeschlossen, also stand hier eine plausible Adresse statt einer Lücke.
+**Das ist keine Rechtsberatung.** Kläre es vor dem ersten Auftrag mit der IHK,
+dem Gewerbeamt oder einem Anwalt, nicht danach.
 
 ---
 
 ## B · Angaben, die nur du hast
 
-11 Platzhalter in zwei Dateien. Im Quelltext als `[GROSSBUCHSTABEN IN
-KLAMMERN]`, auf der Seite lila unterlegt — sie sind also nicht zu übersehen.
+**Erledigt.** Es gibt keine Platzhalter mehr in Impressum und
+Datenschutzerklärung. Nachgeprüft: `class="luecke"` kommt in keiner der fünf
+HTML-Dateien mehr vor.
 
-### `impressum.html` — 8 Stellen
-
-| Platzhalter | Woher | Anzahl |
-|---|---|---|
-| `[VOR- UND NACHNAME]` | — | 2 |
-| `[STRASSE UND HAUSNUMMER]` | ladungsfähige Anschrift, **kein Postfach** | 1 |
-| `[POSTLEITZAHL]` | Torgau | 1 |
-| `[TELEFONNUMMER]` | § 5 DDG verlangt ein zweites schnelles Kontaktmittel | 1 |
-| `[STEUERNUMMER]` | Finanzamt | 1 |
-| `[ANSCHRIFT WIE OBEN]` | Wiederholung beim Verantwortlichen | 1 |
-| `[E-MAIL PRUEFEN]` | siehe A6 | 1 |
-
-Bist du **umsatzsteuerpflichtig**, muss der Kleinunternehmer-Absatz durch
-die Umsatzsteuer-Identifikationsnummer nach § 27a UStG ersetzt werden.
-
-### `datenschutz.html` — 9 Stellen
-
-Name, Anschrift, Postleitzahl und Telefonnummer wie im Impressum. Zusätzlich:
-
-| Platzhalter | Woher |
-|---|---|
-| `[NAME DES FORMULARDIENSTES]` | siehe C1 |
-| `[ANBIETER UND ANSCHRIFT]` | Impressum des Dienstes |
-| `[SERVERSTANDORT]` | aus dem Vertrag |
-| `[SPEICHERDAUER, ZUM BEISPIEL 12 MONATE]` | deine Entscheidung, üblich sind 6 bis 12 Monate |
-| `[DATUM EINTRAGEN]` | Datum des Livegangs |
-
-### `index.html` — keine mehr
-
-**Erledigt.** Im JSON-LD standen `[STRASSE UND HAUSNUMMER EINTRAGEN]` und
-`[POSTLEITZAHL EINTRAGEN]`. Mit geöffneter `robots.txt` hätte Google diesen
-Platzhaltertext als echte Anschrift übernommen. Der `PostalAddress`-Block ist
-deshalb entfernt, ebenso der Typ `ProfessionalService`, der eine vollständige
-Anschrift voraussetzt. Die räumliche Einordnung trägt jetzt `areaServed`.
-
-Sobald die Anschrift feststeht, können beide Angaben zurück. Die Stelle ist
-im Quelltext kommentiert, Einzelheiten in `KI-SICHTBARKEIT-UND-SEO.md`
-unter A2.
+Offen ist nur noch die Umsatzsteuer-Angabe, und zwar erst nach der
+Gewerbeanmeldung, siehe A6.
 
 ---
 

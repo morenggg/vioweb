@@ -71,8 +71,7 @@ entfernt.
 Damit entfällt auch die Grundlage für den Typ `ProfessionalService`, einen
 Untertyp von `LocalBusiness`, der eine vollständige öffentliche Anschrift
 voraussetzt. Der Knoten ist jetzt nur noch `Organization`. Die räumliche
-Einordnung trägt so lange `areaServed: Deutschland`, gestützt auf die
-Fußzeile „Deutschlandweit, ansässig in Torgau".
+Einordnung trägt so lange `areaServed: Deutschland`.
 
 Sobald die Anschrift feststeht, können beide Angaben ergänzt werden. Die
 Stelle ist im Quelltext kommentiert.
@@ -84,6 +83,9 @@ Open-Graph-Angaben. Ergänzt wurden `og:type`, `og:site_name`, `og:locale`,
 `og:url`, `og:title`, `og:description`, `og:image` samt Maßen und
 Alternativtext sowie `twitter:card`. Es wird das bereits vorhandene Bild
 `img/og-bild.png` (1200 × 630) verwendet, keine neue Datei erfunden.
+
+> Bei `impressum.html` und `datenschutz.html` sind diese Angaben inzwischen
+> wieder entfernt, siehe A8. Dort bleibt Open Graph bewusst leer.
 
 ### A4 · Zwei zu dünne Meta-Descriptions · `impressum.html`, `404.html`
 
@@ -118,6 +120,49 @@ Lücke deutet und selbst etwas ergänzt.
 absichtlich fehlt: die `noindex`-Seiten, die gesperrten Notizdateien und die
 Anker der Startseite, die keine eigenen Adressen sind.
 
+### A8 · Impressum und Datenschutz aus dem Index genommen · beide Dateien, `robots.txt`, `sitemap.xml`
+
+Auf Wunsch des Betreibers: Die private Anschrift steht in den Pflichtangaben,
+soll aber nicht über Suchmaschinen auffindbar sein. Wer nach dem Nachnamen
+oder der Anschrift sucht, soll vioweb.de nicht als Treffer bekommen.
+
+| Maßnahme | Wo |
+|---|---|
+| `noindex,nofollow,noarchive,nosnippet` | `impressum.html`, `datenschutz.html` |
+| Open Graph und Twitter Card entfernt | dieselben, damit keine Vorschau mit Anschrift entsteht |
+| aus der Sitemap genommen | `sitemap.xml`, dort steht jetzt nur noch die Startseite |
+| `Disallow` für `OAI-SearchBot` und `PerplexityBot` | `robots.txt` |
+| Ortsangabe aus der Fußzeile entfernt | alle fünf Seiten |
+
+> **Die wichtigste Feinheit:** Für Google und Bing dürfen die beiden Seiten in
+> `robots.txt` **nicht** gesperrt werden. Wer eine Seite dort sperrt,
+> verhindert, dass der Crawler das `noindex` überhaupt liest. Die Adresse kann
+> dann trotzdem als nackter Treffer ohne Textauszug erscheinen, sobald irgendwo
+> ein Verweis darauf existiert. Richtig ist: **crawlen erlauben, indexieren
+> verbieten.**
+>
+> Bei Antwortsystemen ist es umgekehrt. Sie kennen kein `noindex`, deshalb ist
+> dort `Disallow` das richtige Mittel.
+
+**Was das nicht leistet.** Die Seiten bleiben für jeden lesbar, der sie direkt
+aufruft. Das ist beim Impressum unvermeidbar, es muss erreichbar sein.
+Antwortsysteme, die sich nicht an `robots.txt` halten, kann niemand
+ausschließen. `noindex` wirkt außerdem erst, wenn Google die Seite erneut
+abruft; bei einer Seite, die vorher komplett gesperrt war, sollte gar nichts
+im Index sein.
+
+**Wenn die Anschrift gar nicht öffentlich stehen soll:** Es gibt keine
+zulässige Fassung ohne ladungsfähige Anschrift. Der übliche Weg für
+Einzelpersonen, die die Wohnanschrift nicht zeigen wollen, ist eine
+Geschäftsadresse, die Post rechtswirksam annimmt. Ob das im Einzelfall
+ausreicht, ist eine Rechtsfrage und keine technische.
+
+### A9 · Falsche Ortsangabe entfernt · alle fünf Seiten
+
+In der Fußzeile stand „Deutschlandweit, ansässig in Torgau". Die tatsächliche
+Anschrift liegt nicht in Torgau. Jetzt steht dort „Deutschlandweit tätig".
+Das behebt eine falsche Angabe und passt zugleich zu A8.
+
 ---
 
 ## B · Bereits vorhanden und deshalb unverändert
@@ -130,7 +175,7 @@ Ordnung:
 | Canonical | auf allen fünf Seiten, absolut, `https://vioweb.de`, ohne `www` |
 | Titel | fünf verschiedene, 18 bis 56 Zeichen |
 | Descriptions | fünf verschiedene, nach A4 alle zwischen 98 und 166 Zeichen |
-| `meta robots` | `index,follow` öffentlich, `noindex,follow` auf `danke` und `404` |
+| `meta robots` | war korrekt gesetzt; inzwischen nach A8 verschärft, nur die Startseite ist indexierbar |
 | Überschriften | genau eine `h1` je Seite, keine Sprünge in der Rangfolge |
 | Landmarken | `header`, `nav`, `main`, `footer`, `section`, `article` vollständig |
 | Linktexte | keine Fälle von „Mehr", „Hier klicken", „Mehr erfahren" |

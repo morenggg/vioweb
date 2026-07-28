@@ -2,6 +2,8 @@
 <!-- Nur indexierbare, kanonische Seiten.
      Nicht enthalten und das mit Absicht:
        danke.html und 404.html   tragen noindex
+       impressum und datenschutz tragen ebenfalls noindex, sie enthalten
+                                 die private Anschrift des Betreibers
        die Markdown-Notizen      sind in robots.txt gesperrt
      Die Abschnitte der Startseite sind Anker, keine eigenen Adressen, und
      gehoeren deshalb nicht als eigene Eintraege hinein.
@@ -12,17 +14,5 @@
     <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://vioweb.de/impressum.html</loc>
-    <lastmod>2026-07-28</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  <url>
-    <loc>https://vioweb.de/datenschutz.html</loc>
-    <lastmod>2026-07-28</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.2</priority>
   </url>
 </urlset>

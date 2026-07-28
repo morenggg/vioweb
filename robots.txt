@@ -27,6 +27,13 @@ Disallow: /kurzcheck-muster.html
 #  und verlinkt werden kann.
 # -----------------------------------------------------------------------------
 
+# Antwortsysteme rufen die beiden Rechtsseiten gar nicht ab. Sie enthalten
+# die private Anschrift des Betreibers. Bei diesen Bots ist Disallow das
+# richtige Mittel; ein noindex im HTML wuerde ihnen nichts sagen.
+# Fuer Google und Bing bleibt das Crawlen der beiden Seiten oben ausdruecklich
+# erlaubt, sonst lesen sie das noindex nie und die Adresse koennte trotzdem
+# als nackter Treffer erscheinen.
+
 # ChatGPT Search
 User-agent: OAI-SearchBot
 Allow: /
@@ -39,6 +46,8 @@ Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
 Disallow: /kurzcheck-muster.html
+Disallow: /impressum.html
+Disallow: /datenschutz.html
 
 # Perplexity
 User-agent: PerplexityBot
@@ -52,6 +61,8 @@ Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
 Disallow: /kurzcheck-muster.html
+Disallow: /impressum.html
+Disallow: /datenschutz.html
 
 # -----------------------------------------------------------------------------
 #  Reine Trainingssammler: gesperrt. Das ist eine bewusste Entscheidung.
