@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Nur indexierbare Seiten. danke.html und 404.html tragen noindex und
-     gehoeren deshalb nicht hinein. -->
+<!-- Nur indexierbare, kanonische Seiten.
+     Nicht enthalten und das mit Absicht:
+       danke.html und 404.html   tragen noindex
+       die Markdown-Notizen      sind in robots.txt gesperrt
+     Die Abschnitte der Startseite sind Anker, keine eigenen Adressen, und
+     gehoeren deshalb nicht als eigene Eintraege hinein.
+     lastmod bei jeder inhaltlichen Aenderung mitfuehren. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vioweb.de/</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://vioweb.de/impressum.html</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
   <url>
     <loc>https://vioweb.de/datenschutz.html</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-07-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>

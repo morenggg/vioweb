@@ -7,8 +7,8 @@ sortiert danach, wer es erledigen kann.
 
 | Bereich | Punkte | Wer |
 |---|---|---|
-| A · Blocker vor dem Livegang | 6 | du |
-| B · Angaben, die nur du hast | 13 Platzhalter | du |
+| A · Blocker vor dem Livegang | 5 offen, 1 erledigt | du |
+| B · Angaben, die nur du hast | 11 Platzhalter | du |
 | C · Einrichtung bei Dritten | 4 | du |
 | D · Offene Entscheidungen | 3 | du, dann ich |
 | E · Doku stimmt nicht mehr | 2 offen, 3 erledigt | ich |
@@ -19,16 +19,16 @@ sortiert danach, wer es erledigen kann.
 
 ## A · Blocker — ohne diese Punkte kein Livegang
 
-### A1 · `robots.txt` sperrt die Seite
+### A1 · `robots.txt` ist geöffnet, Reihenfolge beachten
 
-```
-User-agent: *
-Disallow: /
-```
+**Erledigt.** Die globale Sperre `Disallow: /` ist raus. Suchmaschinen und
+Antwortsysteme dürfen lesen, reine Trainingssammler nicht. Einzelheiten in
+`KI-SICHTBARKEIT-UND-SEO.md`.
 
-Das ist Absicht, solange nichts live ist. **Bleibt die Zeile stehen, nimmt
-Google die Seite nie in den Index auf** — auch nicht Wochen später. Vor dem
-Livegang durch `Allow: /` ersetzen und den Warnblock darüber löschen.
+> **Daraus folgt eine Reihenfolge.** Solange GitHub Pages nicht aktiv ist,
+> passiert nichts. Sobald die Domain live geht, kann Google sofort
+> indexieren, samt der Platzhalter aus A2 und A3. Die müssen also **vor**
+> dem Livegang raus, nicht danach.
 
 ### A2 · Impressum enthält Platzhalter
 
@@ -95,7 +95,7 @@ ausgeschlossen, also stand hier eine plausible Adresse statt einer Lücke.
 
 ## B · Angaben, die nur du hast
 
-13 Platzhalter in drei Dateien. Im Quelltext als `[GROSSBUCHSTABEN IN
+11 Platzhalter in zwei Dateien. Im Quelltext als `[GROSSBUCHSTABEN IN
 KLAMMERN]`, auf der Seite lila unterlegt — sie sind also nicht zu übersehen.
 
 ### `impressum.html` — 8 Stellen
@@ -125,16 +125,17 @@ Name, Anschrift, Postleitzahl und Telefonnummer wie im Impressum. Zusätzlich:
 | `[SPEICHERDAUER, ZUM BEISPIEL 12 MONATE]` | deine Entscheidung, üblich sind 6 bis 12 Monate |
 | `[DATUM EINTRAGEN]` | Datum des Livegangs |
 
-### `index.html` — 2 Stellen
+### `index.html` — keine mehr
 
-Im JSON-LD für Suchmaschinen: `[STRASSE UND HAUSNUMMER EINTRAGEN]` und
-`[POSTLEITZAHL EINTRAGEN]`. Der Ort steht bereits als `Torgau` drin.
+**Erledigt.** Im JSON-LD standen `[STRASSE UND HAUSNUMMER EINTRAGEN]` und
+`[POSTLEITZAHL EINTRAGEN]`. Mit geöffneter `robots.txt` hätte Google diesen
+Platzhaltertext als echte Anschrift übernommen. Der `PostalAddress`-Block ist
+deshalb entfernt, ebenso der Typ `ProfessionalService`, der eine vollständige
+Anschrift voraussetzt. Die räumliche Einordnung trägt jetzt `areaServed`.
 
-> Suchmaschinen bewerten eine unvollständige Anschrift schlechter als gar
-> keine. Willst du die Anschrift **nicht** öffentlich im Datenblock haben,
-> sag Bescheid — dann nehme ich den `PostalAddress`-Block heraus und lasse
-> nur das Einzugsgebiet stehen. Im Impressum bleibt die Anschrift
-> Pflicht, das ist davon unabhängig.
+Sobald die Anschrift feststeht, können beide Angaben zurück. Die Stelle ist
+im Quelltext kommentiert, Einzelheiten in `KI-SICHTBARKEIT-UND-SEO.md`
+unter A2.
 
 ---
 
@@ -182,9 +183,9 @@ Falls Cloudflare davor liegt: SSL-Modus **Full (strict)**, Auto Minify
 
 ### C4 · Suchmaschinen
 
-`lastmod` in `sitemap.xml` steht auf `2026-07-27` und muss auf das
-Livegang-Datum. Danach Search Console anmelden, Sitemap einreichen,
-Startseite zur Indexierung anfordern.
+`lastmod` in `sitemap.xml` muss auf das Livegang-Datum. Die vollständige
+Anleitung für Search Console, Bing Webmaster Tools, IndexNow und die
+Cloudflare-Prüfung steht in `KI-SICHTBARKEIT-UND-SEO.md` unter C.
 
 ---
 

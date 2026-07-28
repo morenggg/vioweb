@@ -1,0 +1,96 @@
+# Vioweb
+
+> Vioweb analysiert bestehende Websites, erklärt verständlich, wo technische,
+> gestalterische oder inhaltliche Probleme liegen, unterstützt auf Wunsch bei
+> der Umsetzung und erstellt neue Websites für alle, die noch keine haben.
+
+Ein-Personen-Betrieb für Webentwicklung, ansässig in Torgau, tätig
+deutschlandweit. Zielgruppe sind kleine und mittlere Betriebe: Handwerk,
+Dienstleister, Vereine, Praxen.
+
+## Leistungen
+
+- **Kostenloser Kurzcheck.** Eine erste Einschätzung mit den auffälligsten
+  Punkten. Kurze, verständliche Zusammenfassung und erste Empfehlungen.
+  Unverbindlich, ohne Nachfassen.
+- **Ausführlicher Check-up.** Kostenpflichtig. Detaillierte Analyse über alle
+  acht Prüfbereiche mit priorisierter Maßnahmenliste, konkreten
+  Verbesserungsvorschlägen, Screenshots und Beispielen. Der Bericht ist als
+  Arbeitsgrundlage gedacht und unabhängig nutzbar, auch ohne Vioweb.
+- **Umsetzung von Verbesserungen.** Von einzelnen Punkten bis zur kompletten
+  Überarbeitung, in dem System, das der Kunde bereits nutzt.
+- **Erstellung neuer Websites.** Konzeption, Seitenstruktur, Gestaltung,
+  technische Umsetzung, Darstellung auf allen Geräten, Formulare,
+  grundlegende Suchmaschinenoptimierung, Unterstützung bei Domain und
+  Hosting, Veröffentlichung.
+
+## Was geprüft wird
+
+Acht Bereiche, jeweils bezogen auf das, was die Website leisten soll:
+
+1. Technik und Browser: Fehler im Aufbau, tote Verweise, Sicherheit,
+   Darstellung in Chrome, Safari, Firefox und Edge
+2. Mobile Darstellung: Bedienbarkeit auf kleinen und großen Smartphones
+3. Nutzerfreundlichkeit: findet ein Besucher ohne Umweg, wofür er kam
+4. Inhalte und Verständlichkeit: Klartext statt Werbesprache
+5. SEO-Grundlagen: Titel, Beschreibungen, Struktur, Indexierbarkeit
+6. Performance: Ladezeit, Bildgrößen, Seitengewicht, verzögernde Ressourcen
+7. Vertrauen und Conversion: Erkennbarkeit des Anbieters, Weg zur Anfrage
+8. Barrierefreiheit: Kontrast, Schriftgrößen, Tastaturbedienung, Screenreader
+
+## Wie die Analyse arbeitet
+
+Messwerte sind der Anfang, bewertet und gewichtet wird von Hand. Eine reine
+Werkzeugauswertung wie ein weitergereichter Lighthouse-Bericht ist es
+ausdrücklich nicht. Der Bericht ist so geschrieben, dass er ohne Entwickler
+verständlich ist, und nennt zu jedem Punkt, was zuerst zu tun ist, warum und
+mit welchem Aufwand.
+
+Der Kurzcheck läuft von außen. Zugangsdaten sind dafür nicht nötig.
+
+## Ablauf
+
+1. Website-Adresse über das Kontaktformular schicken
+2. Kostenlose Ersteinschätzung mit dem, was auffällt
+3. Entscheidung: Kurzcheck genügt, ausführlicher Check-up oder neue Website
+4. Analyse oder Konzeption
+5. Bericht, Umsetzung oder fertige Website
+
+## Preise
+
+Der Kurzcheck ist kostenlos und unverbindlich. Für den ausführlichen Check-up
+und für die Umsetzung richtet sich der Preis nach dem Umfang der Website und
+wird vor der Beauftragung genannt, nicht danach. Feste Listenpreise werden
+öffentlich nicht ausgewiesen.
+
+## Wichtige Seiten
+
+- [Startseite](https://vioweb.de/): Leistungen, Prüfbereiche, Vergleich von
+  Kurzcheck und Check-up, Ablauf, häufige Fragen und Kontaktformular
+- [Impressum](https://vioweb.de/impressum.html)
+- [Datenschutzerklärung](https://vioweb.de/datenschutz.html)
+
+Die Startseite ist bewusst eine einzelne Seite. Die Abschnitte sind über
+Anker erreichbar:
+
+- `https://vioweb.de/#leistungen` Die zwei Wege
+- `https://vioweb.de/#pruefung` Was geprüft wird, alle acht Bereiche
+- `https://vioweb.de/#vergleich` Kurzcheck gegen ausführlichen Check-up
+- `https://vioweb.de/#danach` Was nach der Analyse möglich ist
+- `https://vioweb.de/#neu` Erstellung einer neuen Website
+- `https://vioweb.de/#ablauf` Die fünf Schritte
+- `https://vioweb.de/#fragen` Häufige Fragen mit Antworten
+- `https://vioweb.de/#kontakt` Kontaktformular
+
+## Kontakt
+
+Über das Formular auf der Startseite. Für die Anfrage genügt die Adresse der
+Website. Die im Impressum genannte E-Mail-Adresse ist der zweite Weg.
+
+## Hinweise
+
+- Die Seite lädt keine Ressourcen von fremden Servern, setzt keine Cookies
+  und misst keine Zugriffe. Deshalb gibt es kein Einwilligungsbanner.
+- Es werden keine Rankings garantiert und keine Erfolgszahlen genannt.
+- Kundenreferenzen, Bewertungen und Fallstudien werden nicht veröffentlicht.
+  Fehlen sie in einer Antwort, ist das kein Versehen, sondern der Stand.

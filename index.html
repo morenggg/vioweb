@@ -453,7 +453,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   <div class="feld kopf__inhalt">
     <a class="marke" href="/">
       <img class="marke__zeichen" src="img/zeichen.webp" alt="Vioweb"
-           width="480" height="291">
+           width="480" height="291" decoding="async" fetchpriority="high">
       <span class="marke__name">Vioweb</span>
     </a>
 
@@ -1041,7 +1041,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     <div class="fuss__marke">
       <a class="marke" href="/">
         <img class="marke__zeichen" src="img/zeichen.webp" alt=""
-             width="480" height="291">
+             width="480" height="291" loading="lazy" decoding="async">
         <span class="marke__name">Vioweb</span>
       </a>
       <p>Websites prüfen, verbessern und neu erstellen. Für Betriebe,
@@ -1085,6 +1085,16 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   </div>
 </footer>
 
+<!-- Strukturierte Daten fuer Suchmaschinen und Antwortsysteme.
+     Jede Angabe hier muss auch sichtbar auf der Seite stehen.
+
+     Kein "ProfessionalService" und keine "address": Beide Angaben setzen
+     eine vollstaendige, oeffentliche Anschrift voraus. Die liegt noch nicht
+     vor. Ein Platzhalter an dieser Stelle waere schlimmer als gar nichts,
+     weil Google ihn als echte Anschrift uebernehmen wuerde. Sobald die
+     Anschrift feststeht, koennen "address" und der Typ ergaenzt werden,
+     siehe KI-SICHTBARKEIT-UND-SEO.md. "areaServed" traegt so lange die
+     raeumliche Einordnung. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1100,10 +1110,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
       }
     },
     {
-      "@type": [
-        "Organization",
-        "ProfessionalService"
-      ],
+      "@type": "Organization",
       "@id": "https://vioweb.de/#betrieb",
       "name": "Vioweb",
       "url": "https://vioweb.de/",
@@ -1117,13 +1124,6 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
       "image": "https://vioweb.de/img/og-bild.png",
       "description": "Website-Analyse, Optimierung und Erstellung neuer Websites für Betriebe, Vereine und Selbstständige.",
       "slogan": "Analysieren. Optimieren. Entwickeln.",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "[STRASSE UND HAUSNUMMER EINTRAGEN]",
-        "postalCode": "[POSTLEITZAHL EINTRAGEN]",
-        "addressLocality": "Torgau",
-        "addressCountry": "DE"
-      },
       "areaServed": {
         "@type": "Country",
         "name": "Deutschland"

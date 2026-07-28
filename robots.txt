@@ -1,14 +1,78 @@
 # =============================================================================
-#  ACHTUNG — DIE SEITE IST DERZEIT FUER SUCHMASCHINEN GESPERRT.
+#  robots.txt fuer vioweb.de
 #
-#  Vor dem Livegang muss die Zeile "Disallow: /" entfernt und durch
-#  "Allow: /" ersetzt werden. Solange sie hier steht, nimmt Google die
-#  Seite NICHT in den Index auf — auch nicht Wochen spaeter.
+#  Grundhaltung: Suchmaschinen und Antwortsysteme duerfen die Seite lesen und
+#  zitieren. Fuer das Training von Sprachmodellen ist sie gesperrt.
 #
-#  Das ist Punkt 1 in LAUNCH_CHECKLIST.md.
+#  Zur Technik: Regeln verschiedener User-agent-Gruppen werden NICHT
+#  zusammengefuehrt. Ein Bot befolgt nur die Gruppe, die am genauesten auf ihn
+#  passt. Die Ausschluesse fuer die internen Notizen stehen deshalb in jeder
+#  Gruppe erneut, die etwas erlauben soll.
 # =============================================================================
 
 User-agent: *
+Allow: /
+Disallow: /CLAUDE.md
+Disallow: /OFFEN.md
+Disallow: /README.md
+Disallow: /SEO.md
+Disallow: /LAUNCH_CHECKLIST.md
+Disallow: /KI-SICHTBARKEIT-UND-SEO.md
+Disallow: /vioweb-designrichtlinien.md
+Disallow: /kurzcheck-vorlage.md
+Disallow: /kurzcheck-muster.html
+
+# -----------------------------------------------------------------------------
+#  Antwortsysteme: ausdruecklich erlaubt, damit vioweb als Quelle auftauchen
+#  und verlinkt werden kann.
+# -----------------------------------------------------------------------------
+
+# ChatGPT Search
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /CLAUDE.md
+Disallow: /OFFEN.md
+Disallow: /README.md
+Disallow: /SEO.md
+Disallow: /LAUNCH_CHECKLIST.md
+Disallow: /KI-SICHTBARKEIT-UND-SEO.md
+Disallow: /vioweb-designrichtlinien.md
+Disallow: /kurzcheck-vorlage.md
+Disallow: /kurzcheck-muster.html
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /CLAUDE.md
+Disallow: /OFFEN.md
+Disallow: /README.md
+Disallow: /SEO.md
+Disallow: /LAUNCH_CHECKLIST.md
+Disallow: /KI-SICHTBARKEIT-UND-SEO.md
+Disallow: /vioweb-designrichtlinien.md
+Disallow: /kurzcheck-vorlage.md
+Disallow: /kurzcheck-muster.html
+
+# -----------------------------------------------------------------------------
+#  Reine Trainingssammler: gesperrt. Das ist eine bewusste Entscheidung.
+#  Diese Bots bringen keine Besucher und nennen keine Quelle.
+# -----------------------------------------------------------------------------
+
+# Training fuer OpenAI-Modelle, nicht die Suche
+User-agent: GPTBot
 Disallow: /
+
+# Common Crawl, Grundlage vieler Trainingssammlungen
+User-agent: CCBot
+Disallow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Disallow: /
+
+# Hinweis zu Google-Extended: Dieser Eintrag steuert bei Google sowohl das
+# Training als auch das Heranziehen als Quelle in Gemini. Eine Sperre wuerde
+# also auch Zitate kosten und ist deshalb bewusst NICHT gesetzt.
+# Die AI Overviews in der Google-Suche haengen ohnehin am normalen Googlebot.
 
 Sitemap: https://vioweb.de/sitemap.xml
