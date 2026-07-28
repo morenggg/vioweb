@@ -7,11 +7,11 @@ sortiert danach, wer es erledigen kann.
 
 | Bereich | Punkte | Wer |
 |---|---|---|
-| A · Blocker vor dem Livegang | 5 | du |
+| A · Blocker vor dem Livegang | 6 | du |
 | B · Angaben, die nur du hast | 13 Platzhalter | du |
 | C · Einrichtung bei Dritten | 4 | du |
 | D · Offene Entscheidungen | 3 | du, dann ich |
-| E · Doku stimmt nicht mehr | 5 | ich |
+| E · Doku stimmt nicht mehr | 2 offen, 3 erledigt | ich |
 | F · Erst nach Livegang messbar | 5 | nach dem Umzug |
 | G · Bewusst nicht gebaut | 1 | — |
 
@@ -48,7 +48,34 @@ Dienst, der noch nicht eingerichtet ist.
 Je einer in `impressum.html` und `datenschutz.html`, dazu ein Warnhinweis
 als Kommentar am Dateianfang. Alle vier Stellen zum Schluss entfernen.
 
-### A5 · E-Mail-Adresse ist eine Annahme
+### A5 · Interne Notizen sind über die Domain abrufbar
+
+Nachgeprüft: Alle Markdown-Dateien im Hauptverzeichnis werden mit
+**HTTP 200** ausgeliefert. Nach dem Livegang wäre also
+`vioweb.de/OFFEN.md` für jeden lesbar, ebenso `CLAUDE.md`,
+`README.md`, `LAUNCH_CHECKLIST.md`, `SEO.md`, die Designrichtlinien und
+`kurzcheck-vorlage.md`.
+
+`robots.txt` hilft nicht. Es hält Suchmaschinen vom Index fern, nicht
+Besucher vom Abruf, und nach dem Livegang steht dort ohnehin `Allow: /`.
+
+Kein Sicherheitsproblem, es stehen keine Zugangsdaten darin. Aber die
+offene Baustellenliste und die interne Angebotsvorlage sind nichts, was
+ein Interessent sehen sollte.
+
+Drei Wege, deine Entscheidung:
+
+1. **GitHub Pages aus einem Unterordner veröffentlichen.** Website nach
+   `docs/`, Notizen bleiben im Hauptverzeichnis. Sauberste Lösung,
+   erfordert aber das Verschieben aller Seitendateien.
+2. **Notizen vor dem Livegang aus dem Zweig nehmen.** Einfach, aber dann
+   sind sie auch nicht mehr im Repository.
+3. **So lassen.** Vertretbar, wenn dich das nicht stört.
+
+> Ist das GitHub-Repository ohnehin öffentlich, sind die Dateien schon
+> jetzt über github.com lesbar. Dann ändert nur Weg 2 etwas.
+
+### A6 · E-Mail-Adresse ist eine Annahme
 
 Überall steht `kontakt@vioweb.de`. Die Domain war vorgegeben, der Teil
 davor nicht. **Bitte bestätigen oder korrigieren.**
@@ -81,7 +108,7 @@ KLAMMERN]`, auf der Seite lila unterlegt — sie sind also nicht zu übersehen.
 | `[TELEFONNUMMER]` | § 5 DDG verlangt ein zweites schnelles Kontaktmittel | 1 |
 | `[STEUERNUMMER]` | Finanzamt | 1 |
 | `[ANSCHRIFT WIE OBEN]` | Wiederholung beim Verantwortlichen | 1 |
-| `[E-MAIL PRUEFEN]` | siehe A5 | 1 |
+| `[E-MAIL PRUEFEN]` | siehe A6 | 1 |
 
 Bist du **umsatzsteuerpflichtig**, muss der Kleinunternehmer-Absatz durch
 die Umsatzsteuer-Identifikationsnummer nach § 27a UStG ersetzt werden.
@@ -194,17 +221,17 @@ bräuchte ich die Vorlage oder deine Freigabe, das Zeichen anzupassen.
 
 ## E · Doku beschreibt teilweise den alten Stand
 
-Beim Zusammentragen dieser Liste aufgefallen. Die Website selbst ist
-korrekt — die Beschreibung dazu ist es an fünf Stellen nicht mehr. Das
-räume ich auf, sobald du grünes Licht gibst; es ändert nichts an der Seite.
+Die Website ist korrekt, ihre Beschreibung war es an fünf Stellen nicht.
+**Drei davon sind inzwischen erledigt**, im Zuge der Umarbeitung gegen die
+Vorlagen-Anmutung.
 
-| Datei | Behauptet | Tatsächlich |
-|---|---|---|
-| `README.md` Z. 215 | „Die Seite nutzt **Systemschriften**, es wird keine Schriftdatei geladen" | Manrope, lokal, zwei `.woff2` |
-| `README.md` Z. 229 | Anleitung „Später auf eigene Schriftdateien umstellen" | längst erledigt, Abschnitt überflüssig |
-| `README.md` Z. 250 | Akzent `#9B54FC` für Text, `#6226FA` für Flächen, „auf dem dunklen Grund" | hell, `--akzent: #7C3AED` |
-| `CLAUDE.md` Z. 51 | „**Dunkel**, linksbündig, typografisch" samt beider alter Lila | hell |
-| `vioweb-designrichtlinien.md` Z. 279, 313 | Fokusrahmen `#9B54FC`, Prüfpunkt zu `#6226FA` | beide Werte gibt es nicht mehr |
+| Datei | Stand |
+|---|---|
+| `CLAUDE.md` „Gestaltung in drei Sätzen" | **erledigt.** Hell statt dunkel, aktuelle Farbwerte, und die Regel „ein Akzent pro Abschnitt" ist ersetzt — sie hatte den kritisierten Zustand erzeugt |
+| `vioweb-designrichtlinien.md` Fokusrahmen und Prüfliste | **erledigt.** Aktuelle Farbwerte, dazu neue Prüfpunkte gegen Geviertstriche und Kurzsatz-Pointen |
+| `vioweb-designrichtlinien.md` Satzmaß | **erledigt.** Die `ch`-Falle ist dokumentiert, samt Faktor 1,32 |
+| `README.md` Schriften-Abschnitt | **offen.** Behauptet „Die Seite nutzt Systemschriften, es wird keine Schriftdatei geladen". Tatsächlich Manrope, lokal, zwei `.woff2`. Die Anleitung „Später auf eigene Schriftdateien umstellen" ist längst erledigt |
+| `README.md` Farben-Abschnitt | **offen.** Nennt `#9B54FC` und `#6226FA` „auf dem dunklen Grund". Beide Werte gibt es nicht mehr, aktuell ist `--akzent: #7C3AED` |
 
 Dazu: Die Größenangabe „138 KB auf sechs Anfragen" in der README stammt aus
 der dunklen Fassung und ist seit dem Umbau nicht neu gemessen.
