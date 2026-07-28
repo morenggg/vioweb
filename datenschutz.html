@@ -433,10 +433,12 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
       <div class="warnung">
         <p>
           <strong>Hinweis an den Betreiber:</strong> Alle hervorgehobenen
-          Stellen sind Platzhalter. Der Abschnitt zum Formulardienst gilt
-          erst, sobald ein Dienst eingerichtet ist. Solange das Formular
-          per E-Mail arbeitet, muss dieser Abschnitt entfernt werden.
-          Diese Meldung anschließend aus dem Quelltext löschen.
+          Stellen sind Platzhalter und müssen ersetzt werden. Der Abschnitt
+          zum Kontaktformular beschreibt bereits den tatsächlichen Zustand,
+          nämlich den Versand über das E-Mail-Programm des Besuchers. Wird
+          später ein Formulardienst eingerichtet, ist der Absatz gegen die
+          Fassung im Quelltextkommentar zu tauschen. Diese Meldung zum
+          Schluss aus dem Quelltext löschen.
         </p>
       </div>
 
@@ -503,13 +505,33 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
         Art. 6 Abs. 1 lit. b DSGVO, soweit die Anfrage auf den Abschluss
         eines Vertrags gerichtet ist.
       </p>
+      <!-- ============================================================
+           STAND: Es ist KEIN Formulardienst eingerichtet. Im Formular
+           steht data-endpunkt="". Das Absenden oeffnet das E-Mail-
+           Programm des Besuchers mit den eingetragenen Angaben; die
+           Nachricht geht als gewoehnliche E-Mail von seinem eigenen
+           Postfach ab. Es ist also kein Auftragsverarbeiter beteiligt.
+
+           SOBALD ein Formulardienst eingerichtet wird, muss der Absatz
+           unten durch diesen ersetzt werden:
+
+           <p>
+             Zur technischen Uebermittlung setzen wir [NAME], [ANBIETER
+             UND ANSCHRIFT], ein. Mit dem Anbieter besteht ein Vertrag
+             ueber die Auftragsverarbeitung nach Art. 28 DSGVO. Die
+             Verarbeitung findet auf Servern in [SERVERSTANDORT] statt.
+           </p>
+
+           Der Vertrag muss dann tatsaechlich geschlossen sein. Die
+           Einzelheiten stehen in OFFEN.md unter C1.
+           ============================================================ -->
       <p>
-        Zur technischen Übermittlung setzen wir
-        <span class="luecke">[NAME DES FORMULARDIENSTES]</span>,
-        <span class="luecke">[ANBIETER UND ANSCHRIFT]</span>, ein. Mit dem
-        Anbieter besteht ein Vertrag über die Auftragsverarbeitung nach
-        Art. 28 DSGVO. Die Verarbeitung findet auf Servern in
-        <span class="luecke">[SERVERSTANDORT]</span> statt.
+        Das Formular überträgt die Angaben nicht an einen fremden Dienst.
+        Beim Absenden öffnet sich dein eigenes E-Mail-Programm mit den
+        eingetragenen Angaben, und die Nachricht geht als gewöhnliche
+        E-Mail von deinem Postfach an uns. An der Übermittlung ist damit
+        kein Auftragsverarbeiter beteiligt. Es gelten die Bedingungen
+        deines eigenen E-Mail-Anbieters und unseres.
       </p>
       <p>
         Wir speichern deine Anfrage, bis sie erledigt ist und keine
