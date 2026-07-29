@@ -124,6 +124,40 @@ Cloudflare-Prüfung steht in `KI-SICHTBARKEIT-UND-SEO.md` unter C.
 
 ## D · Entscheidungen, die ich nicht treffen kann
 
+### D0 · „Über uns" fehlt als Seite
+
+Der Menüpunkt war für die neue Navigation vorgesehen, ist aber **bewusst
+weggelassen**: Es gibt keine Seite und keinen Inhalt dazu, und erfinden darf
+ich nichts. Die Navigation führt deshalb auf **Start, Preise, FAQ, Kontakt**.
+
+Zwei Dinge musst du dafür entscheiden:
+
+1. **Was steht drauf?** Ein Über-uns-Text für einen Ein-Personen-Betrieb
+   nennt üblicherweise die Person — Name, Werdegang, vielleicht ein Foto.
+2. **Das kollidiert mit deiner Vorgabe**, dass Nachname und Anschrift nicht
+   über Google oder Antwortsysteme auffindbar sein sollen. Eine indexierbare
+   Seite mit deinem Namen hebt genau das auf.
+
+Möglich wäre ein Text, der ohne Personenangaben arbeitet: Arbeitsweise,
+Zielgruppe, Haltung. Dann bleibt die Sperre wirksam. Sobald du den Text
+hast, baue ich die Seite und ergänze den Menüpunkt.
+
+### D0b · Zwei Namen für dieselbe Sache
+
+Auf der Fragenseite stehen jetzt alle 46 Fragen zusammen — und damit fällt
+auf, dass dieselbe Leistung zwei Namen trägt:
+
+| Startseite | Preisseite |
+|---|---|
+| Kurzcheck | Kostenlose Erstanalyse |
+| Ausführlicher Check-up | Pro Website-Analyse |
+
+Beide Fassungen stammen aus deinen Texten, deshalb habe ich **nichts
+umformuliert**. In der Gruppe „Grundsätzliches" steht die eine Sprache, in
+„Website-Analyse" die andere. Sag mir, welches Paar gilt, dann ziehe ich es
+über alle Seiten durch. Eigenmächtig freigegebene Texte zu überschreiben
+wäre der falsche Weg.
+
 ### D1 · Anrede — Du oder Sie
 
 Die ganze Seite ist durchgehend **Du und Wir**, so steht es auch in den

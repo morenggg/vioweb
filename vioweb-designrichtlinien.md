@@ -207,18 +207,43 @@ läuft, plus Sicherheitsnetz nach zwei Sekunden.
 
 ### Mobilmenü
 
-Fährt von rechts ein, dahinter ein dunkler Schleier. Grundlage ist ein
-`<details>` — ohne JavaScript öffnet es nativ.
+Fährt von rechts ein, dahinter ein Schleier. Grundlage ist ein `<details>`
+— ohne JavaScript öffnet und schließt es nativ.
 
-Drei Fallen, alle beim Testen aufgetreten:
+- Unter 380 px die **ganze Breite**, darüber **92 %** bis höchstens 400 px.
+  Dann bleibt links ein Streifen der Seite sichtbar und ein Tippen daneben
+  schließt. Bei voller Breite gibt es kein „daneben", dort bleiben Kreuz und
+  Escape
+- Sitzt an Ober-, Unter- und rechter Kante. **Nie ein schwebendes Feld**
+- Eigene Kopfleiste auf Höhe des Seitenkopfs: Marke links, Kreuz rechts.
+  Die Marke steht auf derselben Kante wie die des Seitenkopfs, dadurch wirkt
+  der Übergang durchgehend
+- Das `<summary>` **ist** der Schließen-Knopf. Ein zweites `<summary>` ist
+  nicht erlaubt, ein zusätzlicher Knopf wäre ohne JavaScript tot
+- Zwei Ebenen: vier Seiten groß mit Unterzeile, darunter durch eine
+  Haarlinie getrennt der Aufruf und das Rechtliche
+- Ab 900 px übernehmen die Textlinks, die Schublade wird ausgeblendet
+- Fokusfang und Scroll-Sperre gehören dazu. Bei einer früheren Fassung als
+  Dropdown waren beide ausdrücklich draußen
+
+Fünf Fallen, alle beim Testen aufgetreten:
 
 1. **`backdrop-filter` am Kopfbereich macht ihn zum Bezugsrahmen für
    `position: fixed`.** Tafel und Schleier waren dadurch auf die Kopfzeile
    eingesperrt. Bei offenem Menü wird der Filter deshalb abgeschaltet.
-2. **Der Kopfbereich muss über der Tafel liegen**, sonst verdeckt sie den
-   Schließen-Knopf.
-3. **Marke und Knopf brauchen `z-index: 115`**, weil Schleier und Tafel im
-   selben Stapelkontext liegen.
+2. **`.kopf` trägt `z-index: 90`** und ist damit ein eigener Stapelkontext.
+   Fortschrittsbalken (140) und Sprungmarke (130) malten auf die Schublade.
+   Offen steigt `.kopf` auf 150.
+3. **Marke und Aufruf der Kopfzeile müssen weichen**, sonst schauen sie
+   neben der Schublade hervor, sobald diese nicht die ganze Breite hat.
+4. **Der Wähler dafür muss auf die Kopfzeile begrenzt sein.** Ein einfaches
+   `.kopf:has(.menue[open]) .marke` erwischt auch die Marke *in* der
+   Schublade — deren Kopfleiste war dadurch leer. Richtig ist
+   `.kopf:has(.menue[open]) > .kopf__inhalt > .marke`.
+5. **Die Ausfahrt braucht `[open]` im Wähler.** `.menue--zu .menue__tafel`
+   verliert gegen `.menue[open] .menue__tafel` über die Spezifität, die
+   Animation läuft dann nie los und `animationend` bleibt aus. Richtig ist
+   `.menue[open].menue--zu .menue__tafel`.
 
 ### Das Firmenzeichen auf hellem Grund
 

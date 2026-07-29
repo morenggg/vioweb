@@ -750,6 +750,10 @@
   font-weight: 500;
 }
 .fragen__gruppe + .fragen { margin-top: var(--s-md); }
+/* Auf der Fragenseite ist die erste Gruppe das erste Element im Abschnitt.
+   Ihr Abstand nach oben kaeme dort zum Innenabstand des Abschnitts hinzu —
+   gemessen 128 px Leerraum ueber der ersten Zeile. */
+.fragen__gruppe:first-child { margin-top: 0; }
 
 /* Das Zusatzfeld im Formular blendet sich weich ein. Die Hoehe wird nicht
    animiert, das wuerde bei jedem Schritt neu umbrechen lassen; stattdessen

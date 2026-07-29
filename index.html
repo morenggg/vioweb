@@ -290,20 +290,36 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 }
 .marke__name { font-size: 1.1rem; font-weight: 800; letter-spacing: -.01em; }
 
-/* ------------------------------------------------------ 6. Klappmenue */
-/* Grundlage bleibt ein <details>: ohne JavaScript oeffnet und schliesst es
-   nativ, das Menue ist also nie tot. Das Skript ergaenzt nur Schliessen bei
-   Klick daneben, Escape und die Rueckmeldung an Hilfsmittel.
+/* -------------------------------------------------------- 6. Schublade */
+/* Die Navigation auf schmalen Geraeten faehrt von rechts ein, dahinter ein
+   Schleier. Grundlage bleibt ein <details>: ohne JavaScript oeffnet und
+   schliesst es nativ, das Menue ist also nie tot. Das Skript ergaenzt
+   Schliessen bei Klick auf den Schleier, Escape, Fokusfang, Scroll-Sperre
+   und die weiche Ausfahrt.
 
    Warum <summary> und kein <button>: Ein Knopf muesste das Auf- und
    Zuklappen selbst uebernehmen, also ueber JavaScript. Das <summary> kann
    das von Haus aus, ist mit der Tastatur bedienbar und meldet den Zustand.
-   aria-label, aria-controls und aria-expanded stehen trotzdem daran. */
-/* Bewusst kein position: relative. Der Knopf ist 44 px breit und steht
-   links neben dem Aufruf zur Anfrage; eine daran verankerte Tafel haengt
-   auf dem Telefon weit ueber den linken Bildrand hinaus. Der Bezug ist
-   deshalb .kopf__inhalt. */
+   Es ist gleichzeitig der Schliessen-Knopf: bei offener Schublade steht es
+   fest auf deren Kopfleiste und zeigt ein Kreuz. Ein zweites <summary> ist
+   nicht erlaubt, ein zusaetzlicher Knopf waere ohne JavaScript tot.
+
+   Drei Fallen, alle beim Testen aufgetreten:
+   1. backdrop-filter am Kopfbereich macht ihn zum Bezugsrahmen fuer
+      position: fixed. Schleier und Schublade waeren auf die Kopfzeile
+      eingesperrt. Bei offener Schublade wird der Filter abgeschaltet.
+   2. .kopf traegt z-index 90 und ist damit ein eigener Stapelkontext.
+      Fortschrittsbalken (140) und Sprungmarke (130) liegen darueber und
+      wuerden auf die Schublade malen. Offen steigt .kopf deshalb auf 150.
+   3. Marke und Aufruf im Seitenkopf muessen weichen, sonst schauen sie
+      neben der Schublade hervor, sobald diese nicht die ganze Breite hat.
+      Die Schublade zeigt ihre eigene Marke an derselben Stelle. */
 .menue { position: static; }
+
+/* Ab 900 px uebernehmen die Textlinks im Kopf. Eine Schublade ueber die
+   ganze Fensterhoehe waere dort ein Fremdkoerper: sie zeigt genau die vier
+   Punkte, die daneben schon als Text stehen. */
+@media (min-width: 900px) { .menue { display: none; } }
 
 .menue__knopf {
   display: inline-flex; align-items: center; justify-content: center;
@@ -318,7 +334,15 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 @media (hover: hover) {
   .menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
 }
-.menue[open] .menue__knopf { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+/* Offen sitzt der Knopf fest auf der Kopfleiste der Schublade — auf
+   derselben Hoehe und derselben Kante wie geschlossen. Kein Sprung, und er
+   wirkt als Teil der Leiste und nicht als nachtraeglich gesetztes Zeichen. */
+.menue[open] .menue__knopf {
+  position: fixed; z-index: 130;
+  top: calc((var(--kopfhoehe) - 44px) / 2);
+  right: max(var(--rand), env(safe-area-inset-right));
+  background: var(--flaeche); border-color: var(--linie-kraeftig);
+}
 
 .menue__striche { position: relative; width: 18px; height: 12px; flex: none; }
 .menue__striche i {
@@ -333,57 +357,121 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 .menue[open] .menue__striche i:nth-child(2) { opacity: 0; }
 .menue[open] .menue__striche i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-/* Rechtsbuendiges Feld unter dem Kopfbereich. Die rechte Kante liegt auf
-   derselben Satzkante wie der uebrige Inhalt, die Breite folgt dem
-   laengsten Eintrag und endet spaetestens an der linken Satzkante. */
-.menue__tafel {
-  position: absolute; z-index: 120;
-  top: calc(100% + 10px); right: var(--rand);
-  width: max-content; min-width: 240px;
-  max-width: min(320px, calc(100vw - 2 * var(--rand)));
-  background: var(--flaeche);
-  border: 1px solid #E6E6EC;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(23, 21, 29, .05),
-              0 18px 40px -16px rgba(23, 21, 29, .22);
-  padding: var(--s-sm);
-  max-height: calc(100vh - var(--kopfhoehe) - 24px);
-  max-height: calc(100dvh - var(--kopfhoehe) - 24px);
-  overflow-y: auto;
+/* Der Schleier nimmt der Seite die Aufmerksamkeit, ohne sie zuzudecken.
+   Ohne backdrop-filter etwas dichter, damit der Kontrast zur hellen
+   Schublade auch dann traegt. */
+.menue__schleier {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(23, 21, 29, .46);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .menue[open] .menue__tafel { animation: tafel-auf 160ms var(--verlauf); }
-  @keyframes tafel-auf {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: none; }
+@supports (backdrop-filter: blur(1px)) {
+  .menue__schleier {
+    background: rgba(23, 21, 29, .32);
+    backdrop-filter: blur(3px) saturate(105%);
   }
 }
 
-.menue__liste { display: grid; }
-.menue__liste a {
-  display: flex; align-items: center; min-height: 44px;
-  padding: .35rem .7rem; border-radius: 8px;
-  font-size: .95rem; font-weight: 600; letter-spacing: -.01em;
+/* Auf kleinen Telefonen die ganze Breite, darueber rund 92 Prozent bis zu
+   einer festen Obergrenze. Links bleibt dann ein Streifen der Seite stehen,
+   der Bezug zum Inhalt bleibt also erhalten. Kein schwebendes Feld: die
+   Schublade sitzt auf allen vier Seiten am Rand. */
+.menue__tafel {
+  position: fixed; z-index: 110;
+  top: 0; right: 0; bottom: 0; width: 100%;
+  display: flex; flex-direction: column;
+  background: var(--flaeche);
+  box-shadow: -1px 0 0 var(--linie), -32px 0 64px -32px rgba(23, 21, 29, .34);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: max(var(--s-lg), env(safe-area-inset-bottom));
+  overflow-y: auto; overscroll-behavior: contain;
+}
+/* Unter 380 px die ganze Breite — dort ist fuer einen sichtbaren Streifen
+   der Seite kein Platz. Darueber rund 92 Prozent: der Schleier bleibt
+   sichtbar, der Bezug zum Inhalt erhalten, und ein Tippen daneben
+   schliesst. Bei voller Breite gibt es kein "daneben", dann bleiben Kreuz
+   und Escape. */
+@media (min-width: 380px) {
+  .menue__tafel { width: min(92vw, 400px); }
+}
+
+/* Kopfleiste der Schublade: Marke links, Schliessen-Knopf rechts, beide auf
+   der Hoehe des Seitenkopfs. Dadurch bleibt die Marke beim Oeffnen optisch
+   stehen und das Menue wirkt als Teil der Seite. */
+.menue__kopf {
+  flex: none; display: flex; align-items: center;
+  min-height: var(--kopfhoehe); padding-inline: var(--rand);
+}
+
+/* Zwei Ebenen, mehr braucht die Seite nicht: vier Seiten gross gesetzt,
+   darunter abgetrennt der Aufruf und das Rechtliche klein. Die Zeilen gehen
+   von Kante zu Kante, der Text steht auf der Satzkante der Marke. */
+.menue__nav { display: grid; margin-top: var(--s-lg); }
+.menue__nav a {
+  display: grid; gap: .1rem;
+  padding: var(--s-sm) var(--rand);
   text-decoration: none; color: var(--text);
-  transition: color var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
+  transition: background-color var(--schnell) var(--verlauf);
 }
-@media (hover: hover) {
-  .menue__liste a:hover { background: var(--flaeche-ruhig); color: var(--akzent); }
+.menue__titel {
+  font-size: clamp(1.35rem, 1.2rem + .5vw, 1.55rem);
+  font-weight: 800; letter-spacing: -.024em; line-height: 1.25;
 }
-.menue__liste--anker a { font-weight: 500; color: var(--text-leise); font-size: .9rem; }
+.menue__unter { font-size: .92rem; line-height: 1.4; color: var(--text-leise); }
 @media (hover: hover) {
-  .menue__liste--anker a:hover { color: var(--akzent); }
+  .menue__nav a:hover { background: var(--flaeche-ruhig); }
 }
 
-.menue__gruppe {
-  margin-top: var(--s-sm); padding: var(--s-xs) .7rem;
+/* Der Aufruf sitzt unten, in Daumenreichweite. Die Haarlinie darueber gibt
+   der Leerflaeche einen Grund: oben die Seiten, unten die Handlung. */
+.menue__fuss {
+  margin-top: auto; padding: var(--s-lg) var(--rand) 0;
   border-top: 1px solid var(--linie);
-  font-family: var(--schrift-technik); font-size: .66rem;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+.menue__fuss .knopf { width: 100%; }
+.menue__recht {
+  display: flex; flex-wrap: wrap; column-gap: var(--s-lg);
+  margin-top: var(--s-sm); padding-top: var(--s-sm);
+}
+.menue__recht a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: .88rem; color: var(--text-leise); text-decoration: none;
 }
 
-/* Textlinks ab 900px, darunter uebernimmt das Klappmenue. */
+/* Bei offener Schublade: Filter aus (sonst sperrt er position: fixed ein),
+   Kopf ueber Fortschrittsbalken und Sprungmarke, und der Inhalt der
+   Kopfzeile weg — nur der Schliessen-Knopf bleibt. */
+.kopf:has(.menue[open]) {
+  z-index: 150;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+/* Nur die Kopfzeile selbst, nicht ihr ganzer Teilbaum: die Schublade liegt
+   im Kopfbereich, und ein einfaches .marke hat auch deren eigene Marke
+   erwischt — die Kopfleiste der Schublade war dadurch leer. */
+.kopf:has(.menue[open]) > .kopf__inhalt > .marke,
+.kopf:has(.menue[open]) > .kopf__inhalt > .nav,
+.kopf:has(.menue[open]) > .kopf__inhalt > .kopf__cta { opacity: 0; visibility: hidden; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .menue[open] .menue__tafel   { animation: schub-ein var(--mittel) var(--verlauf); }
+  .menue[open] .menue__schleier { animation: schleier-ein var(--mittel) linear; }
+  /* Zufahren: <details> raeumt das Feld sofort aus dem Baum. Das Skript
+     haelt open deshalb noch, setzt diese Klasse und wartet das Ende ab.
+     Der Zustand [open] muss mit in den Waehler, sonst gewinnt die Regel fuer
+     das Einfahren ueber die Spezifitaet, die Ausfahrt laeuft nie los und
+     animationend bleibt aus — gemessen: die Schublade blieb dann bis zum
+     Ablauf des Sicherheitsnetzes stehen. */
+  .menue[open].menue--zu .menue__tafel    { animation: schub-aus var(--mittel) var(--verlauf) forwards; }
+  .menue[open].menue--zu .menue__schleier { animation: schleier-aus var(--mittel) linear forwards; }
+  @keyframes schub-ein    { from { transform: translateX(100%); } to { transform: none; } }
+  @keyframes schub-aus    { from { transform: none; } to { transform: translateX(100%); } }
+  @keyframes schleier-ein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes schleier-aus { from { opacity: 1; } to { opacity: 0; } }
+}
+
+/* Textlinks ab 900px, darunter uebernimmt die Schublade. */
 .nav { display: none; }
 @media (min-width: 900px) {
   .nav { display: flex; align-items: center; gap: 2px; }
@@ -399,7 +487,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
   }
 }
-/* Der Aufruf zur Anfrage steht rechts aussen, das Klappmenue links davon.
+/* Der Aufruf zur Anfrage steht rechts aussen, der Menueknopf links davon.
    Auf schmalen Geraeten ist die lange Beschriftung zu breit; statt den
    Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
    beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
@@ -493,23 +581,16 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 /* Aktiver Menuepunkt: erkennbar, aber ohne Aufhebens. Die Erkennung laeuft
    ueber aria-current im HTML, also ueber den Pfad und nicht ueber ein
    Skript, das erst nach dem Laden greift. */
-.nav a[aria-current="page"],
-.menue__liste a[aria-current="page"] {
-  color: var(--akzent); font-weight: 700;
-}
-.nav a[aria-current="page"] { position: relative; }
+.nav a[aria-current="page"] { color: var(--akzent); font-weight: 700; position: relative; }
 .nav a[aria-current="page"]::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -.35rem;
   height: 2px; border-radius: 2px; background: var(--akzent);
 }
-/* Statt einer Flaeche bis zur Panelkante eine schmale Marke am linken
-   Rand. Ruhiger und unabhaengig vom Innenabstand der Liste. */
-.menue__liste a[aria-current="page"] { position: relative; }
-.menue__liste a[aria-current="page"]::before {
-  content: ""; position: absolute; left: 0; top: 50%;
-  width: 3px; height: 1.35em; transform: translateY(-50%);
-  border-radius: 0 2px 2px 0; background: var(--akzent);
-}
+/* In der Schublade traegt die ganze Zeile den Zustand: zarte Flaeche von
+   Kante zu Kante und die Ueberschrift im Akzent. Kein zusaetzliches
+   Zeichen — die Zeile selbst ist die Auszeichnung. */
+.menue__nav a[aria-current="page"] { background: var(--akzent-zart); }
+.menue__nav a[aria-current="page"] .menue__titel { color: var(--akzent); }
 
 /* Zwischenueberschrift im Seitenmenue ueber den Sprungmarken. */
 .menue__gruppe {
@@ -538,8 +619,9 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     </a>
 
     <nav class="nav" aria-label="Hauptnavigation">
-      <a href="/" aria-current="page">Startseite</a>
+      <a href="/" aria-current="page">Start</a>
       <a href="/preise/">Preise</a>
+      <a href="/faq/">FAQ</a>
       <a href="/kontakt/">Kontakt</a>
     </nav>
 
@@ -549,29 +631,41 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
         <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
       </summary>
 
-      <div class="menue__tafel" id="menue-tafel">
-        <nav class="menue__liste" aria-label="Seiten">
-          <a href="/" aria-current="page">Startseite</a>
-          <a href="/preise/">Preise</a>
-          <a href="/kontakt/">Kontakt</a>
+      <div class="menue__schleier" aria-hidden="true"></div>
+
+      <div class="menue__tafel" id="menue-tafel" role="dialog"
+           aria-modal="true" aria-label="Navigation">
+        <div class="menue__kopf">
+          <a class="marke" href="/">
+            <img class="marke__zeichen" src="img/zeichen.webp" alt="Vioweb"
+                 width="480" height="291" loading="lazy" decoding="async">
+            <span class="marke__name">Vioweb</span>
+          </a>
+        </div>
+
+        <nav class="menue__nav" aria-label="Seiten">
+          <a href="/" aria-current="page">
+            <span class="menue__titel">Start</span>
+            <span class="menue__unter">Zur Übersicht</span></a>
+          <a href="/preise/">
+            <span class="menue__titel">Preise</span>
+            <span class="menue__unter">Leistungen und Preise im Überblick</span></a>
+          <a href="/faq/">
+            <span class="menue__titel">FAQ</span>
+            <span class="menue__unter">Antworten auf häufige Fragen</span></a>
+          <a href="/kontakt/">
+            <span class="menue__titel">Kontakt</span>
+            <span class="menue__unter">Kostenlose Analyse anfragen</span></a>
         </nav>
 
-        <p class="menue__gruppe" id="menue-anker">Auf dieser Seite</p>
-        <nav class="menue__liste menue__liste--anker" aria-labelledby="menue-anker">
-          <a href="#leistungen">Leistungen</a>
-          <a href="#pruefung">Was geprüft wird</a>
-          <a href="#vergleich">Kurzcheck und Check-up im Vergleich</a>
-          <a href="#danach">Nach der Analyse</a>
-          <a href="#neu">Wie eine neue Website entsteht</a>
-          <a href="#ablauf">Ablauf</a>
-          <a href="#fragen">Fragen</a>
-        </nav>
-
-        <p class="menue__gruppe" id="menue-recht">Rechtliches</p>
-        <nav class="menue__liste menue__liste--anker" aria-labelledby="menue-recht">
-          <a href="/impressum.html">Impressum</a>
-          <a href="/datenschutz.html">Datenschutz</a>
-        </nav>
+        <div class="menue__fuss">
+          <a class="knopf knopf--voll" href="/kontakt/">Kostenlosen Check anfragen
+            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          <p class="menue__recht">
+            <a href="/impressum.html">Impressum</a>
+            <a href="/datenschutz.html">Datenschutz</a>
+          </p>
+        </div>
       </div>
     </details>
 
@@ -882,117 +976,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     <div class="feld">
       <div>
         <h2 class="gross">Was du vermutlich wissen willst.</h2>
-
-        <div class="fragen">
-          <details class="frage">
-            <summary><span class="frage__text">Ist der erste Website-Check wirklich kostenlos?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Der Kurzcheck kostet nichts und verpflichtet zu nichts. Wir
-              rufen auch nicht hinterher.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Was ist der Unterschied zwischen Kurzcheck und Check-up?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Der Kurzcheck nennt die auffälligsten Punkte in wenigen Sätzen.
-              Der ausführliche Check-up geht alle acht Bereiche durch, ordnet
-              jeden Befund nach Dringlichkeit und Wirkung ein und liefert
-              konkrete Vorschläge mit Beispielen. Eine Arbeitsgrundlage, mit
-              der jeder Entwickler weiterarbeiten kann.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Muss ich die Verbesserungen bei dir beauftragen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Nein. Der Bericht gehört dir und ist unabhängig nutzbar. Du
-              kannst ihn selbst abarbeiten oder jemand anderen damit
-              beauftragen.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Kann ich den Bericht an meine Agentur weitergeben?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ausdrücklich ja, auch an die Agentur, die deine Website gebaut
-              hat. Er ist so geschrieben, dass Entwickler damit direkt
-              arbeiten können.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Kannst du die gefundenen Probleme auch beheben?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, in dem System, das du schon nutzt. Vom einzelnen Fehler bis
-              zur kompletten Überarbeitung.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Erstellst du auch komplett neue Websites?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Von der Struktur über die Gestaltung bis zur
-              Veröffentlichung samt Domain und Hosting. Eine bestehende
-              Website ist keine Voraussetzung.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Welche Websites kannst du prüfen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Praktisch jede öffentlich erreichbare Seite: WordPress,
-              Baukästen wie Wix oder Jimdo, Shopsysteme oder von Hand
-              gebaute Seiten. Bei Baukästen sagen wir ehrlich, wo das System
-              an Grenzen stößt.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Wie läuft die Zusammenarbeit ab?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Per E-Mail und Telefon, bei Bedarf mit Videogespräch. Du hast
-              immer denselben Ansprechpartner, kein Ticketsystem.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Brauchst du Zugangsdaten?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Für Kurzcheck und Check-up nicht. Wir sehen die Seite so, wie
-              deine Besucher sie sehen. Zugänge werden erst nötig, wenn wir
-              tatsächlich etwas ändern sollen.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Werden Änderungen sofort veröffentlicht?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Nein. Nichts geht live, bevor du es gesehen und freigegeben
-              hast.
-            </p></div>
-          </details>
-
-          <details class="frage">
-            <summary><span class="frage__text">Kannst du auch nur einzelne Bereiche verbessern?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Viele beginnen mit einem Punkt aus der Liste, etwa der
-              mobilen Darstellung oder der Ladezeit, und entscheiden danach,
-              ob mehr folgen soll.
-            </p></div>
-          </details>
-        </div>
+        <p class="vorspann">
+          46 Fragen und Antworten, nach Themen sortiert: Analyse, neue
+          Website, Optimierung, SEO, Wartung und Zusammenarbeit.
+        </p>
+        <a class="verweis" href="/faq/">Alle Fragen und Antworten
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -1039,24 +1028,27 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
         Vereine und Selbstständige.</p>
     </div>
 
-    <nav class="fuss__block" aria-labelledby="f-leistungen">
-      <h2 id="f-leistungen">Leistungen</h2>
+    <!-- Vorher standen hier zwei Spalten mit neun Verweisen, von denen acht
+         auf dieselbe Seite zeigten, und die Spalte "Leistungen" war eine
+         zweite Benennung fuer "Preise". Jetzt genau die vier Seiten, die es
+         gibt, mit denselben Woertern wie im Kopfbereich. -->
+    <nav class="fuss__block" aria-labelledby="f-seiten">
+      <h2 id="f-seiten">Seiten</h2>
       <ul role="list">
-        <li><a href="/preise/">Kostenlose Erstanalyse</a></li>
-        <li><a href="/preise/">Pro Website-Analyse</a></li>
-        <li><a href="/preise/">Umsetzung</a></li>
-        <li><a href="/preise/">Neue Website</a></li>
+        <li><a href="/">Start</a></li>
         <li><a href="/preise/">Preise</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/kontakt/">Kontakt</a></li>
       </ul>
     </nav>
 
-    <nav class="fuss__block" aria-labelledby="f-seite">
-      <h2 id="f-seite">Seite</h2>
+    <nav class="fuss__block" aria-labelledby="f-thema">
+      <h2 id="f-thema">Auf der Startseite</h2>
       <ul role="list">
-        <li><a href="/preise/">Was geprüft wird</a></li>
-        <li><a href="/preise/">Ablauf</a></li>
-        <li><a href="/preise/">Fragen</a></li>
-        <li><a href="/kontakt/">Kontakt</a></li>
+        <li><a href="/#pruefung">Was geprüft wird</a></li>
+        <li><a href="/#vergleich">Kurzcheck und Check-up</a></li>
+        <li><a href="/#neu">Neue Website</a></li>
+        <li><a href="/#ablauf">Ablauf</a></li>
       </ul>
     </nav>
 
@@ -1143,7 +1135,11 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
               "@type": "Service",
               "name": "Ausführlicher Website-Check-up",
               "description": "Detaillierte Analyse mit priorisierter Maßnahmenliste als unabhängig nutzbare Arbeitsgrundlage. 85 Euro, bei späterer Optimierung anrechenbar.",
-              "offers": { "@type": "Offer", "price": "85", "priceCurrency": "EUR" }
+              "offers": {
+                "@type": "Offer",
+                "price": "85",
+                "priceCurrency": "EUR"
+              }
             }
           },
           {
@@ -1174,100 +1170,6 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
           "position": 1,
           "name": "Startseite",
           "item": "https://vioweb.de/"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://vioweb.de/#fragen",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Ist der erste Website-Check wirklich kostenlos?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Der Kurzcheck kostet nichts und verpflichtet zu nichts. Wir rufen auch nicht hinterher."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was ist der Unterschied zwischen Kurzcheck und Check-up?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Der Kurzcheck nennt die auffälligsten Punkte in wenigen Sätzen. Der ausführliche Check-up geht alle acht Bereiche durch, ordnet jeden Befund nach Dringlichkeit und Wirkung ein und liefert konkrete Vorschläge mit Beispielen. Eine Arbeitsgrundlage, mit der jeder Entwickler weiterarbeiten kann."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Muss ich die Verbesserungen bei dir beauftragen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Nein. Der Bericht gehört dir und ist unabhängig nutzbar. Du kannst ihn selbst abarbeiten oder jemand anderen damit beauftragen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann ich den Bericht an meine Agentur weitergeben?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ausdrücklich ja, auch an die Agentur, die deine Website gebaut hat. Er ist so geschrieben, dass Entwickler damit direkt arbeiten können."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kannst du die gefundenen Probleme auch beheben?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, in dem System, das du schon nutzt. Vom einzelnen Fehler bis zur kompletten Überarbeitung."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Erstellst du auch komplett neue Websites?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Von der Struktur über die Gestaltung bis zur Veröffentlichung samt Domain und Hosting. Eine bestehende Website ist keine Voraussetzung."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Welche Websites kannst du prüfen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Praktisch jede öffentlich erreichbare Seite: WordPress, Baukästen wie Wix oder Jimdo, Shopsysteme oder von Hand gebaute Seiten. Bei Baukästen sagen wir ehrlich, wo das System an Grenzen stößt."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie läuft die Zusammenarbeit ab?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Per E-Mail und Telefon, bei Bedarf mit Videogespräch. Du hast immer denselben Ansprechpartner, kein Ticketsystem."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Brauchst du Zugangsdaten?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Für Kurzcheck und Check-up nicht. Wir sehen die Seite so, wie deine Besucher sie sehen. Zugänge werden erst nötig, wenn wir tatsächlich etwas ändern sollen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Werden Änderungen sofort veröffentlicht?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Nein. Nichts geht live, bevor du es gesehen und freigegeben hast."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kannst du auch nur einzelne Bereiche verbessern?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Viele beginnen mit einem Punkt aus der Liste, etwa der mobilen Darstellung oder der Ladezeit, und entscheiden danach, ob mehr folgen soll."
-          }
         }
       ]
     }

@@ -279,20 +279,36 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 }
 .marke__name { font-size: 1.1rem; font-weight: 800; letter-spacing: -.01em; }
 
-/* ------------------------------------------------------ 6. Klappmenue */
-/* Grundlage bleibt ein <details>: ohne JavaScript oeffnet und schliesst es
-   nativ, das Menue ist also nie tot. Das Skript ergaenzt nur Schliessen bei
-   Klick daneben, Escape und die Rueckmeldung an Hilfsmittel.
+/* -------------------------------------------------------- 6. Schublade */
+/* Die Navigation auf schmalen Geraeten faehrt von rechts ein, dahinter ein
+   Schleier. Grundlage bleibt ein <details>: ohne JavaScript oeffnet und
+   schliesst es nativ, das Menue ist also nie tot. Das Skript ergaenzt
+   Schliessen bei Klick auf den Schleier, Escape, Fokusfang, Scroll-Sperre
+   und die weiche Ausfahrt.
 
    Warum <summary> und kein <button>: Ein Knopf muesste das Auf- und
    Zuklappen selbst uebernehmen, also ueber JavaScript. Das <summary> kann
    das von Haus aus, ist mit der Tastatur bedienbar und meldet den Zustand.
-   aria-label, aria-controls und aria-expanded stehen trotzdem daran. */
-/* Bewusst kein position: relative. Der Knopf ist 44 px breit und steht
-   links neben dem Aufruf zur Anfrage; eine daran verankerte Tafel haengt
-   auf dem Telefon weit ueber den linken Bildrand hinaus. Der Bezug ist
-   deshalb .kopf__inhalt. */
+   Es ist gleichzeitig der Schliessen-Knopf: bei offener Schublade steht es
+   fest auf deren Kopfleiste und zeigt ein Kreuz. Ein zweites <summary> ist
+   nicht erlaubt, ein zusaetzlicher Knopf waere ohne JavaScript tot.
+
+   Drei Fallen, alle beim Testen aufgetreten:
+   1. backdrop-filter am Kopfbereich macht ihn zum Bezugsrahmen fuer
+      position: fixed. Schleier und Schublade waeren auf die Kopfzeile
+      eingesperrt. Bei offener Schublade wird der Filter abgeschaltet.
+   2. .kopf traegt z-index 90 und ist damit ein eigener Stapelkontext.
+      Fortschrittsbalken (140) und Sprungmarke (130) liegen darueber und
+      wuerden auf die Schublade malen. Offen steigt .kopf deshalb auf 150.
+   3. Marke und Aufruf im Seitenkopf muessen weichen, sonst schauen sie
+      neben der Schublade hervor, sobald diese nicht die ganze Breite hat.
+      Die Schublade zeigt ihre eigene Marke an derselben Stelle. */
 .menue { position: static; }
+
+/* Ab 900 px uebernehmen die Textlinks im Kopf. Eine Schublade ueber die
+   ganze Fensterhoehe waere dort ein Fremdkoerper: sie zeigt genau die vier
+   Punkte, die daneben schon als Text stehen. */
+@media (min-width: 900px) { .menue { display: none; } }
 
 .menue__knopf {
   display: inline-flex; align-items: center; justify-content: center;
@@ -307,7 +323,15 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 @media (hover: hover) {
   .menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
 }
-.menue[open] .menue__knopf { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+/* Offen sitzt der Knopf fest auf der Kopfleiste der Schublade — auf
+   derselben Hoehe und derselben Kante wie geschlossen. Kein Sprung, und er
+   wirkt als Teil der Leiste und nicht als nachtraeglich gesetztes Zeichen. */
+.menue[open] .menue__knopf {
+  position: fixed; z-index: 130;
+  top: calc((var(--kopfhoehe) - 44px) / 2);
+  right: max(var(--rand), env(safe-area-inset-right));
+  background: var(--flaeche); border-color: var(--linie-kraeftig);
+}
 
 .menue__striche { position: relative; width: 18px; height: 12px; flex: none; }
 .menue__striche i {
@@ -322,57 +346,121 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 .menue[open] .menue__striche i:nth-child(2) { opacity: 0; }
 .menue[open] .menue__striche i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-/* Rechtsbuendiges Feld unter dem Kopfbereich. Die rechte Kante liegt auf
-   derselben Satzkante wie der uebrige Inhalt, die Breite folgt dem
-   laengsten Eintrag und endet spaetestens an der linken Satzkante. */
-.menue__tafel {
-  position: absolute; z-index: 120;
-  top: calc(100% + 10px); right: var(--rand);
-  width: max-content; min-width: 240px;
-  max-width: min(320px, calc(100vw - 2 * var(--rand)));
-  background: var(--flaeche);
-  border: 1px solid #E6E6EC;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(23, 21, 29, .05),
-              0 18px 40px -16px rgba(23, 21, 29, .22);
-  padding: var(--s-sm);
-  max-height: calc(100vh - var(--kopfhoehe) - 24px);
-  max-height: calc(100dvh - var(--kopfhoehe) - 24px);
-  overflow-y: auto;
+/* Der Schleier nimmt der Seite die Aufmerksamkeit, ohne sie zuzudecken.
+   Ohne backdrop-filter etwas dichter, damit der Kontrast zur hellen
+   Schublade auch dann traegt. */
+.menue__schleier {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(23, 21, 29, .46);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .menue[open] .menue__tafel { animation: tafel-auf 160ms var(--verlauf); }
-  @keyframes tafel-auf {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: none; }
+@supports (backdrop-filter: blur(1px)) {
+  .menue__schleier {
+    background: rgba(23, 21, 29, .32);
+    backdrop-filter: blur(3px) saturate(105%);
   }
 }
 
-.menue__liste { display: grid; }
-.menue__liste a {
-  display: flex; align-items: center; min-height: 44px;
-  padding: .35rem .7rem; border-radius: 8px;
-  font-size: .95rem; font-weight: 600; letter-spacing: -.01em;
+/* Auf kleinen Telefonen die ganze Breite, darueber rund 92 Prozent bis zu
+   einer festen Obergrenze. Links bleibt dann ein Streifen der Seite stehen,
+   der Bezug zum Inhalt bleibt also erhalten. Kein schwebendes Feld: die
+   Schublade sitzt auf allen vier Seiten am Rand. */
+.menue__tafel {
+  position: fixed; z-index: 110;
+  top: 0; right: 0; bottom: 0; width: 100%;
+  display: flex; flex-direction: column;
+  background: var(--flaeche);
+  box-shadow: -1px 0 0 var(--linie), -32px 0 64px -32px rgba(23, 21, 29, .34);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: max(var(--s-lg), env(safe-area-inset-bottom));
+  overflow-y: auto; overscroll-behavior: contain;
+}
+/* Unter 380 px die ganze Breite — dort ist fuer einen sichtbaren Streifen
+   der Seite kein Platz. Darueber rund 92 Prozent: der Schleier bleibt
+   sichtbar, der Bezug zum Inhalt erhalten, und ein Tippen daneben
+   schliesst. Bei voller Breite gibt es kein "daneben", dann bleiben Kreuz
+   und Escape. */
+@media (min-width: 380px) {
+  .menue__tafel { width: min(92vw, 400px); }
+}
+
+/* Kopfleiste der Schublade: Marke links, Schliessen-Knopf rechts, beide auf
+   der Hoehe des Seitenkopfs. Dadurch bleibt die Marke beim Oeffnen optisch
+   stehen und das Menue wirkt als Teil der Seite. */
+.menue__kopf {
+  flex: none; display: flex; align-items: center;
+  min-height: var(--kopfhoehe); padding-inline: var(--rand);
+}
+
+/* Zwei Ebenen, mehr braucht die Seite nicht: vier Seiten gross gesetzt,
+   darunter abgetrennt der Aufruf und das Rechtliche klein. Die Zeilen gehen
+   von Kante zu Kante, der Text steht auf der Satzkante der Marke. */
+.menue__nav { display: grid; margin-top: var(--s-lg); }
+.menue__nav a {
+  display: grid; gap: .1rem;
+  padding: var(--s-sm) var(--rand);
   text-decoration: none; color: var(--text);
-  transition: color var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
+  transition: background-color var(--schnell) var(--verlauf);
 }
-@media (hover: hover) {
-  .menue__liste a:hover { background: var(--flaeche-ruhig); color: var(--akzent); }
+.menue__titel {
+  font-size: clamp(1.35rem, 1.2rem + .5vw, 1.55rem);
+  font-weight: 800; letter-spacing: -.024em; line-height: 1.25;
 }
-.menue__liste--anker a { font-weight: 500; color: var(--text-leise); font-size: .9rem; }
+.menue__unter { font-size: .92rem; line-height: 1.4; color: var(--text-leise); }
 @media (hover: hover) {
-  .menue__liste--anker a:hover { color: var(--akzent); }
+  .menue__nav a:hover { background: var(--flaeche-ruhig); }
 }
 
-.menue__gruppe {
-  margin-top: var(--s-sm); padding: var(--s-xs) .7rem;
+/* Der Aufruf sitzt unten, in Daumenreichweite. Die Haarlinie darueber gibt
+   der Leerflaeche einen Grund: oben die Seiten, unten die Handlung. */
+.menue__fuss {
+  margin-top: auto; padding: var(--s-lg) var(--rand) 0;
   border-top: 1px solid var(--linie);
-  font-family: var(--schrift-technik); font-size: .66rem;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+.menue__fuss .knopf { width: 100%; }
+.menue__recht {
+  display: flex; flex-wrap: wrap; column-gap: var(--s-lg);
+  margin-top: var(--s-sm); padding-top: var(--s-sm);
+}
+.menue__recht a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  font-size: .88rem; color: var(--text-leise); text-decoration: none;
 }
 
-/* Textlinks ab 900px, darunter uebernimmt das Klappmenue. */
+/* Bei offener Schublade: Filter aus (sonst sperrt er position: fixed ein),
+   Kopf ueber Fortschrittsbalken und Sprungmarke, und der Inhalt der
+   Kopfzeile weg — nur der Schliessen-Knopf bleibt. */
+.kopf:has(.menue[open]) {
+  z-index: 150;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+/* Nur die Kopfzeile selbst, nicht ihr ganzer Teilbaum: die Schublade liegt
+   im Kopfbereich, und ein einfaches .marke hat auch deren eigene Marke
+   erwischt — die Kopfleiste der Schublade war dadurch leer. */
+.kopf:has(.menue[open]) > .kopf__inhalt > .marke,
+.kopf:has(.menue[open]) > .kopf__inhalt > .nav,
+.kopf:has(.menue[open]) > .kopf__inhalt > .kopf__cta { opacity: 0; visibility: hidden; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .menue[open] .menue__tafel   { animation: schub-ein var(--mittel) var(--verlauf); }
+  .menue[open] .menue__schleier { animation: schleier-ein var(--mittel) linear; }
+  /* Zufahren: <details> raeumt das Feld sofort aus dem Baum. Das Skript
+     haelt open deshalb noch, setzt diese Klasse und wartet das Ende ab.
+     Der Zustand [open] muss mit in den Waehler, sonst gewinnt die Regel fuer
+     das Einfahren ueber die Spezifitaet, die Ausfahrt laeuft nie los und
+     animationend bleibt aus — gemessen: die Schublade blieb dann bis zum
+     Ablauf des Sicherheitsnetzes stehen. */
+  .menue[open].menue--zu .menue__tafel    { animation: schub-aus var(--mittel) var(--verlauf) forwards; }
+  .menue[open].menue--zu .menue__schleier { animation: schleier-aus var(--mittel) linear forwards; }
+  @keyframes schub-ein    { from { transform: translateX(100%); } to { transform: none; } }
+  @keyframes schub-aus    { from { transform: none; } to { transform: translateX(100%); } }
+  @keyframes schleier-ein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes schleier-aus { from { opacity: 1; } to { opacity: 0; } }
+}
+
+/* Textlinks ab 900px, darunter uebernimmt die Schublade. */
 .nav { display: none; }
 @media (min-width: 900px) {
   .nav { display: flex; align-items: center; gap: 2px; }
@@ -388,7 +476,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
   }
 }
-/* Der Aufruf zur Anfrage steht rechts aussen, das Klappmenue links davon.
+/* Der Aufruf zur Anfrage steht rechts aussen, der Menueknopf links davon.
    Auf schmalen Geraeten ist die lange Beschriftung zu breit; statt den
    Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
    beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
@@ -468,23 +556,16 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 /* Aktiver Menuepunkt: erkennbar, aber ohne Aufhebens. Die Erkennung laeuft
    ueber aria-current im HTML, also ueber den Pfad und nicht ueber ein
    Skript, das erst nach dem Laden greift. */
-.nav a[aria-current="page"],
-.menue__liste a[aria-current="page"] {
-  color: var(--akzent); font-weight: 700;
-}
-.nav a[aria-current="page"] { position: relative; }
+.nav a[aria-current="page"] { color: var(--akzent); font-weight: 700; position: relative; }
 .nav a[aria-current="page"]::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -.35rem;
   height: 2px; border-radius: 2px; background: var(--akzent);
 }
-/* Statt einer Flaeche bis zur Panelkante eine schmale Marke am linken
-   Rand. Ruhiger und unabhaengig vom Innenabstand der Liste. */
-.menue__liste a[aria-current="page"] { position: relative; }
-.menue__liste a[aria-current="page"]::before {
-  content: ""; position: absolute; left: 0; top: 50%;
-  width: 3px; height: 1.35em; transform: translateY(-50%);
-  border-radius: 0 2px 2px 0; background: var(--akzent);
-}
+/* In der Schublade traegt die ganze Zeile den Zustand: zarte Flaeche von
+   Kante zu Kante und die Ueberschrift im Akzent. Kein zusaetzliches
+   Zeichen — die Zeile selbst ist die Auszeichnung. */
+.menue__nav a[aria-current="page"] { background: var(--akzent-zart); }
+.menue__nav a[aria-current="page"] .menue__titel { color: var(--akzent); }
 
 /* Zwischenueberschrift im Seitenmenue ueber den Sprungmarken. */
 .menue__gruppe {
@@ -510,8 +591,9 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       <span class="marke__name">Vioweb</span>
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
-      <a href="/">Startseite</a>
+      <a href="/">Start</a>
       <a href="/preise/" aria-current="page">Preise</a>
+      <a href="/faq/">FAQ</a>
       <a href="/kontakt/">Kontakt</a>
     </nav>
     <details class="menue" id="menue">
@@ -520,18 +602,41 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
         <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
       </summary>
 
-      <div class="menue__tafel" id="menue-tafel">
-        <nav class="menue__liste" aria-label="Seiten">
-          <a href="/">Startseite</a>
-          <a href="/preise/" aria-current="page">Preise</a>
-          <a href="/kontakt/">Kontakt</a>
+      <div class="menue__schleier" aria-hidden="true"></div>
+
+      <div class="menue__tafel" id="menue-tafel" role="dialog"
+           aria-modal="true" aria-label="Navigation">
+        <div class="menue__kopf">
+          <a class="marke" href="/">
+            <img class="marke__zeichen" src="../img/zeichen.webp" alt="Vioweb"
+                 width="480" height="291" loading="lazy" decoding="async">
+            <span class="marke__name">Vioweb</span>
+          </a>
+        </div>
+
+        <nav class="menue__nav" aria-label="Seiten">
+          <a href="/">
+            <span class="menue__titel">Start</span>
+            <span class="menue__unter">Zur Übersicht</span></a>
+          <a href="/preise/" aria-current="page">
+            <span class="menue__titel">Preise</span>
+            <span class="menue__unter">Leistungen und Preise im Überblick</span></a>
+          <a href="/faq/">
+            <span class="menue__titel">FAQ</span>
+            <span class="menue__unter">Antworten auf häufige Fragen</span></a>
+          <a href="/kontakt/">
+            <span class="menue__titel">Kontakt</span>
+            <span class="menue__unter">Kostenlose Analyse anfragen</span></a>
         </nav>
 
-        <p class="menue__gruppe" id="menue-recht">Rechtliches</p>
-        <nav class="menue__liste menue__liste--anker" aria-labelledby="menue-recht">
-          <a href="/impressum.html">Impressum</a>
-          <a href="/datenschutz.html">Datenschutz</a>
-        </nav>
+        <div class="menue__fuss">
+          <a class="knopf knopf--voll" href="/kontakt/">Kostenlosen Check anfragen
+            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          <p class="menue__recht">
+            <a href="/impressum.html">Impressum</a>
+            <a href="/datenschutz.html">Datenschutz</a>
+          </p>
+        </div>
       </div>
     </details>
 
@@ -913,274 +1018,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       <div>
         <h2 class="gross">Fragen und Antworten.</h2>
         <p class="vorspann">
-          Nach Themen sortiert. Wenn deine Frage fehlt, schreib sie uns
-          einfach, wir antworten auch ohne Auftrag.
+          Alle 46 Fragen stehen gesammelt auf einer eigenen Seite, nach
+          Themen sortiert. Wenn deine Frage fehlt, schreib sie uns einfach
+          &ndash; wir antworten auch ohne Auftrag.
         </p>
-
-        <h3 class="fragen__gruppe">Website-Analyse</h3>
-        <div class="fragen">
-          <details class="frage">
-            <summary><span class="frage__text">Was ist der Unterschied zwischen der kostenlosen Erstanalyse und der Pro-Analyse?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Die Erstanalyse nennt die auffälligsten Punkte in wenigen Sätzen. Die Pro-Analyse geht systematisch durch alle Bereiche, ordnet jeden Befund nach Dringlichkeit und liefert konkrete Vorschläge mit Beispielen.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was enthält die kostenlose Analyse?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Einen kurzen Bericht mit den drei bis fünf Punkten, die uns zuerst aufgefallen sind, jeweils mit der Folge für deinen Betrieb und einer ersten Empfehlung. Dazu, was gut läuft.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was enthält die Pro Website-Analyse?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Alle acht Prüfbereiche im Detail, eine nach Dringlichkeit und Wirkung sortierte Maßnahmenliste, konkrete Handlungsempfehlungen, Screenshots und Beispiele sowie die nächsten Schritte.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie lange dauert eine Analyse?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Die Erstanalyse schaffen wir meist in wenigen Werktagen. Für die Pro-Analyse nennen wir dir bei der Beauftragung einen verbindlichen Termin, weil der Aufwand vom Umfang der Website abhängt.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Benötigt Vioweb Zugangsdaten zur Website?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Für beide Analysen nicht. Wir sehen die Seite so, wie ein Besucher sie sieht. Erst wenn wir etwas umsetzen sollen, brauchen wir Zugang.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wird die Pro-Analyse später angerechnet?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Beauftragst du danach eine Website-Optimierung, werden die 85 € vollständig auf den Auftrag angerechnet.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Kann ich die Empfehlungen selbst umsetzen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, und der Bericht ist genau dafür geschrieben. Du kannst ihn auch an deinen Entwickler oder deine Agentur weitergeben, auch an die, die deine Website gebaut hat.
-            </p></div>
-          </details>
-        </div>
-        <h3 class="fragen__gruppe">Neue Website</h3>
-        <div class="fragen">
-          <details class="frage">
-            <summary><span class="frage__text">Was kostet eine Landingpage?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ab 399 €. Enthalten sind individuelles Design, mobile Optimierung, Kontaktformular, Datenschutz-Grundlagen, technische Suchmaschinenoptimierung und kurze Ladezeiten.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was kostet eine Unternehmenswebsite?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ab 699 € für bis zu fünf Seiten, inklusive Impressum und Datenschutzerklärung.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was bedeutet der „ab"-Preis?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Er ist der Einstieg für den beschriebenen Umfang. Kommen mehr Seiten, ein Shop oder eine besondere Funktion dazu, steigt er. Wir nennen den Endpreis vor der Beauftragung, nicht danach.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie viele Seiten sind enthalten?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Bei der Landingpage eine, bei der Unternehmenswebsite bis zu fünf. Weitere Seiten sind möglich und werden vorher beziffert.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie lange dauert die Erstellung?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Das hängt vom Umfang ab und davon, wie schnell Texte und Bilder vorliegen. Den Zeitraum vereinbaren wir vor dem Auftrag verbindlich.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Muss ich Texte und Bilder liefern?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Das ist der schnellste Weg, weil niemand deinen Betrieb besser kennt als du. Nötig ist es nicht.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Können Texte oder Inhalte durch Vioweb vorbereitet werden?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Wir schreiben Entwürfe auf Grundlage eines Gesprächs, die du dann freigibst oder änderst. Der Aufwand dafür wird vorher genannt.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Kann ich später weitere Seiten ergänzen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Die Websites sind so gebaut, dass sie wachsen können.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Ist die Website für Smartphones optimiert?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, in jedem Paket. Bedienbar auf kleinen und großen Geräten, nicht nur verkleinert.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wird die Website für Google vorbereitet?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Titel, Beschreibungen, Sitemap, robots.txt und strukturierte Daten sind enthalten. Ein Ranking lässt sich damit vorbereiten, aber nicht kaufen.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Sind Impressum und Datenschutz enthalten?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Bei der Unternehmenswebsite ja, bei der Landingpage die Datenschutz-Grundlagen. Die inhaltlichen Angaben musst du liefern; eine Rechtsberatung ist es nicht.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Welche laufenden Kosten entstehen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Domain und Hosting zahlst du direkt bei deinem Anbieter, üblich sind wenige Euro im Monat. Bei uns entstehen laufende Kosten nur, wenn du ein Wartungspaket buchst.
-            </p></div>
-          </details>
-        </div>
-        <h3 class="fragen__gruppe">Optimierung und SEO</h3>
-        <div class="fragen">
-          <details class="frage">
-            <summary><span class="frage__text">Kann eine bestehende Website optimiert werden?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, ab 199 €, und in dem System, das du bereits nutzt.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Welche Systeme und Technologien werden unterstützt?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Praktisch jede öffentlich erreichbare Seite: WordPress, Baukästen wie Wix oder Jimdo, Shopsysteme oder von Hand gebaute Seiten. Bei Baukästen ist der Spielraum je nach Anbieter kleiner, das sagen wir vorher.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Muss meine Website neu gebaut werden?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Meistens nicht. Wenn eine Neuerstellung günstiger wäre als das Reparieren, sagen wir dir das offen, auch wenn der kleinere Auftrag für uns der bequemere wäre.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was beinhaltet die SEO-Basis?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Titel und Beschreibungen, Google-Indexierung, Sitemap, robots.txt, Canonical-Angaben, strukturierte Daten und eine technische Prüfung. Ab 99 €.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Kann Vioweb garantieren, dass meine Seite bei Google auf Platz 1 erscheint?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Nein, und niemand kann das seriös. Wir sorgen dafür, dass deiner Seite technisch nichts im Weg steht. Über die Platzierung entscheidet Google.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie schnell werden SEO-Änderungen sichtbar?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Technische Korrekturen greifen oft innerhalb weniger Wochen, inhaltliche brauchen länger. Feste Zusagen wären geraten, deshalb machen wir keine.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Werden Performance und Ladezeiten verbessert?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, das ist bei den meisten Seiten der größte Hebel. Bildgrößen, Seitengewicht und verzögernde Ressourcen sind die üblichen Ursachen.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Kann auch nur ein einzelnes Problem behoben werden?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Viele beginnen mit einem Punkt aus der Liste und entscheiden danach, ob mehr folgen soll.
-            </p></div>
-          </details>
-        </div>
-        <h3 class="fragen__gruppe">Wartung und Zusammenarbeit</h3>
-        <div class="fragen">
-          <details class="frage">
-            <summary><span class="frage__text">Welche Wartungspakete gibt es?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Basic für 9 €, Standard für 19 € und Premium ab 39 € im Monat.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was ist im monatlichen Preis enthalten?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Bei Basic Updates, Sicherungen und Sicherheitsprüfung. Standard ergänzt kleine Änderungen und bevorzugte Bearbeitung. Premium umfasst individuelle Betreuung, laufende Optimierung und Support mit Vorrang.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Kann Wartung jederzeit gekündigt werden?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja, monatlich. Es gibt keine Mindestlaufzeit.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Arbeitet Vioweb deutschlandweit?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Ja. Die Zusammenarbeit läuft über E-Mail, Telefon und bei Bedarf über ein Videogespräch.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie läuft die Zusammenarbeit ab?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Anfrage, kostenlose Ersteinschätzung, deine Entscheidung, dann Analyse oder Umsetzung. Du bekommst zwischendurch mit, wo wir stehen.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wie erfolgt die Bezahlung?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Per Rechnung und Überweisung nach Abschluss, bei größeren Aufträgen in Teilbeträgen. Das halten wir vorher schriftlich fest.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Gibt es versteckte Kosten?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Nein. Der Preis, den wir vor dem Auftrag nennen, ist der Preis der Rechnung.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Was passiert bei zusätzlichen Wünschen?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Wir besprechen sie und nennen die Kosten, bevor wir anfangen. Nichts wird stillschweigend dazugerechnet.
-            </p></div>
-          </details>
-          <details class="frage">
-            <summary><span class="frage__text">Wer ist mein Ansprechpartner?</span>
-              <span class="frage__zeichen" aria-hidden="true"></span></summary>
-            <div class="frage__antwort"><p>
-              Vioweb ist ein Betrieb aus einer Person. Du sprichst vom ersten bis zum letzten Tag mit derselben.
-            </p></div>
-          </details>
-        </div>
+        <a class="verweis" href="/faq/">Alle Fragen und Antworten
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -1214,8 +1057,10 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     <p>© 2026 Vioweb</p>
     <nav aria-label="Rechtliches">
       <ul role="list" class="fuss__zeile">
-        <li><a href="/">Startseite</a></li>
+        <li><a href="/">Start</a></li>
         <li><a href="/preise/">Preise</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/kontakt/">Kontakt</a></li>
         <li><a href="/impressum.html">Impressum</a></li>
         <li><a href="/datenschutz.html">Datenschutz</a></li>
       </ul>
@@ -1453,300 +1298,6 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
             "priceCurrency": "EUR",
             "minPrice": "39",
             "valueAddedTaxIncluded": false
-          }
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://vioweb.de/preise/#fragen",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Was ist der Unterschied zwischen der kostenlosen Erstanalyse und der Pro-Analyse?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Die Erstanalyse nennt die auffälligsten Punkte in wenigen Sätzen. Die Pro-Analyse geht systematisch durch alle Bereiche, ordnet jeden Befund nach Dringlichkeit und liefert konkrete Vorschläge mit Beispielen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was enthält die kostenlose Analyse?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Einen kurzen Bericht mit den drei bis fünf Punkten, die uns zuerst aufgefallen sind, jeweils mit der Folge für deinen Betrieb und einer ersten Empfehlung. Dazu, was gut läuft."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was enthält die Pro Website-Analyse?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Alle acht Prüfbereiche im Detail, eine nach Dringlichkeit und Wirkung sortierte Maßnahmenliste, konkrete Handlungsempfehlungen, Screenshots und Beispiele sowie die nächsten Schritte."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie lange dauert eine Analyse?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Die Erstanalyse schaffen wir meist in wenigen Werktagen. Für die Pro-Analyse nennen wir dir bei der Beauftragung einen verbindlichen Termin, weil der Aufwand vom Umfang der Website abhängt."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Benötigt Vioweb Zugangsdaten zur Website?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Für beide Analysen nicht. Wir sehen die Seite so, wie ein Besucher sie sieht. Erst wenn wir etwas umsetzen sollen, brauchen wir Zugang."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wird die Pro-Analyse später angerechnet?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Beauftragst du danach eine Website-Optimierung, werden die 85 € vollständig auf den Auftrag angerechnet."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann ich die Empfehlungen selbst umsetzen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, und der Bericht ist genau dafür geschrieben. Du kannst ihn auch an deinen Entwickler oder deine Agentur weitergeben, auch an die, die deine Website gebaut hat."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was kostet eine Landingpage?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ab 399 €. Enthalten sind individuelles Design, mobile Optimierung, Kontaktformular, Datenschutz-Grundlagen, technische Suchmaschinenoptimierung und kurze Ladezeiten."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was kostet eine Unternehmenswebsite?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ab 699 € für bis zu fünf Seiten, inklusive Impressum und Datenschutzerklärung."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was bedeutet der „ab\"-Preis?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Er ist der Einstieg für den beschriebenen Umfang. Kommen mehr Seiten, ein Shop oder eine besondere Funktion dazu, steigt er. Wir nennen den Endpreis vor der Beauftragung, nicht danach."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie viele Seiten sind enthalten?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bei der Landingpage eine, bei der Unternehmenswebsite bis zu fünf. Weitere Seiten sind möglich und werden vorher beziffert."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie lange dauert die Erstellung?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Das hängt vom Umfang ab und davon, wie schnell Texte und Bilder vorliegen. Den Zeitraum vereinbaren wir vor dem Auftrag verbindlich."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Muss ich Texte und Bilder liefern?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Das ist der schnellste Weg, weil niemand deinen Betrieb besser kennt als du. Nötig ist es nicht."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Können Texte oder Inhalte durch Vioweb vorbereitet werden?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Wir schreiben Entwürfe auf Grundlage eines Gesprächs, die du dann freigibst oder änderst. Der Aufwand dafür wird vorher genannt."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann ich später weitere Seiten ergänzen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Die Websites sind so gebaut, dass sie wachsen können."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Ist die Website für Smartphones optimiert?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, in jedem Paket. Bedienbar auf kleinen und großen Geräten, nicht nur verkleinert."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wird die Website für Google vorbereitet?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Titel, Beschreibungen, Sitemap, robots.txt und strukturierte Daten sind enthalten. Ein Ranking lässt sich damit vorbereiten, aber nicht kaufen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Sind Impressum und Datenschutz enthalten?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bei der Unternehmenswebsite ja, bei der Landingpage die Datenschutz-Grundlagen. Die inhaltlichen Angaben musst du liefern; eine Rechtsberatung ist es nicht."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Welche laufenden Kosten entstehen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Domain und Hosting zahlst du direkt bei deinem Anbieter, üblich sind wenige Euro im Monat. Bei uns entstehen laufende Kosten nur, wenn du ein Wartungspaket buchst."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann eine bestehende Website optimiert werden?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, ab 199 €, und in dem System, das du bereits nutzt."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Welche Systeme und Technologien werden unterstützt?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Praktisch jede öffentlich erreichbare Seite: WordPress, Baukästen wie Wix oder Jimdo, Shopsysteme oder von Hand gebaute Seiten. Bei Baukästen ist der Spielraum je nach Anbieter kleiner, das sagen wir vorher."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Muss meine Website neu gebaut werden?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Meistens nicht. Wenn eine Neuerstellung günstiger wäre als das Reparieren, sagen wir dir das offen, auch wenn der kleinere Auftrag für uns der bequemere wäre."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was beinhaltet die SEO-Basis?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Titel und Beschreibungen, Google-Indexierung, Sitemap, robots.txt, Canonical-Angaben, strukturierte Daten und eine technische Prüfung. Ab 99 €."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann Vioweb garantieren, dass meine Seite bei Google auf Platz 1 erscheint?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Nein, und niemand kann das seriös. Wir sorgen dafür, dass deiner Seite technisch nichts im Weg steht. Über die Platzierung entscheidet Google."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie schnell werden SEO-Änderungen sichtbar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Technische Korrekturen greifen oft innerhalb weniger Wochen, inhaltliche brauchen länger. Feste Zusagen wären geraten, deshalb machen wir keine."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Werden Performance und Ladezeiten verbessert?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, das ist bei den meisten Seiten der größte Hebel. Bildgrößen, Seitengewicht und verzögernde Ressourcen sind die üblichen Ursachen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann auch nur ein einzelnes Problem behoben werden?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Viele beginnen mit einem Punkt aus der Liste und entscheiden danach, ob mehr folgen soll."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Welche Wartungspakete gibt es?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Basic für 9 €, Standard für 19 € und Premium ab 39 € im Monat."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was ist im monatlichen Preis enthalten?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bei Basic Updates, Sicherungen und Sicherheitsprüfung. Standard ergänzt kleine Änderungen und bevorzugte Bearbeitung. Premium umfasst individuelle Betreuung, laufende Optimierung und Support mit Vorrang."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Kann Wartung jederzeit gekündigt werden?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja, monatlich. Es gibt keine Mindestlaufzeit."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Arbeitet Vioweb deutschlandweit?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ja. Die Zusammenarbeit läuft über E-Mail, Telefon und bei Bedarf über ein Videogespräch."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie läuft die Zusammenarbeit ab?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Anfrage, kostenlose Ersteinschätzung, deine Entscheidung, dann Analyse oder Umsetzung. Du bekommst zwischendurch mit, wo wir stehen."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wie erfolgt die Bezahlung?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Per Rechnung und Überweisung nach Abschluss, bei größeren Aufträgen in Teilbeträgen. Das halten wir vorher schriftlich fest."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Gibt es versteckte Kosten?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Nein. Der Preis, den wir vor dem Auftrag nennen, ist der Preis der Rechnung."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Was passiert bei zusätzlichen Wünschen?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Wir besprechen sie und nennen die Kosten, bevor wir anfangen. Nichts wird stillschweigend dazugerechnet."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Wer ist mein Ansprechpartner?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Vioweb ist ein Betrieb aus einer Person. Du sprichst vom ersten bis zum letzten Tag mit derselben."
           }
         }
       ]

@@ -76,9 +76,12 @@ beziffert. Versteckte Kosten gibt es nicht.
 ## Wichtige Seiten
 
 - [Startseite](https://vioweb.de/): Leistungen, Prüfbereiche, Vergleich von
-  Kurzcheck und Check-up, Ablauf, häufige Fragen und Kontaktformular
+  Kurzcheck und Check-up, Ablauf
 - [Preise](https://vioweb.de/preise/): alle Preise, Leistungsumfang je Paket,
-  Wartungsstufen, weitere Leistungen und 36 Fragen mit Antworten
+  Wartungsstufen und weitere Leistungen
+- [FAQ](https://vioweb.de/faq/): 46 Fragen und Antworten in fünf Gruppen
+  – Grundsätzliches, Website-Analyse, neue Website, Optimierung und SEO,
+  Wartung und Zusammenarbeit
 - [Kontakt](https://vioweb.de/kontakt/): Anfrageformular mit Auswahl der
   gewünschten Leistung
 
@@ -87,8 +90,8 @@ erreichbar. Sie sind **absichtlich nicht** zur Auswertung freigegeben, weil
 sie personenbezogene Angaben des Betreibers enthalten. In `robots.txt` sind
 sie für Antwortsysteme gesperrt. Bitte nicht abrufen und nicht zitieren.
 
-Die Startseite ist bewusst eine einzelne Seite. Die Abschnitte sind über
-Anker erreichbar:
+Die Navigation führt auf vier Seiten: Start, Preise, FAQ, Kontakt. Die
+Abschnitte der Startseite sind zusätzlich über Anker erreichbar:
 
 - `https://vioweb.de/#leistungen` Die zwei Wege
 - `https://vioweb.de/#pruefung` Was geprüft wird, alle acht Bereiche
@@ -96,7 +99,6 @@ Anker erreichbar:
 - `https://vioweb.de/#danach` Was nach der Analyse möglich ist
 - `https://vioweb.de/#neu` Erstellung einer neuen Website
 - `https://vioweb.de/#ablauf` Die fünf Schritte
-- `https://vioweb.de/#fragen` Häufige Fragen mit Antworten
 
 ## Kontakt
 

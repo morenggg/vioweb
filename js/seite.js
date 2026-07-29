@@ -3,7 +3,7 @@
 
    Fuenf Teile, mehr nicht:
      1. Kontaktformular
-     2. Klappmenue im Kopfbereich
+     2. Schublade im Kopfbereich
      3. Haarlinie unter dem Kopfbereich beim Scrollen
      4. Dezentes Einblenden der Abschnitte
      5. Fortschrittsbalken am oberen Rand
@@ -270,20 +270,23 @@
 })();
 
 /* =========================================================================
-   2. Off-Canvas-Menue
+   2. Schublade im Kopfbereich
 
-   Das <details> traegt den Zustand — damit funktioniert das Menue auch
-   ohne dieses Skript. Ergaenzt werden hier drei Dinge, die ein <details>
-   allein nicht kann:
+   Das <details> traegt den Zustand — damit funktioniert die Navigation auch
+   ohne dieses Skript: der Knopf oeffnet und schliesst sie nativ. Ergaenzt
+   wird hier, was ein <details> allein nicht kann:
 
-     - Schliessen bei einem Klick daneben
+     - Schliessen bei Klick auf den Schleier
      - Schliessen mit Escape, danach Fokus zurueck auf den Knopf
+     - Fokusfang, solange die Schublade offen ist
+     - Scroll-Sperre fuer die Seite dahinter
+     - weiche Ausfahrt: <details> raeumt den Inhalt sofort aus dem Baum,
+       deshalb bleibt open noch stehen, bis die Bewegung durch ist
      - aria-expanded, damit Hilfsmittel den Zustand ansagen
 
-   Bewusst NICHT enthalten: Scroll-Sperre und Fokusfang. Beide gehoeren zu
-   einer Schublade, die den Bildschirm ausfuellt. Dieses Feld haengt unter
-   dem Knopf, verdeckt nichts und darf deshalb weder den Fokus einsperren
-   noch das Scrollen anhalten.
+   Das gehoert zu einer Schublade, die den Bildschirm ausfuellt, und nicht
+   zu einem Feld, das unter dem Knopf haengt. Bei einer frueheren Fassung
+   als Dropdown war beides bewusst draussen.
    ========================================================================= */
 (function () {
   'use strict';
@@ -293,40 +296,103 @@
 
   var knopf = menue.querySelector('summary');
   var tafel = menue.querySelector('.menue__tafel');
+  var schleier = menue.querySelector('.menue__schleier');
+  var ruhig = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* Alles, was den Fokus annehmen kann — der Knopf gehoert dazu, weil er in
+     der Kopfleiste der Schublade sitzt und dort das Kreuz ist. */
+  function fokussierbar() {
+    var liste = [knopf];
+    var f = tafel.querySelectorAll('a[href], button, input, select, textarea');
+    for (var i = 0; i < f.length; i++) liste.push(f[i]);
+    return liste;
+  }
 
   function auf() { return menue.hasAttribute('open'); }
 
+  /* Die Sperre haengt am <html>, nicht am <body>: manche Browser machen den
+     Body sonst selbst zum Scrollbereich. Die Schublade scrollt weiter, dafuer
+     sorgt overscroll-behavior im CSS. */
+  function sperre(an) {
+    document.documentElement.style.overflow = an ? 'hidden' : '';
+  }
+
+  var laeuft = false;
+
   function zu(fokusZurueck) {
-    if (!auf()) return;
-    menue.removeAttribute('open');
-    if (fokusZurueck) knopf.focus();
+    if (!auf() || laeuft) return;
+
+    function fertig() {
+      menue.classList.remove('menue--zu');
+      menue.removeAttribute('open');
+      sperre(false);
+      laeuft = false;
+      if (fokusZurueck) knopf.focus();
+    }
+
+    if (ruhig.matches) { fertig(); return; }
+
+    laeuft = true;
+    menue.classList.add('menue--zu');
+
+    /* Auf das Ende der Bewegung warten. Der Zeitgeber ist das Netz darunter,
+       falls kein animationend kommt — sonst bliebe die Schublade haengen. */
+    var erledigt = false;
+    function einmal() {
+      if (erledigt) return;
+      erledigt = true;
+      tafel.removeEventListener('animationend', einmal);
+      fertig();
+    }
+    tafel.addEventListener('animationend', einmal);
+    setTimeout(einmal, 600);
   }
 
   menue.addEventListener('toggle', function () {
     knopf.setAttribute('aria-expanded', auf() ? 'true' : 'false');
+    if (auf()) sperre(true);
   });
 
-  /* Verweis gewaehlt: schliessen, damit das Ziel sichtbar wird. */
-  tafel.addEventListener('click', function (e) {
-    if (e.target.closest('a')) zu(false);
-  });
-
-  /* Klick ausserhalb. Der Knopf selbst ist ausgenommen, sonst wuerde das
-     Umschalten sofort wieder rueckgaengig gemacht. */
-  document.addEventListener('click', function (e) {
+  /* Der Knopf schliesst ueber denselben Weg wie alles andere, damit die
+     Ausfahrt auch beim zweiten Antippen laeuft. Das <details> wuerde sonst
+     sofort zuklappen. */
+  knopf.addEventListener('click', function (e) {
     if (!auf()) return;
-    if (menue.contains(e.target)) return;
+    e.preventDefault();
     zu(false);
   });
 
-  document.addEventListener('keydown', function (e) {
-    if (auf() && e.key === 'Escape') { e.preventDefault(); zu(true); }
+  schleier.addEventListener('click', function () { zu(true); });
+
+  /* Verweis gewaehlt: schliessen, damit das Ziel sichtbar wird. Ohne
+     Bewegung, sonst laeuft die Ausfahrt gegen den Seitenwechsel. */
+  tafel.addEventListener('click', function (e) {
+    if (!e.target.closest('a')) return;
+    menue.removeAttribute('open');
+    sperre(false);
   });
 
-  /* Wandert der Fokus mit der Tabulatortaste aus dem Feld heraus, ist das
-     Feld erledigt. Kein Einsperren, nur aufraeumen. */
+  document.addEventListener('keydown', function (e) {
+    if (!auf()) return;
+
+    if (e.key === 'Escape') { e.preventDefault(); zu(true); return; }
+    if (e.key !== 'Tab') return;
+
+    /* Fokusfang: der Rundlauf bleibt in der Schublade. */
+    var liste = fokussierbar();
+    var erste = liste[0], letzte = liste[liste.length - 1];
+    if (e.shiftKey && document.activeElement === erste) {
+      e.preventDefault(); letzte.focus();
+    } else if (!e.shiftKey && document.activeElement === letzte) {
+      e.preventDefault(); erste.focus();
+    }
+  });
+
+  /* Wandert der Fokus trotzdem hinaus — etwa ueber die Suchleiste des
+     Browsers — dann zurueck auf den Knopf statt die Schublade zu schliessen.
+     Ein Wechsel auf ein Bedienelement dahinter waere sonst unsichtbar. */
   document.addEventListener('focusin', function (e) {
-    if (auf() && !menue.contains(e.target)) zu(false);
+    if (auf() && !menue.contains(e.target)) knopf.focus();
   });
 })();
 
