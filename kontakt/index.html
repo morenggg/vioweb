@@ -199,7 +199,8 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 /* ------------------------------------------------ 4. Wiederkehrende Teile */
 .kicker {
   font-family: var(--schrift-technik);
-  font-size: .7rem; text-transform: uppercase; letter-spacing: .16em;
+  font-size: clamp(.7rem, .83rem - .2vw, .78rem);
+  text-transform: uppercase; letter-spacing: .16em;
   color: var(--akzent); font-weight: 500;
 }
 .vorspann {
@@ -220,14 +221,20 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
               box-shadow var(--schnell) var(--verlauf);
 }
 .knopf--voll { background: var(--akzent); color: #FFFFFF; }
-.knopf--voll:hover { background: var(--akzent-tief); }
+@media (hover: hover) {
+  .knopf--voll:hover { background: var(--akzent-tief); }
+}
 .knopf--rand {
   border-color: var(--linie-kraeftig); color: var(--text); background: var(--flaeche);
 }
-.knopf--rand:hover { border-color: var(--akzent); color: var(--akzent); }
+@media (hover: hover) {
+  .knopf--rand:hover { border-color: var(--akzent); color: var(--akzent); }
+}
 .knopf--klein { min-height: 44px; padding: .6rem 1.1rem; font-size: .875rem; }
 .knopf__pfeil { transition: transform var(--schnell) var(--verlauf); }
-.knopf:hover .knopf__pfeil { transform: translateX(3px); }
+@media (hover: hover) {
+  .knopf:hover .knopf__pfeil { transform: translateX(3px); }
+}
 
 /* -------------------------------------------------------- 5. Kopfbereich */
 .kopf {
@@ -249,12 +256,14 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 }
 
 .kopf__inhalt {
+  position: relative;   /* Bezug fuer die Menuetafel, siehe unten */
   display: flex; align-items: center; justify-content: space-between;
   gap: var(--s-md); min-height: var(--kopfhoehe);
 }
 .marke {
   position: relative; z-index: 115;
   display: flex; align-items: center; gap: .65rem; text-decoration: none;
+  min-height: 44px;   /* Klickflaeche, das Zeichen bleibt 22 px */
   transition: opacity var(--schnell) var(--verlauf), visibility 0s;
 }
 /* Das Zeichen hat eine weisse Haelfte, die auf hellem Grund verschwindet.
@@ -279,7 +288,11 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    Zuklappen selbst uebernehmen, also ueber JavaScript. Das <summary> kann
    das von Haus aus, ist mit der Tastatur bedienbar und meldet den Zustand.
    aria-label, aria-controls und aria-expanded stehen trotzdem daran. */
-.menue { position: relative; }
+/* Bewusst kein position: relative. Der Knopf ist 44 px breit und steht
+   links neben dem Aufruf zur Anfrage; eine daran verankerte Tafel haengt
+   auf dem Telefon weit ueber den linken Bildrand hinaus. Der Bezug ist
+   deshalb .kopf__inhalt. */
+.menue { position: static; }
 
 .menue__knopf {
   display: inline-flex; align-items: center; justify-content: center;
@@ -291,7 +304,9 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
               border-color var(--schnell) var(--verlauf);
 }
 .menue__knopf::-webkit-details-marker { display: none; }
-.menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+@media (hover: hover) {
+  .menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+}
 .menue[open] .menue__knopf { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
 
 .menue__striche { position: relative; width: 18px; height: 12px; flex: none; }
@@ -307,13 +322,14 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 .menue[open] .menue__striche i:nth-child(2) { opacity: 0; }
 .menue[open] .menue__striche i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-/* Rechtsbuendiges Feld unter dem Knopf. Die Breite folgt dem laengsten
-   Eintrag, bleibt aber innerhalb des Fensters. */
+/* Rechtsbuendiges Feld unter dem Kopfbereich. Die rechte Kante liegt auf
+   derselben Satzkante wie der uebrige Inhalt, die Breite folgt dem
+   laengsten Eintrag und endet spaetestens an der linken Satzkante. */
 .menue__tafel {
   position: absolute; z-index: 120;
-  top: calc(100% + 10px); right: 0;
+  top: calc(100% + 10px); right: var(--rand);
   width: max-content; min-width: 240px;
-  max-width: min(92vw, 320px);
+  max-width: min(320px, calc(100vw - 2 * var(--rand)));
   background: var(--flaeche);
   border: 1px solid #E6E6EC;
   border-radius: 12px;
@@ -321,6 +337,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
               0 18px 40px -16px rgba(23, 21, 29, .22);
   padding: var(--s-sm);
   max-height: calc(100vh - var(--kopfhoehe) - 24px);
+  max-height: calc(100dvh - var(--kopfhoehe) - 24px);
   overflow-y: auto;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -340,9 +357,13 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   transition: color var(--schnell) var(--verlauf),
               background-color var(--schnell) var(--verlauf);
 }
-.menue__liste a:hover { background: var(--flaeche-ruhig); color: var(--akzent); }
+@media (hover: hover) {
+  .menue__liste a:hover { background: var(--flaeche-ruhig); color: var(--akzent); }
+}
 .menue__liste--anker a { font-weight: 500; color: var(--text-leise); font-size: .9rem; }
-.menue__liste--anker a:hover { color: var(--akzent); }
+@media (hover: hover) {
+  .menue__liste--anker a:hover { color: var(--akzent); }
+}
 
 .menue__gruppe {
   margin-top: var(--s-sm); padding: var(--s-xs) .7rem;
@@ -363,7 +384,9 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     transition: color var(--schnell) var(--verlauf),
                 background-color var(--schnell) var(--verlauf);
   }
-  .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
+  @media (hover: hover) {
+    .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
+  }
 }
 /* Der Aufruf zur Anfrage steht rechts aussen, das Klappmenue links davon.
    Auf schmalen Geraeten ist die lange Beschriftung zu breit; statt den

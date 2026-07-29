@@ -87,7 +87,9 @@
   font-size: .9rem; font-weight: 700; color: var(--akzent);
   text-decoration: none;
 }
-.verweis:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) {
+  .verweis:hover { text-decoration: underline; text-underline-offset: 3px; }
+}
 
 /* ------------------------------------------------ 4. Was geprueft wird */
 /* Bewusst keine Karten: acht Kacheln nebeneinander waeren genau die
@@ -120,11 +122,20 @@
 /* Genau eine Karte traegt den Akzent — nicht beide. */
 .karte--betont { border-color: var(--akzent); box-shadow: var(--hebung); }
 
+/* Kleine Schrift waechst nach unten, nicht nach oben.
+   Am Schreibtisch ist eine 11-px-Versalzeile eine ruhige Beschriftung, auf
+   dem Telefon ist sie nicht mehr lesbar. Diese Groessen haben deshalb eine
+   fallende Steigung: gross auf schmalen Geraeten, ab 1040 px wieder genau
+   der bisherige Wert. Der Desktop bleibt damit unveraendert, und es
+   braucht keinen zweiten Haltepunkt.
+   Aufbau: clamp(Schreibtisch, Gerade, Telefon) — der mittlere Wert faellt
+   mit der Breite, deshalb steht das Minimum links und das Maximum rechts. */
 .karte__marke {
   align-self: flex-start;
   padding: .25rem .6rem; border-radius: 999px;
   background: var(--flaeche-ruhig);
-  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  font-size: clamp(.72rem, .82rem - .154vw, .78rem);
+  font-weight: 700; letter-spacing: .04em;
   text-transform: uppercase; color: var(--text-leise);
 }
 .karte--betont .karte__marke { background: var(--akzent-zart); color: var(--akzent); }
@@ -151,7 +162,8 @@
 }
 .karte .knopf { margin-top: var(--s-lg); align-self: flex-start; }
 .karte__fuss {
-  margin-top: var(--s-md); font-size: .84rem; color: var(--text-leise);
+  margin-top: var(--s-md); color: var(--text-leise);
+  font-size: clamp(.84rem, .91rem - .1vw, .88rem);
   max-width: 40ch;
 }
 
@@ -226,7 +238,9 @@
   cursor: pointer; list-style: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.frage summary:hover { color: var(--akzent); }
+@media (hover: hover) {
+  .frage summary:hover { color: var(--akzent); }
+}
 .frage__text {
   font-size: clamp(1rem, .95rem + .35vw, 1.14rem);
   font-weight: 700; letter-spacing: -.016em; line-height: 1.35;
@@ -273,36 +287,16 @@
 
 .formular { margin-top: var(--s-xl); }
 
-.anliegen { border: 0; padding: 0; margin: 0 0 var(--s-lg); }
-.anliegen legend {
-  padding: 0; margin-bottom: .6rem;
-  font-size: .8rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .07em; color: var(--text-leise);
-}
-.anliegen__wahl { display: grid; gap: .55rem; }
-.anliegen__wahl label {
-  display: flex; align-items: center; gap: .7rem;
-  min-height: 52px; padding: .5rem .9rem;
-  border: 1px solid var(--linie-kraeftig); border-radius: var(--rund);
-  background: var(--grund);
-  font-size: .95rem; font-weight: 600; cursor: pointer;
-  transition: border-color var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
-}
-.anliegen__wahl label:hover { border-color: var(--akzent); }
-.anliegen__wahl input { width: 20px; height: 20px; accent-color: var(--akzent); flex: none; }
-.anliegen__wahl label:has(input:checked) {
-  border-color: var(--akzent); background: var(--akzent-zart);
-}
-
 .feldgruppe { margin-bottom: var(--s-md); }
 .feldgruppe > label:not(.haken) {
   display: block; margin-bottom: .4rem;
-  font-size: .8rem; font-weight: 700; text-transform: uppercase;
+  font-size: clamp(.8rem, .93rem - .2vw, .88rem);
+  font-weight: 700; text-transform: uppercase;
   letter-spacing: .07em; color: var(--text-leise);
 }
 .pflicht {
-  margin-left: .4rem; font-size: .7rem; letter-spacing: .04em;
+  margin-left: .4rem; letter-spacing: .04em;
+  font-size: clamp(.7rem, .83rem - .2vw, .78rem);
   color: var(--akzent);
 }
 
@@ -342,7 +336,10 @@
               box-shadow var(--schnell) var(--verlauf);
 }
 .formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
-.formular input:hover, .formular select:hover, .formular textarea:hover { border-color: var(--text-leise); }
+@media (hover: hover) {
+  .formular input:hover, .formular select:hover,
+  .formular textarea:hover { border-color: var(--text-leise); }
+}
 .formular input:focus-visible, .formular select:focus-visible,
 .formular textarea:focus-visible {
   border-color: var(--akzent); outline-offset: 1px;
@@ -350,7 +347,10 @@
 .formular ::placeholder { color: var(--text-leise); opacity: 1; }
 .formular [aria-invalid="true"] { border-color: var(--schlecht); }
 
-.hinweis { margin-top: .4rem; font-size: .82rem; color: var(--text-leise); }
+.hinweis {
+  margin-top: .4rem; color: var(--text-leise);
+  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
+}
 .fehler {
   margin-top: .4rem; font-size: .86rem; font-weight: 700; color: var(--schlecht);
 }
@@ -358,7 +358,6 @@
 
 @media (min-width: 620px) {
   .feldpaar { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--s-md); }
-  .anliegen__wahl { grid-template-columns: 1fr 1fr; }
 }
 
 /* Falle gegen automatische Eintraege. Nicht display:none — manche
@@ -374,7 +373,11 @@
   align-items: start; cursor: pointer;
   font-size: .92rem; line-height: 1.55; text-transform: none; letter-spacing: normal;
 }
-.haken input { width: 22px; height: 22px; margin-top: 1px; accent-color: var(--akzent); cursor: pointer; }
+/* 24 px ist das Mindestmass aus WCAG 2.5.8. Die 44 px erreicht das Kaestchen
+   nicht allein, wohl aber zusammen mit seiner Beschriftung: der Klick auf den
+   Text schaltet mit. Eine erzwungene Hoehe wuerde nur den Zeilenfall des
+   Einwilligungssatzes zerreissen. */
+.haken input { width: 24px; height: 24px; margin-top: 0; accent-color: var(--akzent); cursor: pointer; }
 .haken a { color: var(--akzent); }
 
 .formular__senden { margin-top: var(--s-sm); }
@@ -409,13 +412,16 @@
   font-size: .92rem; color: var(--text-leise); text-decoration: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.fuss__block a:hover { color: var(--akzent); }
+@media (hover: hover) {
+  .fuss__block a:hover { color: var(--akzent); }
+}
 .fuss__unten {
   margin-top: var(--s-xl); padding-top: var(--s-md);
   border-top: 1px solid var(--linie);
   display: flex; flex-wrap: wrap; gap: .4rem var(--s-xl);
   justify-content: space-between;
-  font-size: .82rem; color: var(--text-leise);
+  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
+  color: var(--text-leise);
 }
 
 /* ----------------------------------------------------- 12. Textseiten */
@@ -556,7 +562,9 @@
   font-size: .88rem; color: var(--text-leise); text-decoration: none;
   transition: color var(--schnell) var(--verlauf);
 }
-.fuss__zeile a:hover { color: var(--akzent); }
+@media (hover: hover) {
+  .fuss__zeile a:hover { color: var(--akzent); }
+}
 
 /* ==========================================================================
    16. Angebote auf der Leistungsseite
@@ -609,7 +617,8 @@
   align-self: flex-start;
   padding: .25rem .6rem; border-radius: 999px;
   background: var(--flaeche-ruhig);
-  font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+  font-size: clamp(.72rem, .82rem - .154vw, .78rem);
+  font-weight: 700; letter-spacing: .04em;
   text-transform: uppercase; color: var(--text-leise);
   margin-bottom: var(--s-md);
 }
@@ -735,7 +744,8 @@
    ========================================================================== */
 .fragen__gruppe {
   margin-top: var(--s-2xl);
-  font-family: var(--schrift-technik); font-size: .72rem;
+  font-family: var(--schrift-technik);
+  font-size: clamp(.72rem, .82rem - .154vw, .78rem);
   letter-spacing: .14em; text-transform: uppercase; color: var(--akzent);
   font-weight: 500;
 }
@@ -754,7 +764,8 @@
   }
 }
 .freiwillig {
-  margin-left: .4rem; font-size: .72rem; font-weight: 600;
+  margin-left: .4rem; font-weight: 600;
+  font-size: clamp(.72rem, .82rem - .154vw, .78rem);
   letter-spacing: .03em; text-transform: uppercase; color: var(--text-leise);
 }
 
