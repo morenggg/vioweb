@@ -4,26 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-<title>Datenschutzerklärung | Vioweb</title>
-<meta name="description" content="Wie Vioweb mit personenbezogenen Daten umgeht. Keine Cookies, keine fremden Server, kein Tracking.">
-<link rel="canonical" href="https://vioweb.de/datenschutz.html">
-<!-- Bewusst nicht im Suchindex: Die Seite enthaelt die private
-     Anschrift des Betreibers. Sie muss erreichbar sein, sie muss
-     aber nicht auffindbar sein.
-     noarchive verhindert die Kopie im Cache, nosnippet den
-     Textauszug in den Ergebnissen.
-     Achtung: In robots.txt darf diese Seite fuer Google und Bing
-     NICHT gesperrt werden. Sonst liest der Crawler dieses noindex
-     nie und die Adresse kann trotzdem als nackter Treffer
-     erscheinen. Crawlen erlauben, Indexieren verbieten. -->
-<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Kontakt und Anfrage | Vioweb</title>
+<meta name="description" content="Anfrage an Vioweb. Für die kostenlose Erstanalyse genügt die Adresse deiner Website. Wir antworten in der Regel innerhalb von ein bis zwei Werktagen.">
+<link rel="canonical" href="https://vioweb.de/kontakt/">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#f7f7fa">
-<link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="img/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vioweb">
+<meta property="og:locale" content="de_DE">
+<meta property="og:url" content="https://vioweb.de/kontakt/">
+<meta property="og:title" content="Kontakt und Anfrage | Vioweb">
+<meta property="og:description" content="Erstanalyse kostenlos, Pro-Analyse 85 Euro, Landingpage ab 399 Euro. Feste Preise, keine versteckten Kosten.">
+<meta property="og:image" content="https://vioweb.de/img/og-bild.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Vioweb: Analysieren. Optimieren. Entwickeln.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kontakt und Anfrage | Vioweb">
+<meta name="twitter:description" content="Erstanalyse kostenlos, Pro-Analyse 85 Euro, Landingpage ab 399 Euro. Feste Preise, keine versteckten Kosten.">
+<meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
+
+<link rel="icon" href="../img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../img/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="preload" href="../fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 
 <style>
 /* ------------------------------------------------------- 0. Schriften */
@@ -32,7 +38,7 @@
    ist. size-adjust haelt den Umbruch beim Wechsel ruhig. */
 @font-face {
   font-family: "Manrope";
-  src: url("fonts/manrope-latin.woff2") format("woff2");
+  src: url("../fonts/manrope-latin.woff2") format("woff2");
   font-weight: 400 800;
   font-style: normal;
   font-display: swap;
@@ -42,7 +48,7 @@
 }
 @font-face {
   font-family: "Manrope";
-  src: url("fonts/manrope-latin-ext.woff2") format("woff2");
+  src: url("../fonts/manrope-latin-ext.woff2") format("woff2");
   font-weight: 400 800;
   font-style: normal;
   font-display: swap;
@@ -395,6 +401,29 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   .menue__tafel { transform: none; }
 }
 
+/* ------------------------------- Aufmacher der Leistungsseite (kritisch) */
+.preis-auf { padding-block: var(--s-xl) var(--s-lg); }
+@media (min-width: 1040px) { .preis-auf { padding-block: var(--s-3xl) var(--s-xl); } }
+.preis-auf h1 {
+  margin-top: var(--s-lg);
+  font-size: clamp(1.95rem, 1.35rem + 3.3vw, 3.9rem);
+  font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
+  max-width: 17ch;
+  text-wrap: balance;
+}
+/* Die Schlagzeile besteht aus drei kurzen Saetzen. Ab Tablet steht jeder
+   auf einer eigenen Zeile: das ist der Rhythmus der Aussage, nicht Zufall.
+   Darunter bricht sie frei, sonst wird der Block unnoetig hoch. */
+.preis-auf h1 span { display: block; }
+@media (max-width: 767px) { .preis-auf h1 span { display: inline; } }
+.preis-auf h1 em { font-style: normal; color: var(--akzent); }
+.preis-auf__satz {
+  margin-top: var(--s-lg); max-width: 53ch;
+  font-size: clamp(1.05rem, 1rem + .45vw, 1.25rem);
+  line-height: 1.6; color: var(--text-leise);
+  text-wrap: pretty;
+}
+
 /* ------------------------------------- Klickrueckmeldung und Aktivzustand */
 /* Kurze, ruhige Rueckmeldung beim Antippen. Nur transform und opacity, das
    laeuft auf dem Compositor und kostet kein Layout. Kein JavaScript. */
@@ -449,23 +478,24 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 .menue__liste--anker a { font-size: 1rem; font-weight: 500; }
 </style>
 
-<link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="css/seite.css"></noscript>
+<link rel="stylesheet" href="../css/seite.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="../css/seite.css"></noscript>
 </head>
-
 <body>
-<div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
+
 <a class="sprung" href="#inhalt">Zum Inhalt springen</a>
 
 <header class="kopf" id="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="/">
-      <img class="marke__zeichen" src="img/zeichen.webp" alt="Vioweb"
+      <img class="marke__zeichen" src="../img/zeichen.webp" alt="Vioweb"
            width="480" height="291" decoding="async" fetchpriority="high">
       <span class="marke__name">Vioweb</span>
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
       <a href="/">Startseite</a>
+      <a href="/preise/">Preise</a>
+      <a href="/kontakt/" aria-current="page">Kontakt</a>
       <a class="knopf knopf--voll knopf--klein" href="/kontakt/">Kostenlosen Check anfragen</a>
     </nav>
     <a class="knopf knopf--rand knopf--klein nur-klein" href="/kontakt/">Anfragen</a>
@@ -473,162 +503,171 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 </header>
 
 <main id="inhalt">
-  <article class="dokument">
-    <div class="feld raster">
-      <div class="rail">
-        <p class="kicker">Pflichtangaben</p>
-        <span class="balken" aria-hidden="true"></span>
-      </div>
-      <div class="spalte">
-      <h1>Datenschutz&shy;erklärung</h1>
 
-      <h2>1. Verantwortlicher</h2>
-      <p>
-        Verantwortlich für die Verarbeitung personenbezogener Daten auf
-        dieser Website ist:
+  <section class="preis-auf">
+    <div class="feld">
+      <p class="kicker">Kontakt</p>
+      <h1><span>Erzähl uns kurz,</span> <span>worum es <em>geht</em>.</span></h1>
+      <p class="preis-auf__satz">
+        Für die kostenlose Erstanalyse genügt die Adresse deiner Website. Wir
+        antworten in der Regel innerhalb von ein bis zwei Werktagen. Daraus
+        wird kein Verkaufsgespräch: Wenn wir nicht die Richtigen sind, sagen
+        wir das.
       </p>
-      <p>
-        Maurice Sadlon<br>
-        Hölzchenweg 4<br>
-        04860 Dreiheide-Süptitz<br>
-        E-Mail: <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a><br>
-        Telefon: <a href="tel:+4934211860409">034211 860409</a>
-      </p>
+    </div>
+  </section>
 
-      <h2>2. Was diese Website nicht tut</h2>
-      <p>
-        Diese Website setzt keine Cookies. Sie bindet keine Schriften,
-        Karten, Videos oder Skripte von fremden Servern ein. Es findet
-        keine Reichweitenmessung und kein Tracking statt. Deshalb gibt es
-        auf dieser Seite auch keine Einwilligungsabfrage.
-      </p>
+  <section class="teil" id="anfrage">
+    <div class="feld">
+      <div class="kontakt__flaeche">
+        <div class="kontakt__wort">
+          <h2 class="gross">Was danach passiert.</h2>
+          <ol class="weg__liste" role="list">
+            <li>Wir sehen uns deine Website an</li>
+            <li>Du bekommst eine ehrliche Ersteinschätzung</li>
+            <li>Du entscheidest, ob und wie es weitergeht</li>
+          </ol>
+          <p class="kontakt__still">
+            Zugangsdaten brauchen wir nicht. Der Check läuft von außen.
+          </p>
+          <p class="kontakt__still">
+            Lieber direkt schreiben?
+            <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+          </p>
+        </div>
 
-      <h2>3. Aufruf der Website (Hosting)</h2>
-      <p>
-        Die Website wird bei GitHub Pages gehostet. Anbieter ist die
-        GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA
-        94107, USA, ein Unternehmen der Microsoft Corporation.
-      </p>
-      <p>
-        Beim Aufruf der Seiten verarbeitet der Anbieter technisch
-        notwendige Zugriffsdaten. Dazu gehören in der Regel die
-        IP-Adresse, Datum und Uhrzeit des Abrufs, die aufgerufene Datei,
-        die zuvor besuchte Seite sowie Angaben zu Browser und
-        Betriebssystem.
-      </p>
-      <p>
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes
-        Interesse besteht am sicheren und zuverlässigen Betrieb dieser
-        Website. Wir haben auf die Speicherdauer dieser Serverprotokolle
-        keinen Einfluss und erhalten sie nicht ausgewertet.
-      </p>
-      <p>
-        Da der Anbieter seinen Sitz in den USA hat, findet eine
-        Übermittlung in ein Drittland statt. GitHub beruft sich auf die
-        Standardvertragsklauseln der EU-Kommission und ist unter dem
-        EU-US Data Privacy Framework zertifiziert. Ein den europäischen
-        Standards vollständig entsprechendes Datenschutzniveau kann
-        dennoch nicht in jedem Fall garantiert werden.
-      </p>
+        <!-- ===============================================================
+             VERSAND — vor dem Livegang einzurichten:
+             1. Endpunkt des Formulardienstes in BEIDE Stellen eintragen:
+                action="…" und data-endpunkt="…"
+             2. _redirect auf die volle Adresse von danke.html setzen
+             3. Auftragsverarbeitungsvertrag abschliessen und den Dienst in
+                datenschutz.html eintragen
+             Ohne Endpunkt faellt das Formular auf eine vorbefuellte E-Mail
+             zurueck. Es ist in keinem Zustand tot.
+             =============================================================== -->
+        <form class="formular" id="check-formular" novalidate
+              method="post" enctype="text/plain"
+              action="mailto:kontakt@vioweb.de?subject=Anfrage%20%C3%BCber%20vioweb.de"
+              data-endpunkt=""
+              data-mail="kontakt@vioweb.de">
 
-      <h2>4. Kontaktformular</h2>
-      <p>
-        Wenn du uns über das Formular auf der Startseite schreibst,
-        verarbeiten wir die Angaben, die du dort einträgst: die Adresse
-        deiner Website und deine E-Mail-Adresse als Pflichtangaben,
-        freiwillig zusätzlich Name, Betrieb und deine Nachricht.
-      </p>
-      <p>
-        Wir nutzen diese Angaben ausschließlich, um deine Anfrage zu
-        bearbeiten und dir zu antworten. Rechtsgrundlage ist deine
-        Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie
-        Art. 6 Abs. 1 lit. b DSGVO, soweit die Anfrage auf den Abschluss
-        eines Vertrags gerichtet ist.
-      </p>
-      <!-- ============================================================
-           STAND: Es ist KEIN Formulardienst eingerichtet. Im Formular
-           steht data-endpunkt="". Das Absenden oeffnet das E-Mail-
-           Programm des Besuchers mit den eingetragenen Angaben; die
-           Nachricht geht als gewoehnliche E-Mail von seinem eigenen
-           Postfach ab. Es ist also kein Auftragsverarbeiter beteiligt.
+          <input type="hidden" name="_redirect" value="https://vioweb.de/danke.html">
 
-           SOBALD ein Formulardienst eingerichtet wird, muss der Absatz
-           unten durch diesen ersetzt werden:
+          <div class="feldgruppe">
+            <label for="anliegen">Worum geht es? <span class="pflicht">Pflicht</span></label>
+            <select id="anliegen" name="anliegen" required
+                    aria-describedby="anliegen-fehler">
+              <option value="">Bitte auswählen</option>
+              <optgroup label="Analyse">
+                <option>Kostenlose Website-Erstanalyse</option>
+                <option>Pro Website-Analyse</option>
+              </optgroup>
+              <optgroup label="Neue Website">
+                <option>Landingpage</option>
+                <option>Unternehmenswebsite</option>
+                <option>Online-Shop</option>
+                <option>Mehrsprachige Website</option>
+              </optgroup>
+              <optgroup label="Bestehende Website">
+                <option>Website-Optimierung</option>
+                <option>SEO-Basis</option>
+                <option>Bestehende Website erweitern</option>
+              </optgroup>
+              <optgroup label="Laufend">
+                <option>Wartung und Pflege</option>
+              </optgroup>
+              <optgroup label="Anderes">
+                <option>Beratung</option>
+                <option>Individuelle Funktion</option>
+                <option>Weitere Leistung</option>
+                <option>Sonstiges</option>
+              </optgroup>
+            </select>
+            <p class="fehler" id="anliegen-fehler"></p>
+          </div>
 
-           <p>
-             Zur technischen Uebermittlung setzen wir [NAME], [ANBIETER
-             UND ANSCHRIFT], ein. Mit dem Anbieter besteht ein Vertrag
-             ueber die Auftragsverarbeitung nach Art. 28 DSGVO. Die
-             Verarbeitung findet auf Servern in [SERVERSTANDORT] statt.
-           </p>
+          <!-- Wird vom Skript ein- und ausgeblendet, sobald oben eine
+               Auswahl ohne festen Leistungsumfang getroffen wird. Ohne
+               JavaScript bleibt es dauerhaft sichtbar und ist damit
+               weiterhin ausfuellbar. -->
+          <div class="feldgruppe zusatzfeld" id="feld-eigenes" hidden>
+            <label for="eigenes">Bitte kurz beschreiben <span class="pflicht">Pflicht</span></label>
+            <input id="eigenes" name="eigenes" type="text"
+                   placeholder="Zum Beispiel: Terminbuchung für eine Praxis"
+                   aria-describedby="eigenes-fehler">
+            <p class="fehler" id="eigenes-fehler"></p>
+          </div>
 
-           Der Vertrag muss dann tatsaechlich geschlossen sein. Die
-           Einzelheiten stehen in OFFEN.md unter C1.
-           ============================================================ -->
-      <p>
-        Das Formular überträgt die Angaben nicht an einen fremden Dienst.
-        Beim Absenden öffnet sich dein eigenes E-Mail-Programm mit den
-        eingetragenen Angaben, und die Nachricht geht als gewöhnliche
-        E-Mail von deinem Postfach an uns. An der Übermittlung ist damit
-        kein Auftragsverarbeiter beteiligt. Es gelten die Bedingungen
-        deines eigenen E-Mail-Anbieters und unseres.
-      </p>
-      <p>
-        Wir speichern deine Anfrage, bis sie erledigt ist und keine
-        Rückfragen mehr zu erwarten sind, längstens jedoch
-        sechs Monate.
-        Gesetzliche Aufbewahrungsfristen bleiben unberührt.
-      </p>
+          <div class="feldgruppe" id="feld-adresse">
+            <label for="adresse">Adresse deiner Website <span class="freiwillig">Falls vorhanden</span></label>
+            <input id="adresse" name="adresse" type="url" inputmode="url"
+                   autocomplete="url" spellcheck="false" placeholder="beispiel.de"
+                   aria-describedby="adresse-hinweis adresse-fehler">
+            <p class="hinweis" id="adresse-hinweis">https:// ergänzen wir automatisch.</p>
+            <p class="fehler" id="adresse-fehler"></p>
+          </div>
 
-      <h2>5. Kontakt per E-Mail</h2>
-      <p>
-        Schreibst du uns direkt eine E-Mail, verarbeiten wir deine Adresse
-        und den Inhalt der Nachricht, um sie zu beantworten.
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f und, bei
-        Vertragsanbahnung, lit. b DSGVO.
-      </p>
+          <div class="feldgruppe">
+            <label for="mail">E-Mail <span class="pflicht">Pflicht</span></label>
+            <input id="mail" name="mail" type="email" inputmode="email"
+                   autocomplete="email" spellcheck="false" placeholder="name@beispiel.de"
+                   required aria-describedby="mail-fehler">
+            <p class="fehler" id="mail-fehler"></p>
+          </div>
 
-      <h2>6. Deine Rechte</h2>
-      <p>Du hast uns gegenüber jederzeit das Recht auf:</p>
-      <ul class="liste">
-        <li>Auskunft über die zu dir gespeicherten Daten (Art. 15 DSGVO)</li>
-        <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
-        <li>Löschung (Art. 17 DSGVO)</li>
-        <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-        <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
-        <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
-      </ul>
-      <p>
-        Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die
-        Zukunft widerrufen. Eine formlose Nachricht an
-        <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a> genügt.
-        Die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt
-        davon unberührt.
-      </p>
+          <div class="feldpaar">
+            <div class="feldgruppe">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name">
+            </div>
+            <div class="feldgruppe">
+              <label for="betrieb">Betrieb</label>
+              <input id="betrieb" name="betrieb" type="text" autocomplete="organization">
+            </div>
+          </div>
 
-      <h2>7. Beschwerderecht</h2>
-      <p>
-        Du kannst dich bei einer Datenschutz-Aufsichtsbehörde beschweren.
-        Zuständig ist die Behörde deines Wohnsitzes oder unseres Sitzes:
-        Der Sächsische Datenschutzbeauftragte, Devrientstraße 5, 01067
-        Dresden.
-      </p>
+          <div class="feldgruppe">
+            <label for="nachricht">Deine Nachricht</label>
+            <textarea id="nachricht" name="nachricht" rows="4"
+                      placeholder="Zum Beispiel: kaum Anfragen, obwohl Besucher da sind. Oder: Wir starten neu und brauchen eine erste Website."></textarea>
+          </div>
 
-      <h2>8. Verschlüsselung</h2>
-      <p>
-        Diese Seite wird ausschließlich über eine verschlüsselte
-        Verbindung ausgeliefert (HTTPS). Du erkennst das am Schloss in der
-        Adresszeile deines Browsers.
-      </p>
+          <!-- Falle gegen automatische Eintraege. Kein Captcha von Dritten. -->
+          <div class="falle" aria-hidden="true">
+            <label for="ort-zusatz">Bitte frei lassen</label>
+            <input id="ort-zusatz" name="ort_zusatz" type="text" tabindex="-1" autocomplete="off">
+          </div>
 
-      <h2>9. Stand</h2>
-      <p>
-        Stand dieser Erklärung: 28. Juli 2026.
-        Wir passen sie an, wenn sich die Verarbeitung ändert.
-      </p>
+          <div class="feldgruppe feldgruppe--haken">
+            <label class="haken" for="einwilligung">
+              <input id="einwilligung" name="einwilligung" type="checkbox"
+                     required aria-describedby="einwilligung-fehler">
+              <span>Meine Angaben dürfen zur Bearbeitung dieser Anfrage
+                gespeichert werden. <a href="/datenschutz.html">Datenschutz</a></span>
+            </label>
+            <p class="fehler" id="einwilligung-fehler"></p>
+          </div>
+
+          <button class="knopf knopf--voll formular__senden" type="submit">
+            Anfrage schicken
+            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+          </button>
+
+          <p class="meldung" id="formular-meldung" role="status"></p>
+
+          <noscript>
+            <p class="meldung meldung--hinweis">
+              Ohne JavaScript öffnet der Knopf dein E-Mail-Programm. Du kannst
+              uns auch direkt schreiben:
+              <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+            </p>
+          </noscript>
+        </form>
       </div>
     </div>
-  </article>
+  </section>
+
 </main>
 
 <footer class="fuss">
@@ -647,12 +686,20 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://vioweb.de/" },
-    { "@type": "ListItem", "position": 2, "name": "Datenschutzerklärung", "item": "https://vioweb.de/datenschutz.html" }
+  "@graph": [
+    { "@type": "ContactPage", "@id": "https://vioweb.de/kontakt/#seite",
+      "url": "https://vioweb.de/kontakt/", "name": "Kontakt und Anfrage",
+      "inLanguage": "de-DE",
+      "isPartOf": { "@id": "https://vioweb.de/#website" },
+      "about": { "@id": "https://vioweb.de/#betrieb" } },
+    { "@type": "BreadcrumbList", "@id": "https://vioweb.de/kontakt/#pfad",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://vioweb.de/" },
+        { "@type": "ListItem", "position": 2, "name": "Kontakt", "item": "https://vioweb.de/kontakt/" }
+      ] }
   ]
 }
 </script>
+<script src="../js/seite.js" defer></script>
 </body>
 </html>

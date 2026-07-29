@@ -58,7 +58,7 @@ Der Kurzcheck läuft von außen. Zugangsdaten sind dafür nicht nötig.
 ## Preise
 
 Alle Preise stehen öffentlich auf
-[Leistungen und Preise](https://vioweb.de/leistungen.html).
+[Preise](https://vioweb.de/preise/).
 
 | Leistung | Preis |
 |---|---|
@@ -77,8 +77,10 @@ beziffert. Versteckte Kosten gibt es nicht.
 
 - [Startseite](https://vioweb.de/): Leistungen, Prüfbereiche, Vergleich von
   Kurzcheck und Check-up, Ablauf, häufige Fragen und Kontaktformular
-- [Leistungen und Preise](https://vioweb.de/leistungen.html): alle Preise,
-  Leistungsumfang je Paket, Wartungsstufen und Fragen zu den Preisen
+- [Preise](https://vioweb.de/preise/): alle Preise, Leistungsumfang je Paket,
+  Wartungsstufen, weitere Leistungen und 36 Fragen mit Antworten
+- [Kontakt](https://vioweb.de/kontakt/): Anfrageformular mit Auswahl der
+  gewünschten Leistung
 
 Impressum und Datenschutzerklärung sind über die Fußzeile der Startseite
 erreichbar. Sie sind **absichtlich nicht** zur Auswertung freigegeben, weil
@@ -95,12 +97,12 @@ Anker erreichbar:
 - `https://vioweb.de/#neu` Erstellung einer neuen Website
 - `https://vioweb.de/#ablauf` Die fünf Schritte
 - `https://vioweb.de/#fragen` Häufige Fragen mit Antworten
-- `https://vioweb.de/#kontakt` Kontaktformular
 
 ## Kontakt
 
-Über das Formular auf der Startseite. Für die Anfrage genügt die Adresse der
-Website. Die im Impressum genannte E-Mail-Adresse ist der zweite Weg.
+Über das Formular auf https://vioweb.de/kontakt/. Für die Anfrage genügt die
+Adresse der Website. Die im Impressum genannte E-Mail-Adresse ist der zweite
+Weg.
 
 ## Hinweise
 

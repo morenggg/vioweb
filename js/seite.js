@@ -34,10 +34,21 @@
   var mailAdresse = (formular.dataset.mail || '').trim();
 
   var felder = {
+    anliegen: document.getElementById('anliegen'),
+    eigenes: document.getElementById('eigenes'),
     adresse: document.getElementById('adresse'),
     mail: document.getElementById('mail'),
     einwilligung: document.getElementById('einwilligung')
   };
+  var feldEigenes = document.getElementById('feld-eigenes');
+
+  /* Bei diesen Auswahlen gibt es keinen festen Leistungsumfang. Dann
+     brauchen wir eine Beschreibung, sonst ist die Anfrage nicht
+     beantwortbar. */
+  var OFFEN = ['Weitere Leistung', 'Individuelle Funktion', 'Sonstiges'];
+  function brauchtBeschreibung() {
+    return felder.anliegen ? OFFEN.indexOf(felder.anliegen.value) > -1 : false;
+  }
 
   function fehlerZeigen(feld, text) {
     var ziel = document.getElementById(feld.id + '-fehler');
@@ -77,14 +88,34 @@
      nicht "Ungueltige Eingabe". */
   /* Bei "neue Website" gibt es noch keine Adresse — dann ist das Feld
      freiwillig. Bei "bestehende Website pruefen" ist es Pflicht. */
+  /* Die Adresse ist nur dort Pflicht, wo es schon eine Website gibt.
+     Bei "Landingpage" oder "Unternehmenswebsite" waere sie eine Huerde
+     ohne Zweck. */
+  var OHNE_WEBSITE = ['Landingpage', 'Unternehmenswebsite', 'Online-Shop',
+                      'Mehrsprachige Website', 'Beratung', 'Sonstiges',
+                      'Weitere Leistung', 'Individuelle Funktion'];
   function adressePflicht() {
-    var gewaehlt = formular.querySelector('[name="anliegen"]:checked');
-    return !gewaehlt || /bestehende/i.test(gewaehlt.value);
+    if (!felder.anliegen || !felder.anliegen.value) return false;
+    return OHNE_WEBSITE.indexOf(felder.anliegen.value) === -1;
   }
 
   function pruefen() {
     var ersterFehler = null;
     var adresse = adresseAufraeumen(felder.adresse.value);
+
+    if (felder.anliegen && !felder.anliegen.value) {
+      fehlerZeigen(felder.anliegen, 'Wähl bitte aus, worum es geht.');
+      ersterFehler = ersterFehler || felder.anliegen;
+    } else if (felder.anliegen) {
+      fehlerLoeschen(felder.anliegen);
+    }
+
+    if (felder.eigenes && brauchtBeschreibung() && !felder.eigenes.value.trim()) {
+      fehlerZeigen(felder.eigenes, 'Beschreib bitte kurz, worum es geht.');
+      ersterFehler = ersterFehler || felder.eigenes;
+    } else if (felder.eigenes) {
+      fehlerLoeschen(felder.eigenes);
+    }
 
     if (!felder.adresse.value.trim()) {
       if (adressePflicht()) {
@@ -130,12 +161,14 @@
 
   function perMail(daten) {
     var text = [
+      'Anliegen: ' + (daten.get('anliegen') || '—'),
+      (daten.get('eigenes') ? 'Und zwar: ' + daten.get('eigenes') : ''),
       'Website:  ' + (daten.get('adresse') || ''),
       'E-Mail:   ' + (daten.get('mail') || ''),
       'Name:     ' + (daten.get('name') || '—'),
       'Betrieb:  ' + (daten.get('betrieb') || '—'),
       '', 'Nachricht:', (daten.get('nachricht') || '—')
-    ].join('\n');
+    ].filter(function (z) { return z !== ''; }).join('\n');
 
     window.location.href = 'mailto:' + mailAdresse +
       '?subject=' + encodeURIComponent('Ersteinschätzung: ' + (daten.get('adresse') || '')) +
@@ -188,18 +221,39 @@
   function anliegenUebernehmen() {
     var pflicht = adressePflicht();
     var marke = formular.querySelector('#feld-adresse .pflicht');
+    var frei = formular.querySelector('#feld-adresse .freiwillig');
     var beschriftung = formular.querySelector('label[for="adresse"]');
     if (marke) marke.hidden = !pflicht;
+    if (frei) frei.hidden = pflicht;
     if (beschriftung) {
       beschriftung.childNodes[0].nodeValue =
-        pflicht ? 'Adresse deiner Website ' : 'Bestehende Adresse, falls vorhanden ';
+        pflicht ? 'Adresse deiner Website ' : 'Adresse deiner Website ';
     }
     if (!pflicht) fehlerLoeschen(felder.adresse);
   }
-  Array.prototype.forEach.call(
-    formular.querySelectorAll('[name="anliegen"]'),
-    function (r) { r.addEventListener('change', anliegenUebernehmen); });
+  /* Das Zusatzfeld erscheint nur, wenn die Auswahl keinen festen Umfang
+     hat. Ohne JavaScript bleibt es sichtbar und damit ausfuellbar; das
+     hidden-Attribut setzt erst das Skript. */
+  function zusatzfeldUebernehmen() {
+    if (!feldEigenes) return;
+    var noetig = brauchtBeschreibung();
+    if (noetig === !feldEigenes.hidden) return;
+    feldEigenes.hidden = !noetig;
+    if (felder.eigenes) {
+      felder.eigenes.required = noetig;
+      if (!noetig) { felder.eigenes.value = ''; fehlerLoeschen(felder.eigenes); }
+    }
+  }
+  if (feldEigenes) feldEigenes.hidden = true;
+
+  if (felder.anliegen) {
+    felder.anliegen.addEventListener('change', function () {
+      anliegenUebernehmen();
+      zusatzfeldUebernehmen();
+    });
+  }
   anliegenUebernehmen();
+  zusatzfeldUebernehmen();
 
   felder.adresse.addEventListener('blur', function () {
     if (!felder.adresse.value.trim()) return;

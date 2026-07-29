@@ -649,7 +649,11 @@
 /* Der Knopf sitzt an der Unterkante der Karte. Weil subgrid die Karten
    einer Reihe auf gleiche Hoehe bringt, stehen dadurch auch die Knoepfe
    auf einer Linie, obwohl die Listen unterschiedlich lang sind. */
-.angebot__rest > .knopf { margin-top: auto; align-self: flex-start; }
+/* Volle Kartenbreite statt Breite nach Textlaenge. Dadurch sind alle
+   Schaltflaechen einer Reihe gleich breit, ohne dass irgendwo eine feste
+   Pixelbreite steht. Auf dem Handy ist die volle Breite ohnehin die
+   groesste erreichbare Klickflaeche. */
+.angebot__rest > .knopf { margin-top: auto; align-self: stretch; width: 100%; }
 .angebot--klein > :last-child { margin-bottom: 0; }
 
 /* Kopf und Rest sind zwei Bloecke, damit die Preise einer Reihe auf einer
@@ -698,3 +702,59 @@
 }
 @media (min-width: 1040px) { .schluss { padding-block: var(--s-4xl); } }
 .schluss .vorspann { margin-top: var(--s-md); }
+
+/* ==========================================================================
+   17. Fragen nach Themen gruppiert
+   ========================================================================== */
+.fragen__gruppe {
+  margin-top: var(--s-2xl);
+  font-family: var(--schrift-technik); font-size: .72rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--akzent);
+  font-weight: 500;
+}
+.fragen__gruppe + .fragen { margin-top: var(--s-md); }
+
+/* Das Zusatzfeld im Formular blendet sich weich ein. Die Hoehe wird nicht
+   animiert, das wuerde bei jedem Schritt neu umbrechen lassen; stattdessen
+   Deckkraft und eine kurze Bewegung. Wer reduzierte Bewegung eingestellt
+   hat, bekommt den Wechsel ohne Animation. */
+.zusatzfeld[hidden] { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .zusatzfeld { animation: feld-auf 160ms var(--verlauf); }
+  @keyframes feld-auf {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+.freiwillig {
+  margin-left: .4rem; font-size: .72rem; font-weight: 600;
+  letter-spacing: .03em; text-transform: uppercase; color: var(--text-leise);
+}
+
+
+/* ------------------------------------------- Eingabefelder, Mindesthoehe */
+/* Auswahlfeld und Textfelder auf 48px, damit sie auf dem Telefon sicher
+   getroffen werden. Das Kaestchen der Einwilligung bleibt klein; seine
+   Klickflaeche ist das umgebende <label>, das die volle Breite hat.
+   WCAG 2.5.8 laesst das ausdruecklich zu. */
+.formular select,
+.formular input[type="text"],
+.formular input[type="url"],
+.formular input[type="email"] { min-height: 48px; }
+.formular textarea { min-height: 96px; }
+
+/* Eigene Pfeilmarke statt der Systemdarstellung, damit das Auswahlfeld wie
+   die uebrigen Felder aussieht. Als Hintergrundbild in reinem CSS, also
+   ohne Datei und ohne Anfrage an einen fremden Server. */
+.formular select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 2.75rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-leise) 50%),
+    linear-gradient(135deg, var(--text-leise) 50%, transparent 50%);
+  background-position: calc(100% - 1.25rem) calc(50% + 2px),
+                       calc(100% - 1rem) calc(50% + 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+.formular select:focus-visible { background-image: none; }

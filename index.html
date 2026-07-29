@@ -344,8 +344,21 @@ body.starr .kopf .marke {
 
 .menue__schleier {
   position: fixed; inset: 0; z-index: 95;
-  background: rgba(23, 21, 29, .28);
+  /* Ohne backdrop-filter traegt die Flaeche allein die Abdunklung. Das ist
+     zugleich der Rueckfall fuer Browser, die den Filter nicht koennen. */
+  background: rgba(16, 13, 24, .52);
   opacity: 0; animation: schleier-auf var(--mittel) var(--verlauf) forwards;
+}
+/* Mit Filter darf die Flaeche heller sein: die Unschaerfe uebernimmt einen
+   Teil der Beruhigung. Der Inhalt bleibt erkennbar, lenkt aber nicht mehr
+   ab. Bewusst nur 8px und keine Animation des Filters selbst — animierte
+   Filterflaechen sind teuer und ruckeln auf aelteren Telefonen. */
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .menue__schleier {
+    background: rgba(16, 13, 24, .38);
+    -webkit-backdrop-filter: blur(8px) saturate(115%);
+    backdrop-filter: blur(8px) saturate(115%);
+  }
 }
 @keyframes schleier-auf { to { opacity: 1; } }
 
@@ -438,6 +451,59 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   }
   .menue__tafel { transform: none; }
 }
+
+/* ------------------------------------- Klickrueckmeldung und Aktivzustand */
+/* Kurze, ruhige Rueckmeldung beim Antippen. Nur transform und opacity, das
+   laeuft auf dem Compositor und kostet kein Layout. Kein JavaScript. */
+@media (prefers-reduced-motion: no-preference) {
+  .knopf, .nav a, .menue__liste a, .verweis, .fuss__block a, .fuss__zeile a {
+    transition: transform 120ms var(--verlauf),
+                opacity 120ms var(--verlauf),
+                color var(--schnell) var(--verlauf),
+                background-color var(--schnell) var(--verlauf),
+                border-color var(--schnell) var(--verlauf),
+                box-shadow var(--schnell) var(--verlauf);
+  }
+  .knopf:active { transform: scale(.98); }
+  .nav a:active, .menue__liste a:active,
+  .verweis:active, .fuss__block a:active, .fuss__zeile a:active { opacity: .7; }
+}
+/* Ohne die Abfrage bliebe bei reduzierter Bewegung eine Skalierung uebrig. */
+@media (prefers-reduced-motion: reduce) {
+  .knopf:active { background-color: var(--akzent-tief); }
+}
+/* Auf Touch-Geraeten das graue Aufblitzen des Systems unterdruecken; die
+   eigene Rueckmeldung uebernimmt. */
+.knopf, .nav a, .menue__liste a { -webkit-tap-highlight-color: transparent; }
+
+/* Aktiver Menuepunkt: erkennbar, aber ohne Aufhebens. Die Erkennung laeuft
+   ueber aria-current im HTML, also ueber den Pfad und nicht ueber ein
+   Skript, das erst nach dem Laden greift. */
+.nav a[aria-current="page"],
+.menue__liste a[aria-current="page"] {
+  color: var(--akzent); font-weight: 700;
+}
+.nav a[aria-current="page"] { position: relative; }
+.nav a[aria-current="page"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.35rem;
+  height: 2px; border-radius: 2px; background: var(--akzent);
+}
+/* Statt einer Flaeche bis zur Panelkante eine schmale Marke am linken
+   Rand. Ruhiger und unabhaengig vom Innenabstand der Liste. */
+.menue__liste a[aria-current="page"] { position: relative; }
+.menue__liste a[aria-current="page"]::before {
+  content: ""; position: absolute; left: 0; top: 50%;
+  width: 3px; height: 1.35em; transform: translateY(-50%);
+  border-radius: 0 2px 2px 0; background: var(--akzent);
+}
+
+/* Zwischenueberschrift im Seitenmenue ueber den Sprungmarken. */
+.menue__gruppe {
+  margin-top: var(--s-lg); padding: 0 var(--s-lg) var(--s-xs);
+  font-family: var(--schrift-technik); font-size: .68rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+.menue__liste--anker a { font-size: 1rem; font-weight: 500; }
 </style>
 
 <link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
@@ -458,14 +524,9 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     </a>
 
     <nav class="nav" aria-label="Hauptnavigation">
-      <a href="#leistungen">Leistungen</a>
-      <a href="#pruefung">Was geprüft wird</a>
-      <a href="#vergleich">Kurzcheck &amp; Check-up</a>
-      <a href="#neu">Neue Website</a>
-      <a href="#ablauf">Ablauf</a>
-      <a href="#fragen">Fragen</a>
-      <a href="leistungen.html">Preise</a>
-      <a class="knopf knopf--voll knopf--klein" href="#kontakt">Kostenlosen Check anfragen</a>
+      <a href="/" aria-current="page">Startseite</a>
+      <a href="/preise/">Preise</a>
+      <a class="knopf knopf--voll knopf--klein" href="/kontakt/">Kostenlosen Check anfragen</a>
     </nav>
 
     <details class="menue" id="menue">
@@ -478,21 +539,26 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 
       <div class="menue__tafel">
         <nav class="menue__liste" aria-label="Menü">
+          <a href="/" aria-current="page">Startseite</a>
+          <a href="/preise/">Preise</a>
+          <a href="/kontakt/">Kontakt</a>
+        </nav>
+        <p class="menue__gruppe" id="menue-anker">Auf dieser Seite</p>
+        <nav class="menue__liste menue__liste--anker" aria-labelledby="menue-anker">
           <a href="#leistungen">Leistungen</a>
           <a href="#pruefung">Was geprüft wird</a>
-          <a href="#vergleich">Kurzcheck &amp; Check-up</a>
+          <a href="#vergleich">Kurzcheck und Check-up</a>
           <a href="#danach">Nach der Analyse</a>
           <a href="#neu">Neue Website</a>
           <a href="#ablauf">Ablauf</a>
           <a href="#fragen">Fragen</a>
-          <a href="leistungen.html">Leistungen und Preise</a>
         </nav>
         <div class="menue__fuss">
-          <a class="knopf knopf--voll" href="#kontakt">
+          <a class="knopf knopf--voll" href="/kontakt/">
             Kostenlosen Check anfragen
             <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
           </a>
-          <a class="knopf knopf--rand" href="#neu">Neue Website planen</a>
+          <a class="knopf knopf--rand" href="/preise/">Preise ansehen</a>
           <p class="menue__kontakt">
             <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
           </p>
@@ -520,7 +586,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
       </p>
 
       <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="#kontakt">
+        <a class="knopf knopf--voll" href="/kontakt/">
           Kostenlosen Website-Check anfragen
           <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
         </a>
@@ -666,7 +732,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
               <li>Erste Empfehlungen</li>
               <li>Keine Verpflichtung, kein Nachfassen</li>
             </ul>
-            <a class="knopf knopf--rand" href="#kontakt">Kurzcheck anfragen</a>
+            <a class="knopf knopf--rand" href="/kontakt/">Kurzcheck anfragen</a>
           </article>
 
           <article class="karte karte--betont">
@@ -684,7 +750,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
               <li>Screenshots und Beispiele</li>
               <li>Klare nächste Schritte</li>
             </ul>
-            <a class="knopf knopf--voll" href="#kontakt">
+            <a class="knopf knopf--voll" href="/kontakt/">
               Check-up besprechen
               <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
             </a>
@@ -692,7 +758,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
               85 €, und der Betrag wird bei einer späteren Optimierung
               vollständig angerechnet.
             </p>
-            <a class="verweis" href="leistungen.html">Alle Leistungen und Preise
+            <a class="verweis" href="/preise/">Alle Preise ansehen
               <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
           </article>
         </div>
@@ -753,7 +819,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
         </ul>
 
         <div class="auf__aktionen">
-          <a class="knopf knopf--voll" href="#kontakt">
+          <a class="knopf knopf--voll" href="/kontakt/">
             Neue Website anfragen
             <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
           </a>
@@ -921,120 +987,30 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   </section>
 
   <!-- =========================================================== Kontakt -->
-  <section class="kontakt" id="kontakt">
+  <!-- Das Formular liegt seit dem Umbau auf /kontakt/. Hier steht nur noch
+     die Aufforderung dorthin: eine eigene Adresse statt eines
+     Sprungankers, damit die Hauptnavigation ohne Rautezeichen auskommt. -->
+  <section class="schluss" id="anfragen">
     <div class="feld">
-      <div class="kontakt__flaeche">
-        <div class="kontakt__wort">
-          <p class="kicker">Kontakt</p>
-          <h2 class="gross">Website prüfen lassen oder <em>neu planen</em>.</h2>
-          <p class="vorspann">
-            Beides beginnt mit derselben Nachricht. Wir melden uns in der
-            Regel innerhalb von ein bis zwei Werktagen.
-          </p>
-          <p class="kontakt__still">
-            Daraus wird kein Verkaufsgespräch. Wenn wir nicht die Richtigen
-            sind, sagen wir das.
-          </p>
-        </div>
-
-        <!-- ===============================================================
-             VERSAND — vor dem Livegang einzurichten:
-             1. Endpunkt des Formulardienstes in BEIDE Stellen eintragen:
-                action="…" und data-endpunkt="…"
-             2. _redirect auf die volle Adresse von danke.html setzen
-             3. Auftragsverarbeitungsvertrag abschliessen und den Dienst in
-                datenschutz.html eintragen
-             Ohne Endpunkt faellt das Formular auf eine vorbefuellte E-Mail
-             zurueck. Es ist in keinem Zustand tot.
-             =============================================================== -->
-        <form class="formular" id="check-formular" novalidate
-              method="post" enctype="text/plain"
-              action="mailto:kontakt@vioweb.de?subject=Anfrage%20%C3%BCber%20vioweb.de"
-              data-endpunkt=""
-              data-mail="kontakt@vioweb.de">
-
-          <input type="hidden" name="_redirect" value="https://vioweb.de/danke.html">
-
-          <fieldset class="anliegen">
-            <legend>Worum geht es?</legend>
-            <div class="anliegen__wahl">
-              <label>
-                <input type="radio" name="anliegen" value="Bestehende Website prüfen" checked>
-                <span>Bestehende Website prüfen</span>
-              </label>
-              <label>
-                <input type="radio" name="anliegen" value="Neue Website erstellen">
-                <span>Neue Website erstellen</span>
-              </label>
-            </div>
-          </fieldset>
-
-          <div class="feldgruppe" id="feld-adresse">
-            <label for="adresse">Adresse deiner Website <span class="pflicht">Pflicht</span></label>
-            <input id="adresse" name="adresse" type="url" inputmode="url"
-                   autocomplete="url" spellcheck="false" placeholder="beispiel.de"
-                   aria-describedby="adresse-hinweis adresse-fehler">
-            <p class="hinweis" id="adresse-hinweis">https:// ergänzen wir automatisch.</p>
-            <p class="fehler" id="adresse-fehler"></p>
-          </div>
-
-          <div class="feldgruppe">
-            <label for="mail">E-Mail <span class="pflicht">Pflicht</span></label>
-            <input id="mail" name="mail" type="email" inputmode="email"
-                   autocomplete="email" spellcheck="false" placeholder="name@beispiel.de"
-                   required aria-describedby="mail-fehler">
-            <p class="fehler" id="mail-fehler"></p>
-          </div>
-
-          <div class="feldpaar">
-            <div class="feldgruppe">
-              <label for="name">Name</label>
-              <input id="name" name="name" type="text" autocomplete="name">
-            </div>
-            <div class="feldgruppe">
-              <label for="betrieb">Betrieb</label>
-              <input id="betrieb" name="betrieb" type="text" autocomplete="organization">
-            </div>
-          </div>
-
-          <div class="feldgruppe">
-            <label for="nachricht">Worum geht es genau?</label>
-            <textarea id="nachricht" name="nachricht" rows="4"
-                      placeholder="Zum Beispiel: kaum Anfragen, obwohl Besucher da sind. Oder: Wir starten neu und brauchen eine erste Website."></textarea>
-          </div>
-
-          <!-- Falle gegen automatische Eintraege. Kein Captcha von Dritten. -->
-          <div class="falle" aria-hidden="true">
-            <label for="ort-zusatz">Bitte frei lassen</label>
-            <input id="ort-zusatz" name="ort_zusatz" type="text" tabindex="-1" autocomplete="off">
-          </div>
-
-          <div class="feldgruppe feldgruppe--haken">
-            <label class="haken" for="einwilligung">
-              <input id="einwilligung" name="einwilligung" type="checkbox"
-                     required aria-describedby="einwilligung-fehler">
-              <span>Meine Angaben dürfen zur Bearbeitung dieser Anfrage
-                gespeichert werden. <a href="datenschutz.html">Datenschutz</a></span>
-            </label>
-            <p class="fehler" id="einwilligung-fehler"></p>
-          </div>
-
-          <button class="knopf knopf--voll formular__senden" type="submit">
-            Anfrage schicken
-            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
-          </button>
-
-          <p class="meldung" id="formular-meldung" role="status"></p>
-
-          <noscript>
-            <p class="meldung meldung--hinweis">
-              Ohne JavaScript öffnet der Knopf dein E-Mail-Programm. Du kannst
-              uns auch direkt schreiben:
-              <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
-            </p>
-          </noscript>
-        </form>
+      <p class="kicker">Kontakt</p>
+      <h2 class="gross">Website prüfen lassen oder <em>neu planen</em>.</h2>
+      <p class="vorspann">
+        Beides beginnt mit derselben Nachricht. Für die kostenlose
+        Ersteinschätzung genügt die Adresse deiner Website. Wir melden uns in
+        der Regel innerhalb von ein bis zwei Werktagen.
+      </p>
+      <div class="auf__aktionen">
+        <a class="knopf knopf--voll" href="/kontakt/">
+          Kostenlosen Check anfragen
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="knopf knopf--rand" href="/preise/">Preise ansehen</a>
       </div>
+      <p class="auf__hinweis">
+        Daraus wird kein Verkaufsgespräch. Wenn wir nicht die Richtigen sind,
+        sagen wir das. Lieber direkt schreiben?
+        <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+      </p>
     </div>
   </section>
 
@@ -1055,21 +1031,21 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     <nav class="fuss__block" aria-labelledby="f-leistungen">
       <h2 id="f-leistungen">Leistungen</h2>
       <ul role="list">
-        <li><a href="#vergleich">Kostenloser Kurzcheck</a></li>
-        <li><a href="#vergleich">Ausführlicher Check-up</a></li>
-        <li><a href="#danach">Umsetzung</a></li>
-        <li><a href="#neu">Neue Website</a></li>
-        <li><a href="leistungen.html">Alle Preise</a></li>
+        <li><a href="/preise/">Kostenlose Erstanalyse</a></li>
+        <li><a href="/preise/">Pro Website-Analyse</a></li>
+        <li><a href="/preise/">Umsetzung</a></li>
+        <li><a href="/preise/">Neue Website</a></li>
+        <li><a href="/preise/">Preise</a></li>
       </ul>
     </nav>
 
     <nav class="fuss__block" aria-labelledby="f-seite">
       <h2 id="f-seite">Seite</h2>
       <ul role="list">
-        <li><a href="#pruefung">Was geprüft wird</a></li>
-        <li><a href="#ablauf">Ablauf</a></li>
-        <li><a href="#fragen">Fragen</a></li>
-        <li><a href="#kontakt">Kontakt</a></li>
+        <li><a href="/preise/">Was geprüft wird</a></li>
+        <li><a href="/preise/">Ablauf</a></li>
+        <li><a href="/preise/">Fragen</a></li>
+        <li><a href="/kontakt/">Kontakt</a></li>
       </ul>
     </nav>
 
@@ -1078,8 +1054,8 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
       <ul role="list" aria-labelledby="f-recht">
         <li><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></li>
         <li><a href="https://www.instagram.com/vio.web/" rel="noopener">Instagram</a></li>
-        <li><a href="impressum.html">Impressum</a></li>
-        <li><a href="datenschutz.html">Datenschutz</a></li>
+        <li><a href="/impressum.html">Impressum</a></li>
+        <li><a href="/datenschutz.html">Datenschutz</a></li>
       </ul>
     </div>
   </div>

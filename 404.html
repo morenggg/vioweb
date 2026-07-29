@@ -329,8 +329,21 @@ body.starr .kopf .marke {
 
 .menue__schleier {
   position: fixed; inset: 0; z-index: 95;
-  background: rgba(23, 21, 29, .28);
+  /* Ohne backdrop-filter traegt die Flaeche allein die Abdunklung. Das ist
+     zugleich der Rueckfall fuer Browser, die den Filter nicht koennen. */
+  background: rgba(16, 13, 24, .52);
   opacity: 0; animation: schleier-auf var(--mittel) var(--verlauf) forwards;
+}
+/* Mit Filter darf die Flaeche heller sein: die Unschaerfe uebernimmt einen
+   Teil der Beruhigung. Der Inhalt bleibt erkennbar, lenkt aber nicht mehr
+   ab. Bewusst nur 8px und keine Animation des Filters selbst — animierte
+   Filterflaechen sind teuer und ruckeln auf aelteren Telefonen. */
+@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+  .menue__schleier {
+    background: rgba(16, 13, 24, .38);
+    -webkit-backdrop-filter: blur(8px) saturate(115%);
+    backdrop-filter: blur(8px) saturate(115%);
+  }
 }
 @keyframes schleier-auf { to { opacity: 1; } }
 
@@ -383,6 +396,59 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
   }
   .menue__tafel { transform: none; }
 }
+
+/* ------------------------------------- Klickrueckmeldung und Aktivzustand */
+/* Kurze, ruhige Rueckmeldung beim Antippen. Nur transform und opacity, das
+   laeuft auf dem Compositor und kostet kein Layout. Kein JavaScript. */
+@media (prefers-reduced-motion: no-preference) {
+  .knopf, .nav a, .menue__liste a, .verweis, .fuss__block a, .fuss__zeile a {
+    transition: transform 120ms var(--verlauf),
+                opacity 120ms var(--verlauf),
+                color var(--schnell) var(--verlauf),
+                background-color var(--schnell) var(--verlauf),
+                border-color var(--schnell) var(--verlauf),
+                box-shadow var(--schnell) var(--verlauf);
+  }
+  .knopf:active { transform: scale(.98); }
+  .nav a:active, .menue__liste a:active,
+  .verweis:active, .fuss__block a:active, .fuss__zeile a:active { opacity: .7; }
+}
+/* Ohne die Abfrage bliebe bei reduzierter Bewegung eine Skalierung uebrig. */
+@media (prefers-reduced-motion: reduce) {
+  .knopf:active { background-color: var(--akzent-tief); }
+}
+/* Auf Touch-Geraeten das graue Aufblitzen des Systems unterdruecken; die
+   eigene Rueckmeldung uebernimmt. */
+.knopf, .nav a, .menue__liste a { -webkit-tap-highlight-color: transparent; }
+
+/* Aktiver Menuepunkt: erkennbar, aber ohne Aufhebens. Die Erkennung laeuft
+   ueber aria-current im HTML, also ueber den Pfad und nicht ueber ein
+   Skript, das erst nach dem Laden greift. */
+.nav a[aria-current="page"],
+.menue__liste a[aria-current="page"] {
+  color: var(--akzent); font-weight: 700;
+}
+.nav a[aria-current="page"] { position: relative; }
+.nav a[aria-current="page"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.35rem;
+  height: 2px; border-radius: 2px; background: var(--akzent);
+}
+/* Statt einer Flaeche bis zur Panelkante eine schmale Marke am linken
+   Rand. Ruhiger und unabhaengig vom Innenabstand der Liste. */
+.menue__liste a[aria-current="page"] { position: relative; }
+.menue__liste a[aria-current="page"]::before {
+  content: ""; position: absolute; left: 0; top: 50%;
+  width: 3px; height: 1.35em; transform: translateY(-50%);
+  border-radius: 0 2px 2px 0; background: var(--akzent);
+}
+
+/* Zwischenueberschrift im Seitenmenue ueber den Sprungmarken. */
+.menue__gruppe {
+  margin-top: var(--s-lg); padding: 0 var(--s-lg) var(--s-xs);
+  font-family: var(--schrift-technik); font-size: .68rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+.menue__liste--anker a { font-size: 1rem; font-weight: 500; }
 </style>
 
 <link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
@@ -395,16 +461,16 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
 
 <header class="kopf" id="kopf">
   <div class="feld kopf__inhalt">
-    <a class="marke" href="index.html">
+    <a class="marke" href="/">
       <img class="marke__zeichen" src="img/zeichen.webp" alt="Vioweb"
            width="480" height="291" decoding="async" fetchpriority="high">
       <span class="marke__name">Vioweb</span>
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
-      <a href="index.html">Startseite</a>
-      <a class="knopf knopf--voll knopf--klein" href="index.html#kontakt">Kostenlosen Check anfragen</a>
+      <a href="/">Startseite</a>
+      <a class="knopf knopf--voll knopf--klein" href="/kontakt/">Kostenlosen Check anfragen</a>
     </nav>
-    <a class="knopf knopf--rand knopf--klein nur-klein" href="index.html#kontakt">Anfragen</a>
+    <a class="knopf knopf--rand knopf--klein nur-klein" href="/kontakt/">Anfragen</a>
   </div>
 </header>
 
@@ -422,7 +488,7 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
         Beides passiert, und beides finden wir bei einer Analyse.
       </p>
       <p style="margin-top:36px">
-        <a class="knopf knopf--voll" href="index.html">Zur Startseite</a>
+        <a class="knopf knopf--voll" href="/">Zur Startseite</a>
       </p>
       </div>
     </div>
@@ -434,10 +500,10 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     <p>© 2026 Vioweb</p>
     <nav aria-label="Rechtliches">
       <ul role="list" class="fuss__zeile">
-        <li><a href="index.html">Startseite</a></li>
-        <li><a href="leistungen.html">Leistungen und Preise</a></li>
-        <li><a href="impressum.html">Impressum</a></li>
-        <li><a href="datenschutz.html">Datenschutz</a></li>
+        <li><a href="/">Startseite</a></li>
+        <li><a href="/preise/">Preise</a></li>
+        <li><a href="/impressum.html">Impressum</a></li>
+        <li><a href="/datenschutz.html">Datenschutz</a></li>
       </ul>
     </nav>
   </div>

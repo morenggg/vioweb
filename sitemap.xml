@@ -4,21 +4,26 @@
        danke.html und 404.html   tragen noindex
        impressum und datenschutz tragen ebenfalls noindex, sie enthalten
                                  die private Anschrift des Betreibers
+       leistungen.html           ist nur noch eine Weiterleitung auf /preise/
        die Markdown-Notizen      sind in robots.txt gesperrt
-     Die Abschnitte der Startseite sind Anker, keine eigenen Adressen, und
-     gehoeren deshalb nicht als eigene Eintraege hinein.
      lastmod bei jeder inhaltlichen Aenderung mitfuehren. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://vioweb.de/leistungen.html</loc>
-    <lastmod>2026-07-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
   <url>
     <loc>https://vioweb.de/</loc>
     <lastmod>2026-07-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://vioweb.de/preise/</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://vioweb.de/kontakt/</loc>
+    <lastmod>2026-07-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
