@@ -306,22 +306,45 @@
   color: var(--akzent);
 }
 
+/* Alle Eingaben teilen sich eine Regel, damit sie wirklich gleich
+   aussehen. Das Auswahlfeld gehoert ausdruecklich dazu: Browser setzen
+   dort sonst ihre eigene Systemschrift, und das Feld wirkt kleiner und
+   fremder als die Nachbarn. font: inherit uebernimmt Familie, Groesse und
+   Zeilenhoehe in einem Zug; die Zeilenhoehe wird danach gesetzt, weil
+   1.65 aus dem Koerper ein Auswahlfeld unnoetig hoch macht. */
 .formular input[type="url"],
 .formular input[type="email"],
 .formular input[type="text"],
+.formular select,
+.formular textarea {
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+/* Der Absendeknopf erbt nur die Schrift. Die Farbe kommt von .knopf--voll
+   und muss weiss bleiben: eine Textfarbe hier wuerde sie ueberschreiben
+   und den Knopf auf 3,17:1 druecken. */
+.formular button { font-family: inherit; }
+.formular option, .formular optgroup { font: inherit; color: var(--text); }
+
+.formular input[type="url"],
+.formular input[type="email"],
+.formular input[type="text"],
+.formular select,
 .formular textarea {
   display: block; width: 100%; min-height: 52px;
   padding: .8rem .9rem;
   background: var(--grund);
   border: 1px solid var(--linie-feld);
   border-radius: var(--rund);
-  color: var(--text);
   transition: border-color var(--schnell) var(--verlauf),
               box-shadow var(--schnell) var(--verlauf);
 }
 .formular textarea { min-height: 118px; resize: vertical; line-height: 1.55; }
-.formular input:hover, .formular textarea:hover { border-color: var(--text-leise); }
-.formular input:focus-visible, .formular textarea:focus-visible {
+.formular input:hover, .formular select:hover, .formular textarea:hover { border-color: var(--text-leise); }
+.formular input:focus-visible, .formular select:focus-visible,
+.formular textarea:focus-visible {
   border-color: var(--akzent); outline-offset: 1px;
 }
 .formular ::placeholder { color: var(--text-leise); opacity: 1; }
@@ -413,6 +436,10 @@
 /* Nicht auf Knoepfe anwenden: sonst gewinnt diese Regel gegen
    .knopf--voll und der Text verschwindet auf der lila Flaeche. */
 .dokument a:not(.knopf) { color: var(--akzent); }
+/* .dokument p ist spezifischer als .kicker und wuerde das Label grau
+   faerben. Hier wird die Akzentfarbe zurueckgeholt, damit die Beschriftung
+   auf allen Seiten gleich aussieht. */
+.dokument .kicker { color: var(--akzent); }
 .dokument ul.liste { margin-top: .3rem; }
 .dokument ul.liste li { position: relative; padding-left: 1.2rem; }
 .dokument ul.liste li::before {
@@ -732,20 +759,16 @@
 }
 
 
-/* ------------------------------------------- Eingabefelder, Mindesthoehe */
-/* Auswahlfeld und Textfelder auf 48px, damit sie auf dem Telefon sicher
-   getroffen werden. Das Kaestchen der Einwilligung bleibt klein; seine
-   Klickflaeche ist das umgebende <label>, das die volle Breite hat.
-   WCAG 2.5.8 laesst das ausdruecklich zu. */
-.formular select,
-.formular input[type="text"],
-.formular input[type="url"],
-.formular input[type="email"] { min-height: 48px; }
-.formular textarea { min-height: 96px; }
+/* ------------------------------------------------- Auswahlfeld, Pfeil */
+/* appearance: none schaltet die Systemdarstellung ab, damit Hoehe, Rand
+   und Radius in allen Browsern gleich sind. Der Pfeil ist danach weg und
+   wird als reine CSS-Form nachgebaut: keine Datei, keine Anfrage an einen
+   fremden Server. Die Klappliste selbst bleibt die des Browsers und damit
+   voll bedienbar, auch mit der Tastatur.
 
-/* Eigene Pfeilmarke statt der Systemdarstellung, damit das Auswahlfeld wie
-   die uebrigen Felder aussieht. Als Hintergrundbild in reinem CSS, also
-   ohne Datei und ohne Anfrage an einen fremden Server. */
+   Zu Safari: Die Schrift der einzelnen <option> in der geoeffneten Liste
+   legt dort das System fest, daran kommt CSS nicht heran. Das
+   geschlossene Feld traegt die Seitenschrift, und darauf kommt es an. */
 .formular select {
   appearance: none; -webkit-appearance: none;
   padding-right: 2.75rem;
@@ -757,4 +780,4 @@
   background-size: 6px 6px, 6px 6px;
   background-repeat: no-repeat;
 }
-.formular select:focus-visible { background-image: none; }
+.formular textarea { min-height: 96px; }

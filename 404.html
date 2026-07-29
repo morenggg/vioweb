@@ -137,7 +137,6 @@ body {
      ueberstehende Elemente gibt es laut Pruefung ab 320 px keine. */
   overflow-x: clip;
 }
-body.starr { overflow: hidden; }
 
 img, svg { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -172,15 +171,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   margin-inline: auto; padding-inline: var(--rand);
 }
 
-/* Zwei-Kanten-Raster: mobil untereinander, ab 1040px nebeneinander. */
-.rail { margin-bottom: var(--s-lg); }
-@media (min-width: 1040px) {
-  .raster {
-    display: grid; grid-template-columns: var(--rail) minmax(0, 1fr);
-    column-gap: var(--gasse); align-items: start;
-  }
-  .rail { margin-bottom: 0; padding-top: .55rem; }
-}
+/* Die frueher hier stehende Randspalte ist entfallen. Sie enthielt nur das
+   graue Kleinlabel, blieb sonst leer und schob die Ueberschriften nach
+   rechts. Das Label steht jetzt direkt ueber der Ueberschrift, auf
+   derselben linken Kante. Die Werte --rail und --gasse bleiben im
+   Wertesatz, falls das Raster spaeter mit echtem Inhalt zurueckkommt. */
+.kicker + h1, .kicker + h2 { margin-top: .75rem; }
 
 /* ---------------------------------------------- 3. Fortschrittsbalken */
 /* Sitzt ueber allem, nimmt keinen Platz im Fluss ein und kann deshalb
@@ -245,9 +241,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    Bezugsrahmen fuer position:fixed — Tafel und Schleier waeren dann auf
    die Kopfzeile eingesperrt. Deshalb hier abschalten. Der hoehere
    z-index haelt zugleich Logo und Schliessen-Knopf sichtbar. */
-body.starr .kopf { z-index: 110; background: transparent; border-bottom-color: transparent; }
 @supports (backdrop-filter: blur(1px)) {
-  body.starr .kopf { backdrop-filter: none; }
 }
 
 .kopf__inhalt {
@@ -258,20 +252,6 @@ body.starr .kopf { z-index: 110; background: transparent; border-bottom-color: t
   position: relative; z-index: 115;
   display: flex; align-items: center; gap: .65rem; text-decoration: none;
   transition: opacity var(--schnell) var(--verlauf), visibility 0s;
-}
-/* Bei offenem Menue wird das Logo im Kopfbereich ausgeblendet, damit es
-   sich nicht mit der Menuetafel ueberlagert. Ueber opacity und
-   visibility statt display: das Element behaelt seinen Platz, es gibt
-   also keinen Layout-Shift, und visibility nimmt es zugleich aus
-   Tabreihenfolge und Vorlesereihenfolge.
-   Die Verzoegerung auf visibility laesst zuerst die Blende laufen und
-   schaltet danach hart um — sonst waere das Logo sofort weg und die
-   Blende liefe ins Leere. Das Logo in der Fusszeile bleibt unberuehrt. */
-body.starr .kopf .marke {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity var(--schnell) var(--verlauf),
-              visibility 0s linear var(--schnell);
 }
 /* Das Zeichen hat eine weisse Haelfte, die auf hellem Grund verschwindet.
    Es liegt deshalb auf einer dunklen Kachel — das Zeichen selbst bleibt
@@ -286,8 +266,90 @@ body.starr .kopf .marke {
 }
 .marke__name { font-size: 1.1rem; font-weight: 800; letter-spacing: -.01em; }
 
+/* ------------------------------------------------------ 6. Klappmenue */
+/* Grundlage bleibt ein <details>: ohne JavaScript oeffnet und schliesst es
+   nativ, das Menue ist also nie tot. Das Skript ergaenzt nur Schliessen bei
+   Klick daneben, Escape und die Rueckmeldung an Hilfsmittel.
+
+   Warum <summary> und kein <button>: Ein Knopf muesste das Auf- und
+   Zuklappen selbst uebernehmen, also ueber JavaScript. Das <summary> kann
+   das von Haus aus, ist mit der Tastatur bedienbar und meldet den Zustand.
+   aria-label, aria-controls und aria-expanded stehen trotzdem daran. */
+.menue { position: relative; }
+
+.menue__knopf {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border: 1px solid var(--linie-kraeftig); border-radius: var(--rund);
+  background: var(--flaeche);
+  cursor: pointer; list-style: none; color: var(--text);
+  transition: background-color var(--schnell) var(--verlauf),
+              border-color var(--schnell) var(--verlauf);
+}
+.menue__knopf::-webkit-details-marker { display: none; }
+.menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+.menue[open] .menue__knopf { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+
+.menue__striche { position: relative; width: 18px; height: 12px; flex: none; }
+.menue__striche i {
+  position: absolute; left: 0; width: 18px; height: 2px;
+  border-radius: 2px; background: currentColor;
+  transition: transform var(--mittel) var(--verlauf), opacity var(--mittel) var(--verlauf);
+}
+.menue__striche i:nth-child(1) { top: 0; }
+.menue__striche i:nth-child(2) { top: 5px; }
+.menue__striche i:nth-child(3) { top: 10px; }
+.menue[open] .menue__striche i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.menue[open] .menue__striche i:nth-child(2) { opacity: 0; }
+.menue[open] .menue__striche i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* Rechtsbuendiges Feld unter dem Knopf. Die Breite folgt dem laengsten
+   Eintrag, bleibt aber innerhalb des Fensters. */
+.menue__tafel {
+  position: absolute; z-index: 120;
+  top: calc(100% + 10px); right: 0;
+  width: max-content; min-width: 240px;
+  max-width: min(92vw, 320px);
+  background: var(--flaeche);
+  border: 1px solid #E6E6EC;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(23, 21, 29, .05),
+              0 18px 40px -16px rgba(23, 21, 29, .22);
+  padding: var(--s-sm);
+  max-height: calc(100vh - var(--kopfhoehe) - 24px);
+  overflow-y: auto;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .menue[open] .menue__tafel { animation: tafel-auf 160ms var(--verlauf); }
+  @keyframes tafel-auf {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+.menue__liste { display: grid; }
+.menue__liste a {
+  display: flex; align-items: center; min-height: 44px;
+  padding: .35rem .7rem; border-radius: 8px;
+  font-size: .95rem; font-weight: 600; letter-spacing: -.01em;
+  text-decoration: none; color: var(--text);
+  transition: color var(--schnell) var(--verlauf),
+              background-color var(--schnell) var(--verlauf);
+}
+.menue__liste a:hover { background: var(--flaeche-ruhig); color: var(--akzent); }
+.menue__liste--anker a { font-weight: 500; color: var(--text-leise); font-size: .9rem; }
+.menue__liste--anker a:hover { color: var(--akzent); }
+
+.menue__gruppe {
+  margin-top: var(--s-sm); padding: var(--s-xs) .7rem;
+  border-top: 1px solid var(--linie);
+  font-family: var(--schrift-technik); font-size: .66rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+
+/* Textlinks ab 900px, darunter uebernimmt das Klappmenue. */
 .nav { display: none; }
-@media (min-width: 1080px) {
+@media (min-width: 900px) {
   .nav { display: flex; align-items: center; gap: 2px; }
   .nav a {
     display: inline-flex; align-items: center; min-height: 44px;
@@ -298,95 +360,19 @@ body.starr .kopf .marke {
                 background-color var(--schnell) var(--verlauf);
   }
   .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
-  .nav .knopf { margin-left: .6rem; color: #FFFFFF; }
-  .nav .knopf:hover { color: #FFFFFF; background: var(--akzent-tief); }
 }
-
-/* ------------------------------------------------------- 6. Mobilmenue */
-/* Grundlage ist ein <details>: ohne JavaScript oeffnet und schliesst es
-   nativ. Das Skript ergaenzt Fokusfang, Scroll-Sperre und Ausblenden. */
-.menue { position: static; }
-@media (min-width: 1080px) { .menue { display: none; } }
-
-.menue__knopf {
-  position: relative; z-index: 115;
-  display: flex; align-items: center; gap: .55rem;
-  height: 46px; padding-inline: .5rem; margin-right: -.5rem;
-  border-radius: var(--rund);
-  cursor: pointer; list-style: none;
-  font-size: .875rem; font-weight: 600; color: var(--text);
+/* Der Aufruf zur Anfrage steht rechts aussen, das Klappmenue links davon.
+   Auf schmalen Geraeten ist die lange Beschriftung zu breit; statt den
+   Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
+   beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
+   keine Doppelung. */
+.kopf__cta { margin-left: .1rem; white-space: nowrap; }
+.kopf__cta-kurz { display: none; }
+@media (max-width: 599px) {
+  .kopf__cta-lang { display: none; }
+  .kopf__cta-kurz { display: inline; }
+  .kopf__cta { padding-inline: .9rem; }
 }
-.menue__striche { position: relative; width: 20px; height: 11px; flex: none; }
-.menue__striche i {
-  position: absolute; left: 0; height: 2px; border-radius: 2px;
-  background: currentColor;
-  transition: transform var(--mittel) var(--verlauf), width var(--mittel) var(--verlauf);
-}
-.menue__striche i:nth-child(1) { top: 0; width: 20px; }
-.menue__striche i:nth-child(2) { top: 9px; width: 13px; }
-.menue[open] .menue__striche i:nth-child(1) { transform: translateY(4.5px) rotate(45deg); }
-.menue[open] .menue__striche i:nth-child(2) { width: 20px; transform: translateY(-4.5px) rotate(-45deg); }
-
-.menue__schleier {
-  position: fixed; inset: 0; z-index: 95;
-  /* Ohne backdrop-filter traegt die Flaeche allein die Abdunklung. Das ist
-     zugleich der Rueckfall fuer Browser, die den Filter nicht koennen. */
-  background: rgba(16, 13, 24, .52);
-  opacity: 0; animation: schleier-auf var(--mittel) var(--verlauf) forwards;
-}
-/* Mit Filter darf die Flaeche heller sein: die Unschaerfe uebernimmt einen
-   Teil der Beruhigung. Der Inhalt bleibt erkennbar, lenkt aber nicht mehr
-   ab. Bewusst nur 8px und keine Animation des Filters selbst — animierte
-   Filterflaechen sind teuer und ruckeln auf aelteren Telefonen. */
-@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-  .menue__schleier {
-    background: rgba(16, 13, 24, .38);
-    -webkit-backdrop-filter: blur(8px) saturate(115%);
-    backdrop-filter: blur(8px) saturate(115%);
-  }
-}
-@keyframes schleier-auf { to { opacity: 1; } }
-
-.menue__tafel {
-  position: fixed; z-index: 100;
-  top: 0; right: 0; bottom: 0;
-  width: min(88vw, 380px);
-  background: var(--flaeche);
-  border-left: 1px solid var(--linie);
-  box-shadow: -24px 0 60px -30px rgba(23, 21, 29, .30);
-  padding: calc(var(--kopfhoehe) + var(--s-lg)) var(--rand) var(--s-xl);
-  display: flex; flex-direction: column;
-  overflow-y: auto;
-  transform: translateX(100%);
-  animation: tafel-rein var(--lang) var(--verlauf) forwards;
-}
-@keyframes tafel-rein { to { transform: translateX(0); } }
-.menue.geht .menue__tafel { animation: tafel-raus var(--mittel) var(--verlauf) forwards; }
-.menue.geht .menue__schleier { animation: schleier-zu var(--mittel) var(--verlauf) forwards; }
-@keyframes tafel-raus { from { transform: translateX(0); } to { transform: translateX(100%); } }
-@keyframes schleier-zu { from { opacity: 1; } to { opacity: 0; } }
-
-.menue__liste { display: grid; }
-.menue__liste a {
-  display: flex; align-items: center; min-height: 56px;
-  padding-block: .35rem;
-  border-bottom: 1px solid var(--linie);
-  font-size: 1.15rem; font-weight: 700; letter-spacing: -.015em;
-  text-decoration: none;
-  transition: color var(--schnell) var(--verlauf);
-}
-.menue__liste a:hover { color: var(--akzent); }
-.menue__fuss { margin-top: auto; padding-top: var(--s-xl); display: grid; gap: var(--s-sm); }
-.menue__fuss .knopf { width: 100%; }
-.menue__kontakt { margin-top: var(--s-sm); font-size: .875rem; color: var(--text-leise); }
-.menue__kontakt a { color: var(--akzent); text-decoration: none; }
-
-/* Auf den Textseiten gibt es kein Menue — nur einen Knopf. */
-.nur-klein { display: inline-flex; }
-@media (min-width: 1080px) { .nur-klein { display: none; } }
-
-html:not(.js) .menue__schleier { display: none; }
-html:not(.js) .menue__tafel { animation: none; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -468,20 +454,39 @@ html:not(.js) .menue__tafel { animation: none; transform: none; }
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
       <a href="/">Startseite</a>
-      <a class="knopf knopf--voll knopf--klein" href="/kontakt/">Kostenlosen Check anfragen</a>
+      <a href="/preise/">Preise</a>
+      <a href="/kontakt/">Kontakt</a>
     </nav>
-    <a class="knopf knopf--rand knopf--klein nur-klein" href="/kontakt/">Anfragen</a>
+    <details class="menue" id="menue">
+      <summary class="menue__knopf" aria-label="Menü"
+               aria-controls="menue-tafel" aria-expanded="false">
+        <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
+      </summary>
+
+      <div class="menue__tafel" id="menue-tafel">
+        <nav class="menue__liste" aria-label="Seiten">
+          <a href="/">Startseite</a>
+          <a href="/preise/">Preise</a>
+          <a href="/kontakt/">Kontakt</a>
+        </nav>
+
+        <p class="menue__gruppe" id="menue-recht">Rechtliches</p>
+        <nav class="menue__liste menue__liste--anker" aria-labelledby="menue-recht">
+          <a href="/impressum.html">Impressum</a>
+          <a href="/datenschutz.html">Datenschutz</a>
+        </nav>
+      </div>
+    </details>
+
+    <a class="knopf knopf--voll knopf--klein kopf__cta" href="/kontakt/"><span class="kopf__cta-lang">Kostenlosen Check anfragen</span><span class="kopf__cta-kurz">Anfragen</span></a>
   </div>
 </header>
 
 <main id="inhalt">
   <article class="dokument">
-    <div class="feld raster">
-      <div class="rail">
-        <p class="kicker">Fehler 404</p>
-        <span class="balken" aria-hidden="true"></span>
-      </div>
+    <div class="feld">
       <div class="spalte">
+      <p class="kicker">Fehler 404</p>
       <h1>Diese Seite gibt es <em>nicht</em>.</h1>
       <p>
         Der Verweis ist veraltet, oder in der Adresse steckt ein Tippfehler.

@@ -3,7 +3,7 @@
 
    Fuenf Teile, mehr nicht:
      1. Kontaktformular
-     2. Mobilmenue (Fokusfang, Scroll-Sperre, Ausblenden)
+     2. Klappmenue im Kopfbereich
      3. Haarlinie unter dem Kopfbereich beim Scrollen
      4. Dezentes Einblenden der Abschnitte
      5. Fortschrittsbalken am oberen Rand
@@ -273,14 +273,17 @@
    2. Off-Canvas-Menue
 
    Das <details> traegt den Zustand — damit funktioniert das Menue auch
-   ohne dieses Skript. Ergaenzt werden hier vier Dinge, die ein <details>
+   ohne dieses Skript. Ergaenzt werden hier drei Dinge, die ein <details>
    allein nicht kann:
 
-     - Scroll-Sperre, damit die Seite dahinter nicht wegrutscht
-     - Fokusfang, damit die Tabulatortaste im Menue bleibt
-     - Escape und Klick auf den Schleier zum Schliessen
-     - eine Ausblendbewegung: <details> entfernt seinen Inhalt sofort,
-       deshalb wird das Schliessen kurz verzoegert
+     - Schliessen bei einem Klick daneben
+     - Schliessen mit Escape, danach Fokus zurueck auf den Knopf
+     - aria-expanded, damit Hilfsmittel den Zustand ansagen
+
+   Bewusst NICHT enthalten: Scroll-Sperre und Fokusfang. Beide gehoeren zu
+   einer Schublade, die den Bildschirm ausfuellt. Dieses Feld haengt unter
+   dem Knopf, verdeckt nichts und darf deshalb weder den Fokus einsperren
+   noch das Scrollen anhalten.
    ========================================================================= */
 (function () {
   'use strict';
@@ -290,76 +293,40 @@
 
   var knopf = menue.querySelector('summary');
   var tafel = menue.querySelector('.menue__tafel');
-  var vorher = null;
-  var sanft = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  function fokussierbare() {
-    return Array.prototype.filter.call(
-      tafel.querySelectorAll('a[href], button, input, select, textarea'),
-      function (el) { return el.offsetParent !== null; });
-  }
 
   function auf() { return menue.hasAttribute('open'); }
 
-  function zu() {
-    if (!auf() || menue.classList.contains('geht')) return;
-
-    var fertig = function () {
-      menue.classList.remove('geht');
-      menue.removeAttribute('open');
-      document.body.classList.remove('starr');
-      if (vorher && document.contains(vorher)) vorher.focus();
-      vorher = null;
-    };
-
-    if (sanft.matches) { fertig(); return; }
-    menue.classList.add('geht');
-    window.setTimeout(fertig, 320);   /* deckt sich mit --mittel-zeit */
+  function zu(fokusZurueck) {
+    if (!auf()) return;
+    menue.removeAttribute('open');
+    if (fokusZurueck) knopf.focus();
   }
 
-  /* Der native Umschalter von <details> wuerde das Menue ohne
-     Ausblendbewegung schliessen. Deshalb faengt der Klick ab und
-     uebernimmt das Schliessen selbst. */
-  knopf.addEventListener('click', function (e) {
-    if (!auf()) return;
-    e.preventDefault();
-    zu();
-  });
-
   menue.addEventListener('toggle', function () {
-    if (!auf()) { document.body.classList.remove('starr'); return; }
-    vorher = document.activeElement;
-    document.body.classList.add('starr');
-    var erste = fokussierbare()[0];
-    if (erste) erste.focus();
+    knopf.setAttribute('aria-expanded', auf() ? 'true' : 'false');
   });
 
-  /* Verweis gewaehlt: schliessen, damit das Sprungziel sichtbar wird. */
+  /* Verweis gewaehlt: schliessen, damit das Ziel sichtbar wird. */
   tafel.addEventListener('click', function (e) {
-    if (e.target.closest('a')) zu();
+    if (e.target.closest('a')) zu(false);
   });
 
+  /* Klick ausserhalb. Der Knopf selbst ist ausgenommen, sonst wuerde das
+     Umschalten sofort wieder rueckgaengig gemacht. */
   document.addEventListener('click', function (e) {
-    if (auf() && e.target.closest('[data-menue-zu]')) zu();
+    if (!auf()) return;
+    if (menue.contains(e.target)) return;
+    zu(false);
   });
 
   document.addEventListener('keydown', function (e) {
-    if (!auf()) return;
-
-    if (e.key === 'Escape') { e.preventDefault(); zu(); return; }
-    if (e.key !== 'Tab') return;
-
-    var liste = [knopf].concat(fokussierbare());
-    var erste = liste[0], letzte = liste[liste.length - 1];
-    if (e.shiftKey && document.activeElement === erste) { e.preventDefault(); letzte.focus(); }
-    else if (!e.shiftKey && document.activeElement === letzte) { e.preventDefault(); erste.focus(); }
+    if (auf() && e.key === 'Escape') { e.preventDefault(); zu(true); }
   });
 
-  window.matchMedia('(min-width: 1000px)').addEventListener('change', function (e) {
-    if (e.matches && auf()) {
-      menue.removeAttribute('open');
-      document.body.classList.remove('starr');
-    }
+  /* Wandert der Fokus mit der Tabulatortaste aus dem Feld heraus, ist das
+     Feld erledigt. Kein Einsperren, nur aufraeumen. */
+  document.addEventListener('focusin', function (e) {
+    if (auf() && !menue.contains(e.target)) zu(false);
   });
 })();
 
