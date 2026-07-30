@@ -281,10 +281,17 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   align-items: center;
   gap: var(--s-sm); min-height: var(--kopfhoehe);
 }
-.kopf__inhalt > .marke { grid-column: 2; justify-self: center; }
-.kopf__inhalt > .nav { grid-column: 1; justify-self: start; }
+/* grid-row: 1 an allen drei Stellen, und das ist nicht ueberfluessig:
+   Das Raster platziert lueckenlos vorwaerts. Die Marke steht als erstes im
+   Markup und sitzt in Spalte 2 — danach kann die Navigation mit
+   grid-column: 1 nicht mehr zurueck in Zeile 1 und landet in Zeile 2. Der
+   Kopf war dadurch ab 900 px zweizeilig: Marke oben, Navigation darunter.
+   Auf schmalen Geraeten fiel es nicht auf, weil die Textnavigation dort
+   ausgeblendet ist und der Menueknopf in Spalte 3 hinter der Marke liegt. */
+.kopf__inhalt > .marke { grid-column: 2; grid-row: 1; justify-self: center; }
+.kopf__inhalt > .nav { grid-column: 1; grid-row: 1; justify-self: start; }
 .kopf__inhalt > .menue,
-.kopf__inhalt > .kopf__cta { grid-column: 3; justify-self: end; }
+.kopf__inhalt > .kopf__cta { grid-column: 3; grid-row: 1; justify-self: end; }
 .marke {
   position: relative;
   display: flex; align-items: center; text-decoration: none;
@@ -1068,7 +1075,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       <p class="aktionsfeld__marke">August-Angebot</p>
       <h2 class="aktionsfeld__titel" id="aktion-titel">Deine Landingpage ab 249&nbsp;€</h2>
       <p class="aktionsfeld__satz" id="aktion-satz">
-        Nur vom 01.08.2026 bis 31.08.2026. Modern, mobil optimiert und
+        Nur vom 30.07.2026 bis 31.08.2026. Modern, mobil optimiert und
         technisch sauber umgesetzt.
       </p>
       <div class="auf__aktionen">

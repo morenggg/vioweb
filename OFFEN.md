@@ -150,6 +150,24 @@ Einwilligung ist sie, wenn sie „unbedingt erforderlich" ist.
 
 Ich bin kein Anwalt, und das hier ist keine Rechtsberatung.
 
+### D-1b · „August-Angebot" läuft seit dem 30. Juli
+
+Du wolltest es ab heute sichtbar haben. Der Zeitraum steht jetzt auf
+**30.07.2026 bis einschließlich 31.08.2026**, und die Gültigkeitsangaben auf
+der Preisseite und im Hinweisfeld nennen genau diese Daten.
+
+**Das musste mit:** Vorher stand dort „gültig vom 01.08.2026". Hätte das
+Angebot heute schon gelaufen, während die Seite einen späteren Beginn nennt,
+wäre das eine falsche Angabe gewesen. Deine beiden Textstellen tragen deshalb
+jetzt den 30.07.
+
+**Was ich nicht geändert habe:** Die Bezeichnung „August-Angebot". Sie liest
+sich als „das Augustangebot, ab jetzt zu haben" — vertretbar, aber wenn du
+einen anderen Namen willst (etwa „Sommer-Angebot"), sag ein Wort, dann ziehe
+ich ihn über Preisseite, Hinweisfeld und Datenschutzerklärung durch. Der
+Speicherschlüssel `vioweb-aktion-august-2026` steht namentlich in der
+Erklärung, den würde ich dann mit umbenennen.
+
 ### D-2 · Strukturierte Daten nennen im August den regulären Preis
 
 Die `Offer`-Auszeichnung auf der Preisseite steht bei 399 €, weil das im

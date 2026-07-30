@@ -532,11 +532,16 @@
   var RUHE = 24 * 60 * 60 * 1000;   /* 24 Stunden */
   var WARTEN = 2000;                /* frueheste Anzeige */
 
-  /* Ortszeit des Besuchers. getMonth() gibt 7 fuer August, damit gilt das
-     Angebot vom 1. bis einschliesslich 31. August 2026 — ohne Rechnen mit
-     Zeitzonen, Sommerzeit oder Monatslaengen. */
+  /* Der Zeitraum steht genau hier und nur hier. Angelegt in Ortszeit des
+     Besuchers: die Monate sind nullbasiert, 6 ist Juli und 7 ist August.
+     Ueber Date-Objekte statt einer Monatspruefung, weil der Start nicht mehr
+     auf einem Monatsersten liegt — das Angebot laeuft vom 30. Juli bis
+     einschliesslich 31. August 2026. Die Endzeit ist die letzte Millisekunde
+     des 31., der letzte Tag gehoert also vollstaendig dazu. */
+  var VON = new Date(2026, 6, 30, 0, 0, 0, 0);
+  var BIS = new Date(2026, 7, 31, 23, 59, 59, 999);
   function imZeitraum(jetzt) {
-    return jetzt.getFullYear() === 2026 && jetzt.getMonth() === 7;
+    return jetzt >= VON && jetzt <= BIS;
   }
 
   if (!imZeitraum(new Date())) return;
