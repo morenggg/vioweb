@@ -306,9 +306,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 
 .menue__knopf {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px;
-  border: 1px solid var(--linie-kraeftig); border-radius: var(--rund);
-  background: var(--flaeche);
+  width: 48px; height: 48px;
+  /* Dezent, nicht wie ein Formularfeld: Haarlinie statt kraeftiger Rahmen,
+     kein Fuellton. Der Knopf tritt hinter die Marke zurueck, die auf ihrer
+     dunklen Kachel das staerkere Element bleibt. */
+  border: 1px solid var(--linie); border-radius: var(--rund);
+  background: transparent;
   cursor: pointer; list-style: none; color: var(--text);
   transition: background-color var(--schnell) var(--verlauf),
               border-color var(--schnell) var(--verlauf);
@@ -322,7 +325,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    wirkt als Teil der Leiste und nicht als nachtraeglich gesetztes Zeichen. */
 .menue[open] .menue__knopf {
   position: fixed; z-index: 130;
-  top: calc((var(--kopfhoehe) - 44px) / 2);
+  top: calc((var(--kopfhoehe) - 48px) / 2);   /* 48 = Knopfhoehe, mittig */
   right: max(var(--rand), env(safe-area-inset-right));
   background: var(--flaeche); border-color: var(--linie-kraeftig);
 }
@@ -475,13 +478,16 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
    beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
    keine Doppelung. */
-.kopf__cta { margin-left: .1rem; white-space: nowrap; }
-.kopf__cta-kurz { display: none; }
-@media (max-width: 599px) {
-  .kopf__cta-lang { display: none; }
-  .kopf__cta-kurz { display: inline; }
-  .kopf__cta { padding-inline: .9rem; }
+/* Der Aufruf zur Anfrage gehoert zur Textnavigation und erscheint erst mit
+   ihr ab 900 px. Darunter bleiben im Kopf nur Marke und Menueknopf, und
+   space-between setzt den Knopf von allein an die rechte Kante — ohne dritte
+   Spalte und ohne absolute Positionierung. Der Aufruf steht unterhalb
+   ohnehin gross im Inhalt, es geht also nichts verloren. */
+.kopf__cta { display: none; }
+@media (min-width: 900px) {
+  .kopf__cta { display: inline-flex; margin-left: .1rem; white-space: nowrap; }
 }
+.kopf__cta-kurz { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -561,7 +567,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       <a href="/kontakt/">Kontakt</a>
     </nav>
     <details class="menue" id="menue">
-      <summary class="menue__knopf" aria-label="Menü"
+      <summary class="menue__knopf" aria-label="Navigation öffnen"
                aria-controls="menue-tafel" aria-expanded="false">
         <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
       </summary>

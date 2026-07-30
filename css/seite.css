@@ -202,6 +202,23 @@
   border: solid var(--akzent); border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+/* Aktionsgruppen unterhalb der Falz. Die Basis-Regel stand bisher nur im
+   kritischen CSS der Startseite; auf den uebrigen Seiten fehlte sie, und die
+   Knoepfe flossen dort ohne echten Abstand als Inline-Elemente. Deshalb hier
+   einmal fuer alle. Auf der Startseite steht dieselbe Regel zusaetzlich im
+   kritischen CSS, weil ihr Hero ueber der Falz liegt. Wortgleich, damit sich
+   die beiden nicht widersprechen. */
+.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); margin-top: var(--s-xl); }
+@media (max-width: 619px) {
+  /* Gestapelt gleich breit UND gleich hoch. grid-auto-rows: 1fr gibt beiden
+     Zeilen dieselbe Hoehe: bricht der laengere Text auf zwei Zeilen, waechst
+     der zweite Knopf mit, statt dass die beiden ungleich hoch nebeneinander
+     stehen. Ein einzelner Knopf faellt nicht unter diese Regel. */
+  .auf__aktionen:has(.knopf + .knopf) {
+    display: grid; grid-auto-rows: 1fr;
+  }
+  .auf__aktionen:has(.knopf + .knopf) > .knopf { width: 100%; }
+}
 .leistungsliste + .auf__aktionen { margin-top: var(--s-xl); }
 
 /* ---------------------------------------------------------- 8. Ablauf */

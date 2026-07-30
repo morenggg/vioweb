@@ -323,9 +323,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 
 .menue__knopf {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 44px; height: 44px;
-  border: 1px solid var(--linie-kraeftig); border-radius: var(--rund);
-  background: var(--flaeche);
+  width: 48px; height: 48px;
+  /* Dezent, nicht wie ein Formularfeld: Haarlinie statt kraeftiger Rahmen,
+     kein Fuellton. Der Knopf tritt hinter die Marke zurueck, die auf ihrer
+     dunklen Kachel das staerkere Element bleibt. */
+  border: 1px solid var(--linie); border-radius: var(--rund);
+  background: transparent;
   cursor: pointer; list-style: none; color: var(--text);
   transition: background-color var(--schnell) var(--verlauf),
               border-color var(--schnell) var(--verlauf);
@@ -339,7 +342,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    wirkt als Teil der Leiste und nicht als nachtraeglich gesetztes Zeichen. */
 .menue[open] .menue__knopf {
   position: fixed; z-index: 130;
-  top: calc((var(--kopfhoehe) - 44px) / 2);
+  top: calc((var(--kopfhoehe) - 48px) / 2);   /* 48 = Knopfhoehe, mittig */
   right: max(var(--rand), env(safe-area-inset-right));
   background: var(--flaeche); border-color: var(--linie-kraeftig);
 }
@@ -492,13 +495,16 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
    Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
    beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
    keine Doppelung. */
-.kopf__cta { margin-left: .1rem; white-space: nowrap; }
-.kopf__cta-kurz { display: none; }
-@media (max-width: 599px) {
-  .kopf__cta-lang { display: none; }
-  .kopf__cta-kurz { display: inline; }
-  .kopf__cta { padding-inline: .9rem; }
+/* Der Aufruf zur Anfrage gehoert zur Textnavigation und erscheint erst mit
+   ihr ab 900 px. Darunter bleiben im Kopf nur Marke und Menueknopf, und
+   space-between setzt den Knopf von allein an die rechte Kante — ohne dritte
+   Spalte und ohne absolute Positionierung. Der Aufruf steht unterhalb
+   ohnehin gross im Inhalt, es geht also nichts verloren. */
+.kopf__cta { display: none; }
+@media (min-width: 900px) {
+  .kopf__cta { display: inline-flex; margin-left: .1rem; white-space: nowrap; }
 }
+.kopf__cta-kurz { display: none; }
 
 /* ---------------------------------------------------------- 7. Aufmacher */
 .auf { padding-block: var(--s-xl) var(--s-2xl); }
@@ -538,7 +544,22 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   line-height: 1.6; color: var(--text-leise);
   text-wrap: pretty;   /* verhindert ein einzelnes Wort in der letzten Zeile */
 }
-.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-sm); margin-top: var(--s-xl); }
+/* Aktionsgruppen. Der Abstand ist --s-md (16 px) statt der frueheren
+   12 px; zwei Knoepfe klebten sonst optisch aneinander. Stehen zwei darin,
+   stapeln sie auf schmalen Geraeten gleich breit uebereinander, statt in
+   ungleichen Breiten nebeneinander zu stehen. Ein einzelner Knopf behaelt
+   seine natuerliche Breite. */
+.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); margin-top: var(--s-xl); }
+@media (max-width: 619px) {
+  /* Gestapelt gleich breit UND gleich hoch. grid-auto-rows: 1fr gibt beiden
+     Zeilen dieselbe Hoehe: bricht der laengere Text auf zwei Zeilen, waechst
+     der zweite Knopf mit, statt dass die beiden ungleich hoch nebeneinander
+     stehen. Ein einzelner Knopf faellt nicht unter diese Regel. */
+  .auf__aktionen:has(.knopf + .knopf) {
+    display: grid; grid-auto-rows: 1fr;
+  }
+  .auf__aktionen:has(.knopf + .knopf) > .knopf { width: 100%; }
+}
 .auf__hinweis {
   margin-top: var(--s-md); color: var(--text-leise);
   font-size: clamp(.85rem, .93rem - .123vw, .9rem);
@@ -626,7 +647,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     </nav>
 
     <details class="menue" id="menue">
-      <summary class="menue__knopf" aria-label="Menü"
+      <summary class="menue__knopf" aria-label="Navigation öffnen"
                aria-controls="menue-tafel" aria-expanded="false">
         <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
       </summary>
