@@ -255,29 +255,44 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 @supports (backdrop-filter: blur(1px)) {
 }
 
+/* Drei Spalten, aussen gleich breit: die Marke steht damit exakt auf der
+   Mitte des Inhaltsmasses, unabhaengig davon, wie breit Navigation und
+   Aufruf gerade sind. Genau deshalb Raster und nicht space-between — bei
+   flex wanderte die Marke mit der Breite der Nachbarn, und der Kopf
+   springt beim Seitenwechsel. Mobil ist die linke Spalte leer, die Marke
+   bleibt mittig, der Menueknopf sitzt rechts an der Kante.
+   Die Richtlinien verlangen sonst durchgehend linksbuendig; die zentrierte
+   Marke im Kopf ist die ausdrueckliche Ausnahme davon, siehe Abschnitt 5. */
 .kopf__inhalt {
   position: relative;   /* Bezug fuer die Menuetafel, siehe unten */
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--s-md); min-height: var(--kopfhoehe);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s-sm); min-height: var(--kopfhoehe);
 }
+.kopf__inhalt > .marke { grid-column: 2; justify-self: center; }
+.kopf__inhalt > .nav { grid-column: 1; justify-self: start; }
+.kopf__inhalt > .menue,
+.kopf__inhalt > .kopf__cta { grid-column: 3; justify-self: end; }
 .marke {
-  position: relative; z-index: 115;
-  display: flex; align-items: center; gap: .65rem; text-decoration: none;
-  min-height: 44px;   /* Klickflaeche, das Zeichen bleibt 22 px */
+  position: relative;
+  display: flex; align-items: center; text-decoration: none;
+  min-height: 48px;   /* Klickflaeche, das Bild selbst bleibt niedriger */
   transition: opacity var(--schnell) var(--verlauf), visibility 0s;
 }
-/* Das Zeichen hat eine weisse Haelfte, die auf hellem Grund verschwindet.
-   Es liegt deshalb auf einer dunklen Kachel — das Zeichen selbst bleibt
-   unveraendert. Eine eigene Variante fuer helle Hintergruende waere
-   sauberer; siehe README. */
-.marke__zeichen {
-  height: 22px; width: auto; flex: none;
-  box-sizing: content-box;
-  padding: 7px 9px;
-  background: var(--dunkel);
-  border-radius: 8px;
+/* Die Wortmarke im Original: dunkle Schrift auf transparentem Grund, der
+   Schriftzug "Vioweb" ist Teil der Datei. Deshalb keine Textspanne daneben
+   mehr — sie waere eine zweite Marke — und keine dunkle Kachel mehr. Die
+   brauchte das alte Zeichen, weil dessen weisse Haelfte auf hellem Grund
+   verschwand. Die Wortmarke steht ueberall auf hellem Grund: Kopfbereich,
+   Schublade, Fusszeile. Nicht nachgebaut, nicht beschnitten, nicht
+   umgefaerbt — nur in der Hoehe gesetzt, die Breite folgt dem Seitenmass.
+   Die Hoehe waechst leicht mit der Fensterbreite und bleibt bei 320 px so
+   schmal, dass links und rechts je 48 px fuer den Menueknopf bleiben. */
+.marke__bild {
+  height: clamp(21px, 18px + 1vw, 28px);
+  width: auto; flex: none;
 }
-.marke__name { font-size: 1.1rem; font-weight: 800; letter-spacing: -.01em; }
 
 /* -------------------------------------------------------- 6. Schublade */
 /* Die Navigation auf schmalen Geraeten faehrt von rechts ein, dahinter ein
@@ -390,8 +405,11 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 /* Kopfleiste der Schublade: Marke links, Schliessen-Knopf rechts, beide auf
    der Hoehe des Seitenkopfs. Dadurch bleibt die Marke beim Oeffnen optisch
    stehen und das Menue wirkt als Teil der Seite. */
+/* Auch hier die Marke mittig: sonst sprang sie beim Oeffnen der Schublade
+   von der Mitte nach links. Das Kreuz liegt darueber am rechten Rand, also
+   dasselbe Bild wie im geschlossenen Kopf. */
 .menue__kopf {
-  flex: none; display: flex; align-items: center;
+  flex: none; display: flex; align-items: center; justify-content: center;
   min-height: var(--kopfhoehe); padding-inline: var(--rand);
 }
 
@@ -592,9 +610,8 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 <header class="kopf" id="kopf">
   <div class="feld kopf__inhalt">
     <a class="marke" href="/">
-      <img class="marke__zeichen" src="../img/zeichen.webp" alt="Vioweb"
-           width="480" height="291" decoding="async" fetchpriority="high">
-      <span class="marke__name">Vioweb</span>
+      <img class="marke__bild" src="../img/wortmarke.png" alt="Vioweb"
+           width="815" height="119" decoding="async" fetchpriority="high">
     </a>
     <nav class="nav" aria-label="Hauptnavigation">
       <a href="/">Start</a>
@@ -614,9 +631,8 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
            aria-modal="true" aria-label="Navigation">
         <div class="menue__kopf">
           <a class="marke" href="/">
-            <img class="marke__zeichen" src="../img/zeichen.webp" alt="Vioweb"
-                 width="480" height="291" loading="lazy" decoding="async">
-            <span class="marke__name">Vioweb</span>
+            <img class="marke__bild" src="../img/wortmarke.png" alt="Vioweb"
+                 width="815" height="119" loading="lazy" decoding="async">
           </a>
         </div>
 
@@ -750,9 +766,9 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
           <article class="angebot">
             <div class="angebot__kopf">
             <h3 class="angebot__titel">Landingpage</h3>
-            <p class="angebot__preis"><span class="angebot__ab">ab</span> 399 €</p>
+            <p class="angebot__preis" id="preis-landingpage"><span class="angebot__ab">ab</span> 399 €</p>
             </div>
-            <div class="angebot__rest">
+            <div class="angebot__rest" id="rest-landingpage">
 <p class="angebot__satz">
               Eine Seite, die eine Aufgabe erfüllt: Besucher zur Anfrage
               führen.
@@ -1055,6 +1071,36 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       </p>
     </div>
   </section>
+
+
+<!-- ====================================================== August-Angebot
+     Bewusst in <template>: der Inhalt einer Vorlage ist nicht Teil des
+     gerenderten Dokuments. Er wird also nicht dargestellt, nicht vorgelesen
+     und nicht als Seiteninhalt ausgewertet — auch nicht von Suchmaschinen
+     oder Antwortsystemen. Im Dokument selbst steht durchgehend der
+     regulaere Preis. Das Skript setzt das Angebot nur im Zeitraum ein.
+
+     Warum in dieser Richtung und nicht umgekehrt: Faellt das Skript aus
+     oder ist JavaScript abgeschaltet, zeigt die Seite den regulaeren Preis.
+     Ein abgelaufener Rabatt kann dadurch nie stehen bleiben — das waere
+     eine irrefuehrende Preisangabe. Ab dem 1. September greift die
+     Zeitpruefung nicht mehr, und der Preis steht ohne weiteres Zutun
+     wieder bei "ab 399 EUR".
+     ==================================================================== -->
+<template id="aktion-preis">
+  <div class="angebot__aktion">
+    <p class="angebot__marke angebot__marke--aktion">August-Angebot</p>
+    <p class="angebot__preis">
+      <span class="angebot__ab">ab</span> 249&nbsp;€<s class="angebot__alt"><span class="nur-vorlesen">Regulärer Preis: </span>ab 399&nbsp;€</s>
+    </p>
+  </div>
+</template>
+<template id="aktion-hinweis">
+  <p class="angebot__gueltig">
+    Gültig vom <time datetime="2026-08-01">01.08.2026</time> bis
+    einschließlich <time datetime="2026-08-31">31.08.2026</time>.
+  </p>
+</template>
 
 </main>
 

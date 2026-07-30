@@ -132,7 +132,12 @@ bei Bedarf, geregelt über `unicode-range`.
 
 ## 5. Layout und Abstände
 
-- **Alles linksbündig auf einer festen Kante. Nichts wird zentriert.**
+- **Alles linksbündig auf einer festen Kante.** Genau **eine** Ausnahme:
+  die Wortmarke im Kopfbereich steht mittig, auf Mobile und Desktop. Sie
+  sitzt in einem Raster `1fr auto 1fr`, damit die Mitte nicht von der Breite
+  der Nachbarn abhängt und der Kopf beim Seitenwechsel nicht springt.
+  Sonst wird nichts zentriert — kein Fließtext, keine Überschrift, kein
+  Abschnitt.
   Das gilt auch für Innenpolster von Klickflächen
 - Seitenrand: 20 px bis 560 px, 28 px bis 900 px, darüber 48 px
 - Inhaltsbreite höchstens **1200 px**
@@ -245,15 +250,22 @@ Fünf Fallen, alle beim Testen aufgetreten:
    Animation läuft dann nie los und `animationend` bleibt aus. Richtig ist
    `.menue[open].menue--zu .menue__tafel`.
 
-### Das Firmenzeichen auf hellem Grund
+### Die Wortmarke
 
-Das Zeichen hat eine **weiße Hälfte**, die auf `#F7F7FA` verschwindet. Es
-liegt deshalb auf einer dunklen Kachel (`--dunkel`, Radius 8 px). Das
-Zeichen selbst bleibt unverändert — das Layout passt sich an, nicht
-umgekehrt.
+`img/wortmarke.png` — der Schriftzug „VIOWEB" mit dem W im Akzent, dunkles
+`#1A1C22` auf transparentem Grund, 815 × 119 px.
 
-**Besser wäre eine eigene Logovariante für helle Hintergründe.** Solange
-die fehlt, bleibt die Kachel.
+- **Wird nie nachgebaut, beschnitten oder umgefärbt.** Gesetzt wird nur die
+  Höhe, die Breite folgt dem Seitenmaß
+- Höhe `clamp(21px, 18px + 1vw, 28px)`. Die Obergrenze ist so gewählt, dass
+  bei 320 px links und rechts je 48 px für den Menüknopf bleiben
+- **Kein Textzusatz daneben.** Der Schriftzug ist Teil der Datei; eine
+  Spanne mit „Vioweb" wäre eine zweite Marke
+- Steht überall auf hellem Grund: Kopfbereich, Schublade, Fußzeile. Auf
+  dunklen Bändern kommt sie nicht vor
+- Die frühere dunkle Kachel ist entfallen. Sie war nötig, weil das alte
+  Zeichen eine weiße Hälfte hatte, die auf `#F7F7FA` verschwand. Die
+  Wortmarke braucht sie nicht
 
 ---
 

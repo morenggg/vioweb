@@ -110,6 +110,10 @@ Weg.
 
 - Die Seite lädt keine Ressourcen von fremden Servern, setzt keine Cookies
   und misst keine Zugriffe. Deshalb gibt es kein Einwilligungsbanner.
+- Einzige Ausnahme: während einer befristeten Aktion legt die Startseite
+  einen Eintrag im lokalen Speicher des Browsers ab, damit der Hinweis auf
+  das Angebot nicht bei jedem Aufruf erscheint. Darin steht nur ein
+  Zeitstempel, kein Personenbezug. Er verlässt das Gerät nicht.
 - Es werden keine Rankings garantiert und keine Erfolgszahlen genannt.
 - Kundenreferenzen, Bewertungen und Fallstudien werden nicht veröffentlicht.
   Fehlen sie in einer Antwort, ist das kein Versehen, sondern der Stand.

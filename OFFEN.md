@@ -124,6 +124,48 @@ Cloudflare-Prüfung steht in `KI-SICHTBARKEIT-UND-SEO.md` unter C.
 
 ## D · Entscheidungen, die ich nicht treffen kann
 
+### D-1 · Das Angebots-Popup speichert etwas auf dem Gerät — bitte lesen
+
+„Höchstens einmal in 24 Stunden" braucht ein Gedächtnis. Ohne Speicherung
+erschiene der Hinweis bei **jedem** Aufruf. Ich habe deshalb einen Eintrag im
+lokalen Speicher (`localStorage`) angelegt: einen Zeitstempel, sonst nichts.
+
+**Warum das eine Entscheidung für dich ist:** Deine Kernaussage lautet „keine
+Cookies, nichts von Dritten". Die bleibt wörtlich richtig — `localStorage`
+ist kein Cookie, und nichts verlässt das Gerät. Aber § 25 TTDSG gilt für
+*jede* Speicherung auf dem Endgerät, nicht nur für Cookies. Erlaubt ohne
+Einwilligung ist sie, wenn sie „unbedingt erforderlich" ist.
+
+- **Meine Einschätzung:** Ein Zeitstempel ohne Personenbezug, der nur
+  verhindert, dass ein Hinweis nervt, ist ein sehr geringes Risiko. Genau so
+  handhaben es die meisten. Ich habe es in der Datenschutzerklärung als
+  eigenen Abschnitt 3 offengelegt, mit Zweck, Inhalt, Dauer und Löschweg.
+- **Das Risiko, das bleibt:** Eine strenge Auslegung könnte eine Einwilligung
+  verlangen. Dann bräuchte die Seite doch ein Banner — und damit fiele genau
+  das weg, was du gegenüber Kunden als Vorteil nennst.
+- **Wenn du das nicht willst,** sag Bescheid. Dann nehme ich die Speicherung
+  heraus. Der Hinweis erscheint dann einmal je Seitenaufruf, was aufdringlich
+  wirkt, oder ich lasse ihn ganz weg und das Angebot steht nur auf der
+  Preisseite.
+
+Ich bin kein Anwalt, und das hier ist keine Rechtsberatung.
+
+### D-2 · Strukturierte Daten nennen im August den regulären Preis
+
+Die `Offer`-Auszeichnung auf der Preisseite steht bei 399 €, weil das im
+Dokument steht. Während der Aktion zeigt die Seite 249 € — der reguläre Preis
+ist dann daneben sichtbar durchgestrichen, die Angabe widerspricht der Seite
+also nicht.
+
+Falls du willst, dass Google im August die 249 € übernimmt, müsste der
+Angebotspreis fest im Dokument stehen statt über das Skript. Das hat einen
+Preis: fällt das Skript aus oder wird es vergessen, steht der Rabatt nach dem
+31. August weiter da. Eine abgelaufene Preisangabe ist irreführende Werbung.
+Ich habe deshalb die sichere Richtung gewählt. Sag Bescheid, wenn du es im
+August anders willst — dann trage ich es für den Monat fest ein und nehme es
+am 1. September wieder heraus.
+
+
 ### D0 · „Über uns" fehlt als Seite
 
 Der Menüpunkt war für die neue Navigation vorgesehen, ist aber **bewusst
@@ -175,15 +217,26 @@ hell. Wer beides nacheinander sieht, merkt den Bruch.
 Zwei Wege: das Profil nachziehen, oder bewusst zwei Auftritte fahren. Das
 ist eine Markenentscheidung, keine technische.
 
-### D3 · Firmenzeichen hat keine helle Variante
+### D3 · Firmenzeichen ~~hat keine helle Variante~~ — erledigt
 
-Das Zeichen hat eine **weiße Hälfte**, die auf dem hellen Grund `#F7F7FA`
-verschwindet. Ich habe das Layout angepasst statt das Zeichen zu ändern:
-Es sitzt auf einer dunklen Kachel.
+Du hast die Wortmarke geliefert: `img/wortmarke.png`, dunkler Schriftzug auf
+transparentem Grund. Damit ist die dunkle Notkachel entfallen, die das alte
+Zeichen mit seiner weißen Hälfte gebraucht hatte. Die Marke steht jetzt
+unverändert auf hellem Grund.
 
-Das ist eine Notlösung, die funktioniert. **Sauber wäre eine zweite
-Zeichendatei für helle Hintergründe.** Die kann ich nicht erfinden — dafür
-bräuchte ich die Vorlage oder deine Freigabe, das Zeichen anzupassen.
+**Zwei Kleinigkeiten bleiben dazu offen:**
+
+1. `img/zeichen.webp` (30 KB) wird von keiner Seite mehr geladen. Es steckt
+   noch in `README.md` und `SEO.md` als Beschreibung des alten Stands. Ich
+   habe die Datei nicht gelöscht, weil du sie vielleicht anderswo nutzt —
+   sag Bescheid, dann fliegt sie raus.
+2. Die Wortmarke ist ein PNG mit 28 KB. Als WebP wären es schätzungsweise
+   unter 10 KB. Ich habe **nicht** umgewandelt, weil du „ausschließlich das
+   Original" und „nicht verändern" geschrieben hast. Ein Formatwechsel ohne
+   Änderung am Bild wäre möglich — dein Wort genügt.
+3. Für dunkle Flächen gibt es weiterhin keine Variante. Aktuell braucht es
+   keine: die Marke kommt nur auf hellem Grund vor. Sollte sie einmal auf
+   ein dunkles Band sollen, brauche ich eine helle Fassung.
 
 ---
 

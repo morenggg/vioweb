@@ -813,3 +813,154 @@
   background-repeat: no-repeat;
 }
 .formular textarea { min-height: 96px; }
+
+
+/* ==========================================================================
+   18. August-Angebot
+
+   Zwei Stellen: der Preis in der Landingpage-Karte und ein Hinweisfeld beim
+   Aufruf der Startseite. Beide setzt das Skript nur im Zeitraum ein, der
+   Inhalt liegt bis dahin in einer <template> und ist damit nicht Teil des
+   Dokuments. Deshalb steht hier auch nichts, was ohne das Skript sichtbar
+   wuerde.
+
+   Zurueckhaltung ist Absicht: keine Prozentzahl, kein rotes Band, kein
+   Ausrufezeichen. Das Etikett ist derselbe Baustein, den die Karten schon
+   fuer "Empfehlung" nutzen, nur im Akzentton. Mehr braucht ein befristeter
+   Preis nicht.
+   ========================================================================== */
+
+/* Das Etikett im Akzentton. Kein neuer Baustein — nur die Farbe, die
+   .angebot--betont ihrem Etikett ohnehin schon gibt. */
+.angebot__marke--aktion { background: var(--akzent-zart); color: var(--akzent); }
+
+/* Der Angebotsblock ersetzt den Preis und uebernimmt dessen Aufgabe im
+   Kartenkopf: er sitzt unten, damit die Preise einer Reihe auf einer Linie
+   liegen. Ohne das stuende der Preis dieser Karte hoeher als der der
+   Nachbarkarte, und die Reihe saehe wieder wie eine Treppe aus. */
+.angebot__aktion { display: grid; gap: var(--s-sm); }
+.angebot__kopf .angebot__aktion { margin-top: auto; }
+/* Das Etikett erbt align-self: flex-start von .angebot__marke. Im Raster
+   regelt das die Blockachse, nicht die Zeile — die Pille zog sich dadurch
+   ueber die ganze Kartenbreite. */
+.angebot__aktion .angebot__marke { justify-self: start; }
+
+/* Der alte Preis: durchgestrichen, kleiner, leise. Er steht neben dem neuen
+   und nicht darueber, sonst braucht der Kartenkopf eine Zeile mehr.
+   Vorleseprogramme hoeren "Regulaerer Preis" davor — ein Durchstrich allein
+   wird nicht angesagt. */
+.angebot__alt {
+  display: inline-block; margin-left: .5rem;
+  font-size: .42em; font-weight: 700; letter-spacing: -.005em;
+  color: var(--text-leise); vertical-align: .32em;
+  text-decoration-thickness: 2px;
+}
+
+/* Kein eigener Abstand nach unten: .angebot__rest setzt zwischen allen
+   seinen Kindern --s-xl. Mit einem zusaetzlichen Rand wurden daraus 56 px
+   und die Zeile stand einsam zwischen Preis und Beschreibung. */
+.angebot__gueltig {
+  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
+  color: var(--text-leise);
+}
+
+/* ------------------------------------------------------- Hinweisfeld */
+/* Auf dem Telefon eine Karte am unteren Rand, in Daumenreichweite und ohne
+   den Inhalt zu verdecken. Ab 620 px mittig. Beides ueber dasselbe Raster,
+   nur die Ausrichtung wechselt. */
+.aktionsfeld {
+  position: fixed; inset: 0; z-index: 200;
+  display: grid; place-items: end stretch;
+  padding: var(--s-md);
+  padding-bottom: max(var(--s-md), env(safe-area-inset-bottom));
+}
+@media (min-width: 620px) {
+  .aktionsfeld { place-items: center; padding: var(--s-lg); }
+}
+
+.aktionsfeld__schleier {
+  position: fixed; inset: 0;
+  background: rgba(23, 21, 29, .46);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .aktionsfeld__schleier {
+    background: rgba(23, 21, 29, .32);
+    backdrop-filter: blur(3px) saturate(105%);
+  }
+}
+
+.aktionsfeld__tafel {
+  position: relative;
+  width: 100%; max-width: 27rem;
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: var(--rund-gross);
+  box-shadow: 0 2px 6px rgba(23, 21, 29, .05),
+              0 26px 60px -24px rgba(23, 21, 29, .34);
+  padding: var(--s-lg);
+}
+@media (min-width: 620px) {
+  .aktionsfeld__tafel { padding: var(--s-xl); }
+}
+
+.aktionsfeld__marke {
+  display: inline-block;
+  padding: .25rem .6rem; border-radius: 999px;
+  background: var(--akzent-zart); color: var(--akzent);
+  font-size: clamp(.72rem, .82rem - .154vw, .78rem);
+  font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.aktionsfeld__titel {
+  margin-top: var(--s-md);
+  font-size: clamp(1.35rem, 1.2rem + .6vw, 1.65rem);
+  font-weight: 800; letter-spacing: -.026em; line-height: 1.15;
+  /* Laesst "249 €" nicht allein auf eine Zeile fallen. */
+  text-wrap: balance;
+}
+.aktionsfeld__satz {
+  margin-top: var(--s-sm); max-width: 34ch;
+  font-size: .95rem; line-height: 1.6; color: var(--text-leise);
+}
+/* Die Knopfgruppe nutzt .auf__aktionen — gleicher Abstand, gleiche Breiten,
+   gleiches Verhalten wie ueberall sonst. Nur der Abstand nach oben ist
+   kleiner als im Seiteninhalt. */
+.aktionsfeld .auf__aktionen { margin-top: var(--s-lg); }
+
+/* Das Kreuz sitzt in der Ecke der Tafel. 44 px Klickflaeche, das Zeichen
+   selbst ist kleiner; gezeichnet aus zwei Linien statt einer Bilddatei. */
+.aktionsfeld__kreuz {
+  position: absolute; top: .4rem; right: .4rem;
+  width: 44px; height: 44px;
+  border: 0; border-radius: var(--rund);
+  background: transparent; color: var(--text-leise);
+  cursor: pointer;
+}
+.aktionsfeld__kreuz::before,
+.aktionsfeld__kreuz::after {
+  content: ""; position: absolute; left: 50%; top: 50%;
+  width: 15px; height: 2px; border-radius: 2px; background: currentColor;
+}
+.aktionsfeld__kreuz::before { transform: translate(-50%, -50%) rotate(45deg); }
+.aktionsfeld__kreuz::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+@media (hover: hover) {
+  .aktionsfeld__kreuz:hover { background: var(--flaeche-ruhig); color: var(--text); }
+}
+/* Der Titel darf nicht unter das Kreuz laufen. */
+.aktionsfeld__marke, .aktionsfeld__titel { padding-right: 2.5rem; }
+
+/* Die Tafel bekommt beim Einsetzen den Fokus, damit Vorleseprogramme Titel
+   und Text lesen, bevor die Auswahl kommt. Sie ist aber kein Bedienelement
+   und keine Tab-Station: der Rahmen lag um die ganze Karte und sah wie ein
+   Fehlerzustand aus. Die Knoepfe darin behalten ihren Fokusrahmen, die
+   Tastaturbedienung ist also unveraendert erkennbar. */
+.aktionsfeld__tafel:focus,
+.aktionsfeld__tafel:focus-visible { outline: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .aktionsfeld__tafel { animation: feld-ein var(--mittel) var(--verlauf); }
+  .aktionsfeld__schleier { animation: schleier-ein var(--mittel) linear; }
+  @keyframes feld-ein {
+    from { opacity: 0; transform: translateY(12px) scale(.99); }
+    to   { opacity: 1; transform: none; }
+  }
+}

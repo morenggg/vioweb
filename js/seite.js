@@ -1,16 +1,18 @@
 /* =========================================================================
    Vioweb — das gesamte JavaScript der Seite.
 
-   Fuenf Teile, mehr nicht:
+   Sechs Teile, mehr nicht:
      1. Kontaktformular
      2. Schublade im Kopfbereich
      3. Haarlinie unter dem Kopfbereich beim Scrollen
      4. Dezentes Einblenden der Abschnitte
      5. Fortschrittsbalken am oberen Rand
+     6. August-Angebot 2026 (befristet, siehe dort)
 
-   Teil 2 bis 4 sind Zugaben. Ohne JavaScript bleibt die Seite vollstaendig
+   Teil 2 bis 6 sind Zugaben. Ohne JavaScript bleibt die Seite vollstaendig
    bedienbar: das Menue ist ein <details> und oeffnet nativ, das Formular
-   faellt auf eine vorbefuellte E-Mail zurueck, und nichts ist versteckt.
+   faellt auf eine vorbefuellte E-Mail zurueck, der regulaere Preis steht
+   im Dokument, und nichts ist versteckt.
    ========================================================================= */
 
 /* =========================================================================
@@ -252,6 +254,31 @@
       zusatzfeldUebernehmen();
     });
   }
+
+  /* Vorauswahl ueber die Adresse: /kontakt/?anliegen=Landingpage waehlt den
+     Punkt schon aus. Genutzt vom Hinweisfeld zum August-Angebot, brauchbar
+     aber fuer jeden Verweis.
+
+     Uebernommen wird nur, was als Option wirklich existiert — verglichen
+     wird gegen die Werte im Auswahlfeld selbst. Ein Wert aus der Adresse
+     landet also nie im Dokument, und es kann nichts eingeschmuggelt werden,
+     was nicht angeboten wird. */
+  (function () {
+    if (!felder.anliegen || !window.URLSearchParams) return;
+    var wunsch;
+    try { wunsch = new URLSearchParams(window.location.search).get('anliegen'); }
+    catch (e) { return; }
+    if (!wunsch) return;
+
+    var optionen = felder.anliegen.options;
+    for (var i = 0; i < optionen.length; i++) {
+      if (optionen[i].value && optionen[i].value === wunsch) {
+        felder.anliegen.selectedIndex = i;
+        break;
+      }
+    }
+  })();
+
   anliegenUebernehmen();
   zusatzfeldUebernehmen();
 
@@ -480,4 +507,140 @@
   window.addEventListener('scroll', anstossen, { passive: true });
   window.addEventListener('resize', anstossen, { passive: true });
   messen();
+})();
+
+/* =========================================================================
+   6. August-Angebot 2026
+
+   Eine Stelle, zwei Wirkungen: der Preis in der Landingpage-Karte auf der
+   Preisseite und ein Hinweisfeld beim Aufruf der Startseite. Beides haengt
+   an derselben Zeitpruefung, damit die zwei nie auseinanderlaufen.
+
+   Richtung der Logik: Im Dokument steht durchgehend der regulaere Preis.
+   Das Skript setzt das Angebot nur im Zeitraum ein. Faellt es aus oder ist
+   JavaScript abgeschaltet, zeigt die Seite "ab 399 EUR" — ein abgelaufener
+   Rabatt kann also nie stehen bleiben. Umgekehrt waere es riskant: eine
+   veraltete Preisangabe ist eine irrefuehrende Werbung.
+
+   Ab dem 1. September 2026 greift die Pruefung nicht mehr und alles bleibt
+   ohne weiteres Zutun beim regulaeren Preis.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var SPEICHER = 'vioweb-aktion-august-2026';
+  var RUHE = 24 * 60 * 60 * 1000;   /* 24 Stunden */
+  var WARTEN = 2000;                /* frueheste Anzeige */
+
+  /* Ortszeit des Besuchers. getMonth() gibt 7 fuer August, damit gilt das
+     Angebot vom 1. bis einschliesslich 31. August 2026 — ohne Rechnen mit
+     Zeitzonen, Sommerzeit oder Monatslaengen. */
+  function imZeitraum(jetzt) {
+    return jetzt.getFullYear() === 2026 && jetzt.getMonth() === 7;
+  }
+
+  if (!imZeitraum(new Date())) return;
+
+  /* ------------------------------------------------ Preis in der Karte */
+  (function () {
+    var preis = document.getElementById('preis-landingpage');
+    var rest = document.getElementById('rest-landingpage');
+    var vPreis = document.getElementById('aktion-preis');
+    var vHinweis = document.getElementById('aktion-hinweis');
+    if (!preis || !rest || !vPreis || !vHinweis) return;
+
+    preis.replaceWith(vPreis.content.cloneNode(true));
+    rest.prepend(vHinweis.content.cloneNode(true));
+  })();
+
+  /* ---------------------------------------------------- Hinweisfeld */
+  (function () {
+    var vorlage = document.getElementById('aktion-feld');
+    if (!vorlage) return;
+
+    /* Hoechstens einmal in 24 Stunden. Gespeichert wird ein Zeitstempel,
+       nichts weiter — keine Kennung, kein Zaehler, kein Personenbezug.
+       Ist der Speicher gesperrt (privates Fenster, strenge Einstellung),
+       faellt die Pruefung aus und das Feld erscheint einmal je Aufruf.
+       Das ist der harmlosere Fehlerfall. */
+    function zuletzt() {
+      try { return parseInt(window.localStorage.getItem(SPEICHER), 10) || 0; }
+      catch (e) { return 0; }
+    }
+    function merken() {
+      try { window.localStorage.setItem(SPEICHER, String(Date.now())); }
+      catch (e) { /* kein Speicher, kein Problem */ }
+    }
+
+    if (Date.now() - zuletzt() < RUHE) return;
+
+    var feld = null;
+    var vorher = null;
+
+    function fokussierbar() {
+      return feld ? feld.querySelectorAll('a[href], button') : [];
+    }
+
+    function zu() {
+      if (!feld) return;
+      document.removeEventListener('keydown', taste, true);
+      document.documentElement.style.overflow = '';
+      feld.remove();
+      feld = null;
+      /* Fokus dorthin zurueck, wo er vor dem Einsetzen war. Ohne das
+         landet er am Seitenanfang und der Besucher verliert die Stelle. */
+      if (vorher && document.contains(vorher)) vorher.focus();
+      merken();
+    }
+
+    function taste(e) {
+      if (!feld) return;
+      if (e.key === 'Escape') { e.preventDefault(); zu(); return; }
+      if (e.key !== 'Tab') return;
+
+      /* Fokusfang: solange das Feld offen ist, bleibt der Rundlauf darin. */
+      var liste = fokussierbar();
+      if (!liste.length) return;
+      var erste = liste[0], letzte = liste[liste.length - 1];
+      if (e.shiftKey && document.activeElement === erste) {
+        e.preventDefault(); letzte.focus();
+      } else if (!e.shiftKey && document.activeElement === letzte) {
+        e.preventDefault(); erste.focus();
+      }
+    }
+
+    function zeigen() {
+      /* Ist die Schublade offen, waere das Feld ein zweiter Dialog ueber
+         dem ersten. Dann spaeter erneut versuchen. */
+      var menue = document.getElementById('menue');
+      if (menue && menue.hasAttribute('open')) {
+        window.setTimeout(zeigen, 4000);
+        return;
+      }
+
+      vorher = document.activeElement;
+      feld = vorlage.content.firstElementChild.cloneNode(true);
+      document.body.appendChild(feld);
+      document.documentElement.style.overflow = 'hidden';
+
+      var i, knoepfe = feld.querySelectorAll('[data-zu]');
+      for (i = 0; i < knoepfe.length; i++) {
+        knoepfe[i].addEventListener('click', zu);
+      }
+      /* Der Weg zur Anfrage schliesst nicht ueber zu(): die Seite wechselt
+         ohnehin. Der Zeitstempel wird aber gesetzt, damit das Feld nach der
+         Rueckkehr nicht sofort wieder auftaucht. */
+      var weg = feld.querySelector('a[href]');
+      if (weg) weg.addEventListener('click', merken);
+
+      /* Fokus auf die Tafel, nicht auf einen Knopf: Vorleseprogramme lesen
+         dadurch Titel und Text, bevor die Auswahl kommt. */
+      var tafel = feld.querySelector('.aktionsfeld__tafel');
+      if (tafel) tafel.focus();
+
+      document.addEventListener('keydown', taste, true);
+    }
+
+    window.setTimeout(zeigen, WARTEN);
+  })();
 })();
