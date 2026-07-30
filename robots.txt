@@ -20,6 +20,7 @@ Disallow: /LAUNCH_CHECKLIST.md
 Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
+Disallow: /august-angebot.md
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 
@@ -46,6 +47,7 @@ Disallow: /LAUNCH_CHECKLIST.md
 Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
+Disallow: /august-angebot.md
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 Disallow: /impressum.html
@@ -62,6 +64,7 @@ Disallow: /LAUNCH_CHECKLIST.md
 Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
+Disallow: /august-angebot.md
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 Disallow: /impressum.html
