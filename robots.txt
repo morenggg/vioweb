@@ -21,6 +21,12 @@ Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
+Disallow: /WARTUNGSMODUS.md
+Disallow: /wartung.sh
+# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
+# noindex; der Eintrag hier spart den Abruf.
+Disallow: /startseite.html
+Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 
@@ -48,6 +54,12 @@ Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
+Disallow: /WARTUNGSMODUS.md
+Disallow: /wartung.sh
+# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
+# noindex; der Eintrag hier spart den Abruf.
+Disallow: /startseite.html
+Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 Disallow: /impressum.html
@@ -65,6 +77,12 @@ Disallow: /KI-SICHTBARKEIT-UND-SEO.md
 Disallow: /vioweb-designrichtlinien.md
 Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
+Disallow: /WARTUNGSMODUS.md
+Disallow: /wartung.sh
+# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
+# noindex; der Eintrag hier spart den Abruf.
+Disallow: /startseite.html
+Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
 Disallow: /impressum.html
