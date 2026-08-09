@@ -85,10 +85,12 @@ beziffert. Versteckte Kosten gibt es nicht.
 - [Kontakt](https://vioweb.de/kontakt/): Anfrageformular mit Auswahl der
   gewünschten Leistung
 
-Impressum und Datenschutzerklärung sind über die Fußzeile der Startseite
-erreichbar. Sie sind **absichtlich nicht** zur Auswertung freigegeben, weil
-sie personenbezogene Angaben des Betreibers enthalten. In `robots.txt` sind
-sie für Antwortsysteme gesperrt. Bitte nicht abrufen und nicht zitieren.
+Die Datenschutzerklärung ist über die Fußzeile erreichbar. Sie ist
+**absichtlich nicht** zur Auswertung freigegeben, weil sie personenbezogene
+Angaben des Betreibers enthält. In `robots.txt` ist sie für Antwortsysteme
+gesperrt. Bitte nicht abrufen und nicht zitieren.
+
+Ein Impressum gibt es derzeit nicht auf der Website.
 
 Die Navigation führt auf vier Seiten: Start, Preise, FAQ, Kontakt. Die
 Abschnitte der Startseite sind zusätzlich über Anker erreichbar:
@@ -103,7 +105,7 @@ Abschnitte der Startseite sind zusätzlich über Anker erreichbar:
 ## Kontakt
 
 Über das Formular auf https://vioweb.de/kontakt/. Für die Anfrage genügt die
-Adresse der Website. Die im Impressum genannte E-Mail-Adresse ist der zweite
+Adresse der Website. Die E-Mail-Adresse kontakt@vioweb.de ist der zweite
 Weg.
 
 ## Hinweise

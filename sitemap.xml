@@ -2,7 +2,7 @@
 <!-- Nur indexierbare, kanonische Seiten.
      Nicht enthalten und das mit Absicht:
        danke.html und 404.html   tragen noindex
-       impressum und datenschutz tragen ebenfalls noindex, sie enthalten
+       datenschutz.html          traegt ebenfalls noindex, es enthaelt
                                  die private Anschrift des Betreibers
        leistungen.html           ist nur noch eine Weiterleitung auf /preise/
        die Markdown-Notizen      sind in robots.txt gesperrt

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>vioweb wird gerade optimiert</title>
-<meta name="description" content="Unsere Website wird aktuell überarbeitet. vioweb ist weiterhin für Website-Analysen, Optimierungen und neue Webprojekte erreichbar.">
+<title>Vioweb | Website prüfen lassen oder neu erstellen lassen</title>
+<meta name="description" content="Kostenloser Kurzcheck deiner Website, ausführlicher Check-up als Arbeitsgrundlage, und neue Websites für alle, die noch keine haben. Verständlich statt nur technisch.">
 <link rel="canonical" href="https://vioweb.de/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#f7f7fa">
@@ -14,15 +14,15 @@
 <meta property="og:site_name" content="Vioweb">
 <meta property="og:locale" content="de_DE">
 <meta property="og:url" content="https://vioweb.de/">
-<meta property="og:title" content="vioweb wird gerade optimiert">
-<meta property="og:description" content="Unsere Website wird aktuell überarbeitet. Für Website-Analysen, Optimierungen und neue Webprojekte sind wir weiterhin erreichbar.">
+<meta property="og:title" content="Vioweb | Website prüfen lassen oder neu erstellen lassen">
+<meta property="og:description" content="Kostenloser Kurzcheck, ausführlicher Check-up als Arbeitsgrundlage, und neue Websites für alle, die noch keine haben.">
 <meta property="og:image" content="https://vioweb.de/img/og-bild.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Vioweb: Analysieren. Optimieren. Entwickeln.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="vioweb wird gerade optimiert">
-<meta name="twitter:description" content="Unsere Website wird aktuell überarbeitet. Für Analysen und neue Projekte sind wir weiterhin erreichbar.">
+<meta name="twitter:title" content="Vioweb | Website prüfen lassen oder neu erstellen lassen">
+<meta name="twitter:description" content="Kostenloser Kurzcheck, ausführlicher Check-up, und neue Websites für alle, die noch keine haben.">
 <meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
 
 <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
@@ -30,14 +30,15 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 
+<!-- Nur der lateinische Grundschnitt wird vorgeladen. Er deckt Deutsch
+     vollstaendig ab; die erweiterte Datei holt der Browser nur bei Bedarf. -->
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 
 <!-- =====================================================================
-     WARTUNGSSEITE. Die bisherige Startseite liegt unveraendert in
-     startseite.html. Umschalten: siehe WARTUNGSMODUS.md oder ./wartung.sh
-     Der Wertesatz unten ist Zeichen fuer Zeichen derselbe wie in den
-     uebrigen HTML-Dateien; die Abschnitte fuer Schublade und Aufmacher
-     fehlen, weil diese Seite beides nicht hat.
+     KRITISCHES CSS — alles oberhalb der Falz.
+     Der Werte-Block steht in jeder HTML-Datei; ohne Build-Schritt ist das
+     die einzige Moeglichkeit, kritisches CSS inline zu halten. Wird ein
+     Wert geaendert, muss er in allen HTML-Dateien geaendert werden.
      ===================================================================== -->
 <style>
 /* ------------------------------------------------------- 0. Schriften */
@@ -311,313 +312,845 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   width: auto; flex: none;
 }
 
+/* -------------------------------------------------------- 6. Schublade */
+/* Die Navigation auf schmalen Geraeten faehrt von rechts ein, dahinter ein
+   Schleier. Grundlage bleibt ein <details>: ohne JavaScript oeffnet und
+   schliesst es nativ, das Menue ist also nie tot. Das Skript ergaenzt
+   Schliessen bei Klick auf den Schleier, Escape, Fokusfang, Scroll-Sperre
+   und die weiche Ausfahrt.
 
-/* ------------------------------------------------- 6. Wartungsseite */
-/* Die Seite ist bewusst ruhig: heller Grund, dunkle Typografie, ein
-   Akzent. Spielerisch ist allein die Bahn — sie steht als dunkle Flaeche
-   darin und traegt die Farbe. Alles andere sieht aus wie der Rest der
-   Website, damit die Seite nach Dienstleister aussieht und nicht nach
-   Baustellenschild. */
-.wartung { padding-block: var(--s-xl) var(--s-2xl); }
-@media (min-width: 900px) { .wartung { padding-block: var(--s-2xl) var(--s-3xl); } }
+   Warum <summary> und kein <button>: Ein Knopf muesste das Auf- und
+   Zuklappen selbst uebernehmen, also ueber JavaScript. Das <summary> kann
+   das von Haus aus, ist mit der Tastatur bedienbar und meldet den Zustand.
+   Es ist gleichzeitig der Schliessen-Knopf: bei offener Schublade steht es
+   fest auf deren Kopfleiste und zeigt ein Kreuz. Ein zweites <summary> ist
+   nicht erlaubt, ein zusaetzlicher Knopf waere ohne JavaScript tot.
 
-/* Statusanzeige mit ruhigem Puls. Der Punkt ist zusaetzlich beschriftet,
-   die Aussage haengt also nicht an der Farbe. */
-.status {
-  display: inline-flex; align-items: center; gap: .55rem;
-  padding: .35rem .8rem .35rem .7rem;
-  border: 1px solid var(--linie-kraeftig); border-radius: 999px;
+   Drei Fallen, alle beim Testen aufgetreten:
+   1. backdrop-filter am Kopfbereich macht ihn zum Bezugsrahmen fuer
+      position: fixed. Schleier und Schublade waeren auf die Kopfzeile
+      eingesperrt. Bei offener Schublade wird der Filter abgeschaltet.
+   2. .kopf traegt z-index 90 und ist damit ein eigener Stapelkontext.
+      Fortschrittsbalken (140) und Sprungmarke (130) liegen darueber und
+      wuerden auf die Schublade malen. Offen steigt .kopf deshalb auf 150.
+   3. Marke und Aufruf im Seitenkopf muessen weichen, sonst schauen sie
+      neben der Schublade hervor, sobald diese nicht die ganze Breite hat.
+      Die Schublade zeigt ihre eigene Marke an derselben Stelle. */
+.menue { position: static; }
+
+/* Ab 900 px uebernehmen die Textlinks im Kopf. Eine Schublade ueber die
+   ganze Fensterhoehe waere dort ein Fremdkoerper: sie zeigt genau die vier
+   Punkte, die daneben schon als Text stehen. */
+@media (min-width: 900px) { .menue { display: none; } }
+
+.menue__knopf {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px;
+  /* Dezent, nicht wie ein Formularfeld: Haarlinie statt kraeftiger Rahmen,
+     kein Fuellton. Der Knopf tritt hinter die Marke zurueck, die auf ihrer
+     dunklen Kachel das staerkere Element bleibt. */
+  border: 1px solid var(--linie); border-radius: var(--rund);
+  background: transparent;
+  cursor: pointer; list-style: none; color: var(--text);
+  transition: background-color var(--schnell) var(--verlauf),
+              border-color var(--schnell) var(--verlauf);
+}
+.menue__knopf::-webkit-details-marker { display: none; }
+@media (hover: hover) {
+  .menue__knopf:hover { background: var(--flaeche-ruhig); border-color: var(--text-leise); }
+}
+/* Offen sitzt der Knopf fest auf der Kopfleiste der Schublade — auf
+   derselben Hoehe und derselben Kante wie geschlossen. Kein Sprung, und er
+   wirkt als Teil der Leiste und nicht als nachtraeglich gesetztes Zeichen. */
+.menue[open] .menue__knopf {
+  position: fixed; z-index: 130;
+  top: calc((var(--kopfhoehe) - 48px) / 2);   /* 48 = Knopfhoehe, mittig */
+  right: max(var(--rand), env(safe-area-inset-right));
+  background: var(--flaeche); border-color: var(--linie-kraeftig);
+}
+
+.menue__striche { position: relative; width: 18px; height: 12px; flex: none; }
+.menue__striche i {
+  position: absolute; left: 0; width: 18px; height: 2px;
+  border-radius: 2px; background: currentColor;
+  transition: transform var(--mittel) var(--verlauf), opacity var(--mittel) var(--verlauf);
+}
+.menue__striche i:nth-child(1) { top: 0; }
+.menue__striche i:nth-child(2) { top: 5px; }
+.menue__striche i:nth-child(3) { top: 10px; }
+.menue[open] .menue__striche i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.menue[open] .menue__striche i:nth-child(2) { opacity: 0; }
+.menue[open] .menue__striche i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* Der Schleier nimmt der Seite die Aufmerksamkeit, ohne sie zuzudecken.
+   Ohne backdrop-filter etwas dichter, damit der Kontrast zur hellen
+   Schublade auch dann traegt. */
+.menue__schleier {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(23, 21, 29, .46);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .menue__schleier {
+    background: rgba(23, 21, 29, .32);
+    backdrop-filter: blur(3px) saturate(105%);
+  }
+}
+
+/* Auf kleinen Telefonen die ganze Breite, darueber rund 92 Prozent bis zu
+   einer festen Obergrenze. Links bleibt dann ein Streifen der Seite stehen,
+   der Bezug zum Inhalt bleibt also erhalten. Kein schwebendes Feld: die
+   Schublade sitzt auf allen vier Seiten am Rand. */
+.menue__tafel {
+  position: fixed; z-index: 110;
+  top: 0; right: 0; bottom: 0; width: 100%;
+  display: flex; flex-direction: column;
   background: var(--flaeche);
-  font-size: clamp(.78rem, .88rem - .154vw, .84rem);
-  font-weight: 600; color: var(--text-leise);
+  box-shadow: -1px 0 0 var(--linie), -32px 0 64px -32px rgba(23, 21, 29, .34);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: max(var(--s-lg), env(safe-area-inset-bottom));
+  overflow-y: auto; overscroll-behavior: contain;
 }
-.status__punkt {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--akzent); flex: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .status__punkt { animation: puls 2.4s ease-in-out infinite; }
-  @keyframes puls {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: .45; transform: scale(.8); }
-  }
-}
-
-.wartung h1 {
-  margin-top: var(--s-lg);
-  font-size: clamp(1.9rem, 1.35rem + 3vw, 3.6rem);
-  font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
-  max-width: 20ch; text-wrap: balance;
-}
-.wartung h1 em { font-style: normal; color: var(--akzent); }
-.wartung__satz {
-  margin-top: var(--s-lg); max-width: 54ch;
-  font-size: clamp(1.02rem, .98rem + .4vw, 1.2rem);
-  line-height: 1.6; color: var(--text-leise); text-wrap: pretty;
-}
-.wartung__klein {
-  margin-top: var(--s-md); max-width: 47ch;
-  font-size: clamp(.85rem, .93rem - .123vw, .9rem);
-  color: var(--text-leise);
+/* Unter 380 px die ganze Breite — dort ist fuer einen sichtbaren Streifen
+   der Seite kein Platz. Darueber rund 92 Prozent: der Schleier bleibt
+   sichtbar, der Bezug zum Inhalt erhalten, und ein Tippen daneben
+   schliesst. Bei voller Breite gibt es kein "daneben", dann bleiben Kreuz
+   und Escape. */
+@media (min-width: 380px) {
+  .menue__tafel { width: min(92vw, 400px); }
 }
 
-/* ------------------------------------------------------ Die Rennbahn */
-.spiel { margin-top: var(--s-xl); }
-@media (min-width: 1040px) {
-  /* Ab Schreibtischbreite stehen Text und Bahn nebeneinander, sonst
-     bleibt rechts eine leere Haelfte stehen. */
-  .wartung__raster {
-    display: grid; grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
-    gap: var(--s-2xl); align-items: start;
-  }
-  .spiel { margin-top: 0; }
+/* Kopfleiste der Schublade: Marke links, Schliessen-Knopf rechts, beide auf
+   der Hoehe des Seitenkopfs. Dadurch bleibt die Marke beim Oeffnen optisch
+   stehen und das Menue wirkt als Teil der Seite. */
+/* Auch hier die Marke mittig: sonst sprang sie beim Oeffnen der Schublade
+   von der Mitte nach links. Das Kreuz liegt darueber am rechten Rand, also
+   dasselbe Bild wie im geschlossenen Kopf. */
+.menue__kopf {
+  flex: none; display: flex; align-items: center; justify-content: center;
+  min-height: var(--kopfhoehe); padding-inline: var(--rand);
 }
 
-.bahn__flaeche {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--rund-gross);
-  overflow: hidden;
-  background: #141119;
-  border: 1px solid rgba(23, 21, 29, .22);
-  box-shadow: var(--hebung);
+/* Zwei Ebenen, mehr braucht die Seite nicht: vier Seiten gross gesetzt,
+   darunter abgetrennt der Aufruf und das Rechtliche klein. Die Zeilen gehen
+   von Kante zu Kante, der Text steht auf der Satzkante der Marke. */
+.menue__nav { display: grid; margin-top: var(--s-lg); }
+.menue__nav a {
+  display: grid; gap: .1rem;
+  padding: var(--s-sm) var(--rand);
+  text-decoration: none; color: var(--text);
+  transition: background-color var(--schnell) var(--verlauf);
 }
-@media (min-width: 620px) { .bahn__flaeche { aspect-ratio: 16 / 10; } }
-.bahn__flaeche canvas { display: block; width: 100%; height: 100%; }
-
-/* Der Hinweis liegt ueber der Bahn und nimmt keinen Platz im Fluss —
-   dadurch springt beim Einblenden nichts. */
-.bahn__hinweis {
-  position: absolute; left: 50%; top: var(--s-md);
-  transform: translateX(-50%);
-  padding: .35rem .8rem; border-radius: 999px;
-  background: rgba(23, 21, 29, .78); color: #FFFFFF;
-  font-size: .82rem; font-weight: 700; letter-spacing: .01em;
-  white-space: nowrap; pointer-events: none;
+.menue__titel {
+  font-size: clamp(1.35rem, 1.2rem + .5vw, 1.55rem);
+  font-weight: 800; letter-spacing: -.024em; line-height: 1.25;
 }
-.bahn__hinweis:empty { display: none; }
-
-/* Anzeigen. Zahlen in gleicher Breite, damit die Zeile beim Zaehlen
-   nicht zappelt. */
-.anzeigen {
-  margin-top: var(--s-md);
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-sm);
-}
-@media (min-width: 520px) { .anzeigen { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.anzeige {
-  padding: .6rem .8rem;
-  background: var(--flaeche); border: 1px solid var(--linie);
-  border-radius: var(--rund);
-}
-.anzeige dt {
-  font-family: var(--schrift-technik);
-  font-size: clamp(.7rem, .83rem - .2vw, .78rem);
-  letter-spacing: .12em; text-transform: uppercase; color: var(--text-leise);
-}
-.anzeige dd {
-  margin: .15rem 0 0;
-  font-size: clamp(1.05rem, 1rem + .4vw, 1.25rem);
-  font-weight: 800; letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums;
-}
-.anzeige dd small { font-size: .6em; font-weight: 600; color: var(--text-leise); margin-left: .2rem; }
-
-/* ------------------------------------------------------- Fahrknoepfe */
-.fahrknoepfe {
-  margin-top: var(--s-md);
-  display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-md);
-}
-.fahrknopf {
-  display: flex; align-items: center; justify-content: center; gap: .5rem;
-  min-height: 68px; padding: .9rem 1rem;
-  border: 1px solid transparent; border-radius: var(--rund-gross);
-  font-family: inherit; font-size: 1.02rem; font-weight: 800;
-  letter-spacing: .04em; text-transform: uppercase;
-  cursor: pointer;
-  /* Beim Halten darf der Browser nicht scrollen oder Text markieren. */
-  touch-action: none; user-select: none; -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--schnell) var(--verlauf),
-              box-shadow var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
-}
-.fahrknopf svg { width: 20px; height: 20px; flex: none; }
-/* Gas traegt den Akzent, Bremse steht dunkel daneben. Unterschieden werden
-   sie zusaetzlich ueber Beschriftung und Zeichen, nicht nur ueber Farbe. */
-.fahrknopf--gas {
-  background: var(--akzent); color: #FFFFFF;
-  box-shadow: 0 4px 0 var(--akzent-tief), 0 10px 20px -10px rgba(124, 58, 237, .6);
-}
-.fahrknopf--bremse {
-  background: var(--dunkel); color: var(--text-hell);
-  box-shadow: 0 4px 0 #0F0D14, 0 10px 20px -12px rgba(23, 21, 29, .5);
-}
-/* Gedrueckt sinkt der Knopf auf seinen Sockel — dieselbe Tiefe, nur ohne
-   Luft darunter. */
-.fahrknopf--aktiv { transform: translateY(4px); box-shadow: 0 0 0 currentColor; }
-.fahrknopf--gas.fahrknopf--aktiv { background: var(--akzent-tief); box-shadow: none; }
-.fahrknopf--bremse.fahrknopf--aktiv { background: #0F0D14; box-shadow: none; }
-@media (prefers-reduced-motion: reduce) {
-  .fahrknopf { transition: none; }
-  .fahrknopf--aktiv { transform: none; }
+.menue__unter { font-size: .92rem; line-height: 1.4; color: var(--text-leise); }
+@media (hover: hover) {
+  .menue__nav a:hover { background: var(--flaeche-ruhig); }
 }
 
-.spiel__fuss {
-  margin-top: var(--s-sm);
-  display: flex; flex-wrap: wrap; gap: .4rem var(--s-md);
-  justify-content: space-between; align-items: center;
+/* Der Aufruf sitzt unten, in Daumenreichweite. Die Haarlinie darueber gibt
+   der Leerflaeche einen Grund: oben die Seiten, unten die Handlung. */
+.menue__fuss {
+  margin-top: auto; padding: var(--s-lg) var(--rand) 0;
+  border-top: 1px solid var(--linie);
 }
-.spiel__hilfe {
-  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
-  color: var(--text-leise);
+.menue__fuss .knopf { width: 100%; }
+.menue__recht {
+  display: flex; flex-wrap: wrap; column-gap: var(--s-lg);
+  margin-top: var(--s-sm); padding-top: var(--s-sm);
 }
-.spiel__loeschen {
+.menue__recht a {
   display: inline-flex; align-items: center; min-height: 44px;
-  padding: 0 .2rem; border: 0; background: none;
-  font-family: inherit;
-  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
-  color: var(--text-leise); cursor: pointer;
-  text-decoration: underline; text-underline-offset: 3px;
+  font-size: .88rem; color: var(--text-leise); text-decoration: none;
 }
-@media (hover: hover) { .spiel__loeschen:hover { color: var(--akzent); } }
 
-/* ------------------------------------------------------- Kontaktteil */
-.schluss { border-top: 1px solid var(--linie); padding-block: var(--s-2xl); }
-.schluss h2 {
-  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.2rem);
-  font-weight: 800; letter-spacing: -.026em; line-height: 1.15;
-  max-width: 24ch; text-wrap: balance;
+/* Bei offener Schublade: Filter aus (sonst sperrt er position: fixed ein),
+   Kopf ueber Fortschrittsbalken und Sprungmarke, und der Inhalt der
+   Kopfzeile weg — nur der Schliessen-Knopf bleibt. */
+.kopf:has(.menue[open]) {
+  z-index: 150;
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
 }
-.schluss .auf__aktionen { margin-top: var(--s-lg); }
-.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); }
+/* Nur die Kopfzeile selbst, nicht ihr ganzer Teilbaum: die Schublade liegt
+   im Kopfbereich, und ein einfaches .marke hat auch deren eigene Marke
+   erwischt — die Kopfleiste der Schublade war dadurch leer. */
+.kopf:has(.menue[open]) > .kopf__inhalt > .marke,
+.kopf:has(.menue[open]) > .kopf__inhalt > .nav,
+.kopf:has(.menue[open]) > .kopf__inhalt > .kopf__cta { opacity: 0; visibility: hidden; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .menue[open] .menue__tafel   { animation: schub-ein var(--mittel) var(--verlauf); }
+  .menue[open] .menue__schleier { animation: schleier-ein var(--mittel) linear; }
+  /* Zufahren: <details> raeumt das Feld sofort aus dem Baum. Das Skript
+     haelt open deshalb noch, setzt diese Klasse und wartet das Ende ab.
+     Der Zustand [open] muss mit in den Waehler, sonst gewinnt die Regel fuer
+     das Einfahren ueber die Spezifitaet, die Ausfahrt laeuft nie los und
+     animationend bleibt aus — gemessen: die Schublade blieb dann bis zum
+     Ablauf des Sicherheitsnetzes stehen. */
+  .menue[open].menue--zu .menue__tafel    { animation: schub-aus var(--mittel) var(--verlauf) forwards; }
+  .menue[open].menue--zu .menue__schleier { animation: schleier-aus var(--mittel) linear forwards; }
+  @keyframes schub-ein    { from { transform: translateX(100%); } to { transform: none; } }
+  @keyframes schub-aus    { from { transform: none; } to { transform: translateX(100%); } }
+  @keyframes schleier-ein { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes schleier-aus { from { opacity: 1; } to { opacity: 0; } }
+}
+
+/* Textlinks ab 900px, darunter uebernimmt die Schublade. */
+.nav { display: none; }
+@media (min-width: 900px) {
+  .nav { display: flex; align-items: center; gap: 2px; }
+  .nav a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    padding-inline: .7rem; border-radius: var(--rund);
+    font-size: .875rem; font-weight: 500;
+    color: var(--text-leise); text-decoration: none;
+    transition: color var(--schnell) var(--verlauf),
+                background-color var(--schnell) var(--verlauf);
+  }
+  @media (hover: hover) {
+    .nav a:hover { color: var(--text); background: var(--flaeche-ruhig); }
+  }
+}
+/* Der Aufruf zur Anfrage steht rechts aussen, der Menueknopf links davon.
+   Auf schmalen Geraeten ist die lange Beschriftung zu breit; statt den
+   Knopf zu verstecken, traegt er dort das kurze Wort. Immer nur eine der
+   beiden Fassungen ist im Baum sichtbar, Vorleseprogramme lesen also
+   keine Doppelung. */
+/* Der Aufruf zur Anfrage gehoert zur Textnavigation und erscheint erst mit
+   ihr ab 900 px. Darunter bleiben im Kopf nur Marke und Menueknopf, und
+   space-between setzt den Knopf von allein an die rechte Kante — ohne dritte
+   Spalte und ohne absolute Positionierung. Der Aufruf steht unterhalb
+   ohnehin gross im Inhalt, es geht also nichts verloren. */
+.kopf__cta { display: none; }
+@media (min-width: 900px) {
+  .kopf__cta { display: inline-flex; margin-left: .1rem; white-space: nowrap; }
+}
+.kopf__cta-kurz { display: none; }
+
+/* ---------------------------------------------------------- 7. Aufmacher */
+.auf { padding-block: var(--s-xl) var(--s-2xl); }
+@media (min-width: 1040px) { .auf { padding-block: var(--s-3xl) var(--s-4xl); } }
+
+/* Der Aufmacher hatte hier eine eigene Pille mit Punkt — ein Muster, das
+   auf jeder Vorlagenseite steht und sonst nirgends auf dieser Seite
+   vorkam. Er nutzt jetzt denselben Kicker wie jeder andere Abschnitt.
+   Damit ist ein Sonderbaustein weniger im Projekt. */
+
+.auf h1 {
+  margin-top: var(--s-lg);
+  /* Nur der untere Anschlag ist gesenkt (war 2.1rem). Er greift erst
+     unter rund 366px Fensterbreite und spart dort eine ganze Zeile.
+     Anstieg und oberer Anschlag bleiben unveraendert, ab 390px ist die
+     Schlagzeile also exakt so gross wie vorher. */
+  font-size: clamp(1.95rem, 1.35rem + 3.3vw, 3.9rem);
+  font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
+  /* 23ch ist der schmalste Wert, bei dem der erste Satzteil auf dem
+     Desktop in eine Zeile passt. Rechts bleibt dadurch Luft. */
+  max-width: 23ch;
+  text-wrap: balance;
+}
+/* Die Schlagzeile nennt zwei Wege. Ab Tablet wird jeder Satzteil ein
+   eigener Kasten: Der Umbruch faellt dann am Scharnier "oder", nicht
+   mitten in den zweiten Weg. Darunter bleibt der Umbruch frei, sonst
+   kostet die Aufteilung auf schmalen Geraeten eine ganze Zeile.
+   Aeltere Browser ohne text-wrap ignorieren die Zeile und brechen
+   normal — die Aussage bleibt in jedem Fall vollstaendig lesbar. */
+@media (min-width: 768px) {
+  .auf h1 .auf__teil { display: inline-block; }
+}
+.auf h1 em { font-style: normal; color: var(--akzent); }
+.auf__satz {
+  margin-top: var(--s-lg); max-width: 53ch;   /* gemessen 62 Zeichen */
+  font-size: clamp(1.05rem, 1rem + .45vw, 1.25rem);
+  line-height: 1.6; color: var(--text-leise);
+  text-wrap: pretty;   /* verhindert ein einzelnes Wort in der letzten Zeile */
+}
+/* Aktionsgruppen. Der Abstand ist --s-md (16 px) statt der frueheren
+   12 px; zwei Knoepfe klebten sonst optisch aneinander. Stehen zwei darin,
+   stapeln sie auf schmalen Geraeten gleich breit uebereinander, statt in
+   ungleichen Breiten nebeneinander zu stehen. Ein einzelner Knopf behaelt
+   seine natuerliche Breite. */
+.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); margin-top: var(--s-xl); }
 @media (max-width: 619px) {
-  .auf__aktionen:has(.knopf + .knopf) { display: grid; grid-auto-rows: 1fr; }
+  /* Gestapelt gleich breit UND gleich hoch. grid-auto-rows: 1fr gibt beiden
+     Zeilen dieselbe Hoehe: bricht der laengere Text auf zwei Zeilen, waechst
+     der zweite Knopf mit, statt dass die beiden ungleich hoch nebeneinander
+     stehen. Ein einzelner Knopf faellt nicht unter diese Regel. */
+  .auf__aktionen:has(.knopf + .knopf) {
+    display: grid; grid-auto-rows: 1fr;
+  }
   .auf__aktionen:has(.knopf + .knopf) > .knopf { width: 100%; }
 }
+.auf__hinweis {
+  margin-top: var(--s-md); color: var(--text-leise);
+  font-size: clamp(.85rem, .93rem - .123vw, .9rem);
+  max-width: 47ch;   /* hatte gar keine Begrenzung: 85 Zeichen je Zeile */
+}
 
-/* Der Kopfbereich dieser Seite traegt nur Marke und Status. */
-.kopf__inhalt--wartung {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--s-md); min-height: var(--kopfhoehe);
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .menue__tafel { transform: none; }
 }
-@media (max-width: 479px) {
-  /* Nebeneinander wird es unter 480 px zu eng; der Status rutscht unter
-     die Marke, statt die Schrift zu verkleinern. */
-  .kopf__inhalt--wartung { flex-direction: column; align-items: flex-start;
-                           gap: var(--s-xs); padding-block: var(--s-sm); }
+
+/* ------------------------------------- Klickrueckmeldung und Aktivzustand */
+/* Kurze, ruhige Rueckmeldung beim Antippen. Nur transform und opacity, das
+   laeuft auf dem Compositor und kostet kein Layout. Kein JavaScript. */
+@media (prefers-reduced-motion: no-preference) {
+  .knopf, .nav a, .menue__liste a, .verweis, .fuss__block a, .fuss__zeile a {
+    transition: transform 120ms var(--verlauf),
+                opacity 120ms var(--verlauf),
+                color var(--schnell) var(--verlauf),
+                background-color var(--schnell) var(--verlauf),
+                border-color var(--schnell) var(--verlauf),
+                box-shadow var(--schnell) var(--verlauf);
+  }
+  .knopf:active { transform: scale(.98); }
+  .nav a:active, .menue__liste a:active,
+  .verweis:active, .fuss__block a:active, .fuss__zeile a:active { opacity: .7; }
 }
+/* Ohne die Abfrage bliebe bei reduzierter Bewegung eine Skalierung uebrig. */
+@media (prefers-reduced-motion: reduce) {
+  .knopf:active { background-color: var(--akzent-tief); }
+}
+/* Auf Touch-Geraeten das graue Aufblitzen des Systems unterdruecken; die
+   eigene Rueckmeldung uebernimmt. */
+.knopf, .nav a, .menue__liste a { -webkit-tap-highlight-color: transparent; }
+
+/* Aktiver Menuepunkt: erkennbar, aber ohne Aufhebens. Die Erkennung laeuft
+   ueber aria-current im HTML, also ueber den Pfad und nicht ueber ein
+   Skript, das erst nach dem Laden greift. */
+.nav a[aria-current="page"] { color: var(--akzent); font-weight: 700; position: relative; }
+.nav a[aria-current="page"]::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.35rem;
+  height: 2px; border-radius: 2px; background: var(--akzent);
+}
+/* In der Schublade traegt die ganze Zeile den Zustand: zarte Flaeche von
+   Kante zu Kante und die Ueberschrift im Akzent. Kein zusaetzliches
+   Zeichen — die Zeile selbst ist die Auszeichnung. */
+.menue__nav a[aria-current="page"] { background: var(--akzent-zart); }
+.menue__nav a[aria-current="page"] .menue__titel { color: var(--akzent); }
+
+/* Zwischenueberschrift im Seitenmenue ueber den Sprungmarken. */
+.menue__gruppe {
+  margin-top: var(--s-lg); padding: 0 var(--s-lg) var(--s-xs);
+  font-family: var(--schrift-technik); font-size: .68rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-leise);
+}
+.menue__liste--anker a { font-size: 1rem; font-weight: 500; }
 </style>
 
 <link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="css/seite.css"></noscript>
+<script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
 
+<body>
+<div class="fortschritt" id="fortschritt" aria-hidden="true"></div>
 <a class="sprung" href="#inhalt">Zum Inhalt springen</a>
 
 <header class="kopf" id="kopf">
-  <div class="feld kopf__inhalt--wartung">
+  <div class="feld kopf__inhalt">
     <a class="marke" href="/">
       <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
            width="815" height="119" decoding="async" fetchpriority="high">
     </a>
-    <p class="status">
-      <span class="status__punkt" aria-hidden="true"></span>
-      Website wird gerade optimiert
-    </p>
-  </div>
+
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="/" aria-current="page">Start</a>
+      <a href="/preise/">Preise</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/kontakt/">Kontakt</a>
+    </nav>
+
+    <details class="menue" id="menue">
+      <summary class="menue__knopf" aria-label="Navigation öffnen"
+               aria-controls="menue-tafel" aria-expanded="false">
+        <span class="menue__striche" aria-hidden="true"><i></i><i></i><i></i></span>
+      </summary>
+
+      <div class="menue__schleier" aria-hidden="true"></div>
+
+      <div class="menue__tafel" id="menue-tafel" role="dialog"
+           aria-modal="true" aria-label="Navigation">
+        <div class="menue__kopf">
+          <a class="marke" href="/">
+            <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
+                 width="815" height="119" loading="lazy" decoding="async">
+          </a>
+        </div>
+
+        <nav class="menue__nav" aria-label="Seiten">
+          <a href="/" aria-current="page">
+            <span class="menue__titel">Start</span>
+            <span class="menue__unter">Zur Übersicht</span></a>
+          <a href="/preise/">
+            <span class="menue__titel">Preise</span>
+            <span class="menue__unter">Leistungen und Preise im Überblick</span></a>
+          <a href="/faq/">
+            <span class="menue__titel">FAQ</span>
+            <span class="menue__unter">Antworten auf häufige Fragen</span></a>
+          <a href="/kontakt/">
+            <span class="menue__titel">Kontakt</span>
+            <span class="menue__unter">Kostenlose Analyse anfragen</span></a>
+        </nav>
+
+        <div class="menue__fuss">
+          <a class="knopf knopf--voll" href="/kontakt/">Kostenlosen Check anfragen
+            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          <p class="menue__recht">
+            <a href="/datenschutz.html">Datenschutz</a>
+          </p>
+        </div>
+      </div>
+    </details>
+
+    <a class="knopf knopf--voll knopf--klein kopf__cta" href="/kontakt/"><span class="kopf__cta-lang">Kostenlosen Check anfragen</span><span class="kopf__cta-kurz">Anfragen</span></a>
+</div>
 </header>
 
 <main id="inhalt">
 
-  <section class="wartung">
-    <div class="feld wartung__raster">
-
-      <div>
-        <h1>Wir machen gerade unsere <em>eigene</em> Website besser.</h1>
-        <p class="wartung__satz">
-          Schließlich analysieren wir nicht nur andere Websites. vioweb wird
-          aktuell überarbeitet und optimiert. Während wir Ladezeiten, Inhalte
-          und Nutzerführung verbessern, kannst du hier eine kleine Runde
-          drehen.
-        </p>
-        <p class="wartung__klein">
-          Bei Fragen oder Interesse an einer Website-Analyse sind wir
-          trotzdem erreichbar.
-        </p>
-      </div>
-
-      <div class="spiel">
-        <div class="bahn__flaeche">
-          <canvas id="bahn" role="img"
-                  aria-label="Kleine Rennbahn in Schrägansicht. Ein violettes Rennauto fährt einen geschlossenen Rundkurs. Steuerbar über die Schaltflächen Gas und Bremse darunter."></canvas>
-          <p class="bahn__hinweis" id="bahn-hinweis" role="status" aria-live="polite"></p>
-        </div>
-
-        <dl class="anzeigen">
-          <div class="anzeige"><dt>Runde</dt><dd id="anz-runde">01</dd></div>
-          <div class="anzeige"><dt>Zeit</dt><dd id="anz-zeit">00:00.00</dd></div>
-          <div class="anzeige"><dt>Bestzeit</dt><dd id="anz-best">--:--.--</dd></div>
-          <div class="anzeige"><dt>Tempo</dt><dd><span id="anz-tempo">0</span><small>km/h</small></dd></div>
-        </dl>
-
-        <div class="fahrknoepfe">
-          <button class="fahrknopf fahrknopf--gas" id="knopf-gas" type="button"
-                  aria-pressed="false" aria-label="Gas geben, gedrückt halten">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/>
-            </svg>
-            Gas
-          </button>
-          <button class="fahrknopf fahrknopf--bremse" id="knopf-bremse" type="button"
-                  aria-pressed="false" aria-label="Bremsen, gedrückt halten">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-              <circle cx="12" cy="12" r="8.6"/>
-              <path d="M12 3.4v17.2M3.4 12h17.2" transform="rotate(45 12 12)"/>
-            </svg>
-            Bremse
-          </button>
-        </div>
-
-        <p class="spiel__fuss">
-          <span class="spiel__hilfe">
-            Tastatur: Leertaste, Pfeil&nbsp;hoch oder&nbsp;W für Gas,
-            Pfeil&nbsp;runter oder&nbsp;S für die Bremse.
-          </span>
-          <button class="spiel__loeschen" id="bestzeit-loeschen" type="button">Bestzeit zurücksetzen</button>
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="schluss">
+  <!-- ======================================================== Aufmacher -->
+  <section class="auf">
     <div class="feld">
-      <h2>Du möchtest deine Website ebenfalls auf die Überholspur bringen?</h2>
+      <p class="kicker">Website-Analyse und Webentwicklung</p>
+
+      <h1><span class="auf__teil">Bestehende Website verbessern</span>
+        <span class="auf__teil">oder eine <em>neue&nbsp;Website</em> erstellen lassen.</span></h1>
+
+      <p class="auf__satz">
+        Wir analysieren bestehende Websites, zeigen verständlich, wo
+        technische, gestalterische oder inhaltliche Probleme liegen, und
+        unterstützen auf Wunsch bei der Umsetzung. Wenn noch keine Website
+        vorhanden ist, entwickeln wir einen neuen, modernen&nbsp;Webauftritt.
+      </p>
+
       <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="/kontakt/">Website-Analyse anfragen
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-        <a class="knopf knopf--rand" href="mailto:kontakt@vioweb.de">E-Mail schreiben</a>
+        <a class="knopf knopf--voll" href="/kontakt/">
+          Kostenlosen Website-Check anfragen
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="knopf knopf--rand" href="#neu">Neue Website erstellen lassen</a>
+      </div>
+
+      <p class="auf__hinweis">
+        Der Kurzcheck ist kostenlos und unverbindlich. Zugangsdaten brauchen
+        wir dafür nicht.
+      </p>
+    </div>
+  </section>
+
+  <!-- ======================================================= Vertrauen -->
+  <section class="band" aria-labelledby="band-titel">
+    <div class="feld">
+      <h2 class="nur-vorlesen" id="band-titel">Was die Analyse ausmacht</h2>
+      <ul class="band__liste" role="list">
+        <li><b>Verständlich statt nur technisch</b>
+          <span>Der Bericht ist so geschrieben, dass du ihn ohne Entwickler verstehst.</span></li>
+        <li><b>Keine reine Werkzeug-Auswertung</b>
+          <span>Messwerte sind der Anfang. Bewertet und gewichtet wird von Hand.</span></li>
+        <li><b>Konkrete Handlungsempfehlungen</b>
+          <span>Was zuerst zu tun ist, warum, und mit welchem Aufwand.</span></li>
+        <li><b>Unabhängig nutzbar</b>
+          <span>Du kannst den Bericht selbst nutzen oder weitergeben, auch ohne uns.</span></li>
+        <li><b>Umsetzung auf Wunsch</b>
+          <span>Einzelne Punkte oder das Ganze, nur wenn du willst.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ====================================================== Leistungen -->
+  <section class="teil" id="leistungen">
+    <div class="feld">
+      <div>
+        <p class="kicker">Leistungen</p>
+        <h2 class="gross">Zwei Wege: je nachdem, wo du gerade stehst.</h2>
+        <p class="vorspann">
+          Beide beginnen mit einem Gespräch und einer ehrlichen Einschätzung.
+        </p>
+
+        <div class="wege">
+          <article class="weg">
+            <p class="weg__kopf">Du hast bereits eine Website</p>
+            <ol class="weg__liste" role="list">
+              <li>Kostenlosen Kurzcheck anfragen</li>
+              <li>Schwachstellen verständlich erklärt bekommen</li>
+              <li>Auf Wunsch ausführlichen Check-up mit Maßnahmenplan</li>
+              <li>Selbst umsetzen, weitergeben oder von uns umsetzen lassen</li>
+            </ol>
+            <a class="verweis" href="#vergleich">Kurzcheck und Check-up im Vergleich
+              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          </article>
+
+          <article class="weg">
+            <p class="weg__kopf">Du hast noch keine Website</p>
+            <ol class="weg__liste" role="list">
+              <li>Anforderungen und Ziele besprechen</li>
+              <li>Inhalte und Seitenstruktur planen</li>
+              <li>Gestaltung und technische Umsetzung</li>
+              <li>Veröffentlichung samt Domain und Hosting</li>
+            </ol>
+            <a class="verweis" href="#neu">Wie eine neue Website entsteht
+              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          </article>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- =================================================== Was wird geprüft -->
+  <section class="teil teil--ruhig" id="pruefung">
+    <div class="feld">
+      <div>
+        <p class="kicker">Was geprüft wird</p>
+        <h2 class="gross">Acht Bereiche, immer bezogen auf deinen Betrieb.</h2>
+        <p class="vorspann">
+          Was davon Gewicht hat, hängt davon ab, was deine Website leisten
+          soll. Bei einem Verein zählt anderes als bei einem Onlineshop.
+        </p>
+
+        <dl class="pruef">
+          <div>
+            <dt>Technik und Browser</dt>
+            <dd>Fehler im Aufbau, tote Verweise, Sicherheit, Darstellung in
+              Chrome, Safari, Firefox und Edge.</dd>
+          </div>
+          <div>
+            <dt>Mobile Darstellung</dt>
+            <dd>Bedienbar auf kleinen und großen Smartphones, nicht nur
+              verkleinert.</dd>
+          </div>
+          <div>
+            <dt>Nutzerfreundlichkeit</dt>
+            <dd>Findet ein Besucher ohne Umweg das, wofür er gekommen ist?</dd>
+          </div>
+          <div>
+            <dt>Inhalte und Verständlichkeit</dt>
+            <dd>Steht dort, was du machst, oder Werbesprache?</dd>
+          </div>
+          <div>
+            <dt>SEO-Grundlagen</dt>
+            <dd>Titel, Beschreibungen, Struktur, Indexierbarkeit,
+              Auffindbarkeit für das, was du anbietest.</dd>
+          </div>
+          <div>
+            <dt>Performance</dt>
+            <dd>Ladezeit, Bildgrößen, Seitengewicht, verzögernde Ressourcen.</dd>
+          </div>
+          <div>
+            <dt>Vertrauen und Conversion</dt>
+            <dd>Erkennt ein Fremder, wer dahintersteht? Wie viele Schritte
+              trennen ihn von der Anfrage?</dd>
+          </div>
+          <div>
+            <dt>Barrierefreiheit</dt>
+            <dd>Kontrast, Schriftgrößen, Bedienung mit der Tastatur,
+              Verständlichkeit für Screenreader.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= Vergleich -->
+  <section class="teil" id="vergleich">
+    <div class="feld">
+      <div>
+        <h2 class="gross">Erst ein Blick. Dann, wenn du willst, <em>die volle Analyse</em>.</h2>
+
+        <div class="karten">
+          <article class="karte">
+            <p class="karte__marke">Kostenlos</p>
+            <h3>Kurzcheck</h3>
+            <p class="karte__satz">
+              Eine erste Einschätzung mit den auffälligsten Punkten,
+              unverbindlich und ein guter Einstieg.
+            </p>
+            <ul class="karte__liste" role="list">
+              <li>Die wichtigsten Probleme benannt</li>
+              <li>Kurze, verständliche Zusammenfassung</li>
+              <li>Erste Empfehlungen</li>
+              <li>Keine Verpflichtung, kein Nachfassen</li>
+            </ul>
+            <a class="knopf knopf--rand" href="/kontakt/">Kurzcheck anfragen</a>
+          </article>
+
+          <article class="karte karte--betont">
+            <p class="karte__marke">Kostenpflichtig</p>
+            <h3>Ausführlicher Check-up</h3>
+            <p class="karte__satz">
+              Die vollständige Analyse als Arbeitsgrundlage, für dich, für
+              deine Agentur oder für deinen Entwickler.
+            </p>
+            <ul class="karte__liste" role="list">
+              <li>Detaillierte Problemanalyse über alle acht Bereiche</li>
+              <li>Priorisierte Maßnahmenliste nach Dringlichkeit und Wirkung</li>
+              <li>Konkrete Verbesserungsvorschläge, keine Schlagworte</li>
+              <li>Technische Hinweise und Design-Empfehlungen</li>
+              <li>Screenshots und Beispiele</li>
+              <li>Klare nächste Schritte</li>
+            </ul>
+            <a class="knopf knopf--voll" href="/kontakt/">
+              Check-up besprechen
+              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+            </a>
+            <p class="karte__fuss">
+              85 €, und der Betrag wird bei einer späteren Optimierung
+              vollständig angerechnet.
+            </p>
+            <a class="verweis" href="/preise/">Alle Preise ansehen
+              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ Nach der Analyse -->
+  <section class="teil teil--dunkel" id="danach">
+    <div class="feld">
+      <div>
+        <p class="kicker kicker--hell">Nach der Analyse</p>
+        <h2 class="gross">Du entscheidest, was mit dem Bericht passiert.</h2>
+        <p class="vorspann">
+          Der Check-up ist kein Türöffner für einen Auftrag, sondern das
+          Produkt selbst. Was danach kommt, entscheidest du.
+        </p>
+
+        <ol class="optionen" role="list">
+          <li><span aria-hidden="true">01</span>
+            <div><b>Du setzt es selbst um.</b>
+              Der Bericht ist so geschrieben, dass du damit arbeiten kannst.</div></li>
+          <li><span aria-hidden="true">02</span>
+            <div><b>Du gibst ihn an deine Agentur weiter.</b>
+              Auch an die, die deine Website gebaut hat. Das ist ausdrücklich in Ordnung.</div></li>
+          <li><span aria-hidden="true">03</span>
+            <div><b>Wir beheben einzelne Punkte.</b>
+              Nur das, was du beauftragst, der Rest bleibt liegen.</div></li>
+          <li><span aria-hidden="true">04</span>
+            <div><b>Wir übernehmen die ganze Überarbeitung.</b>
+              Von der Technik bis zu den Texten.</div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== Neue Website -->
+  <section class="teil" id="neu">
+    <div class="feld">
+      <div>
+        <h2 class="gross">Noch keine Website vorhanden?</h2>
+        <p class="vorspann">
+          Auch dann können wir starten. Gemeinsam klären wir, welche Inhalte
+          nötig sind, wie die Seite aufgebaut sein sollte und welche
+          Funktionen wirklich Sinn ergeben. Danach entsteht ein moderner,
+          mobiltauglicher und technisch sauberer Auftritt.
+        </p>
+
+        <ul class="leistungsliste" role="list">
+          <li>Konzeption und Seitenstruktur</li>
+          <li>Gestaltung</li>
+          <li>Technische Umsetzung</li>
+          <li>Darstellung auf allen Geräten</li>
+          <li>Kontaktmöglichkeiten und Formulare</li>
+          <li>Grundlegende Suchmaschinenoptimierung</li>
+          <li>Unterstützung bei Domain und Hosting</li>
+          <li>Veröffentlichung</li>
+        </ul>
+
+        <div class="auf__aktionen">
+          <a class="knopf knopf--voll" href="/kontakt/">
+            Neue Website anfragen
+            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Ablauf -->
+  <section class="teil teil--ruhig" id="ablauf">
+    <div class="feld">
+      <div>
+        <p class="kicker">Ablauf</p>
+        <h2 class="gross">Fünf Schritte, ohne Überraschungen.</h2>
+
+        <ol class="schritte" role="list">
+          <li>
+            <p class="schritte__nr" aria-hidden="true">01</p>
+            <h3>Anfrage</h3>
+            <p>Du beschreibst kurz deine Website oder dein Vorhaben.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">02</p>
+            <h3>Kostenlose Ersteinschätzung</h3>
+            <p>Wir sehen uns an, was da ist, und melden uns mit dem, was auffällt.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">03</p>
+            <h3>Entscheidung</h3>
+            <p>Kurzcheck genügt, ausführlicher Check-up oder gleich eine neue Website.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">04</p>
+            <h3>Analyse oder Konzeption</h3>
+            <p>Wir arbeiten und halten dich dabei auf dem Laufenden.</p>
+          </li>
+          <li>
+            <p class="schritte__nr" aria-hidden="true">05</p>
+            <h3>Bericht, Umsetzung oder fertige Website</h3>
+            <p>Je nachdem, wofür du dich entschieden hast.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ Fragen -->
+  <section class="teil" id="fragen">
+    <div class="feld">
+      <div>
+        <h2 class="gross">Was du vermutlich wissen willst.</h2>
+        <p class="vorspann">
+          46 Fragen und Antworten, nach Themen sortiert: Analyse, neue
+          Website, Optimierung, SEO, Wartung und Zusammenarbeit.
+        </p>
+        <a class="verweis" href="/faq/">Alle Fragen und Antworten
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== Kontakt -->
+  <!-- Das Formular liegt seit dem Umbau auf /kontakt/. Hier steht nur noch
+     die Aufforderung dorthin: eine eigene Adresse statt eines
+     Sprungankers, damit die Hauptnavigation ohne Rautezeichen auskommt. -->
+  <section class="schluss" id="anfragen">
+    <div class="feld">
+      <p class="kicker">Kontakt</p>
+      <h2 class="gross">Website prüfen lassen oder <em>neu planen</em>.</h2>
+      <p class="vorspann">
+        Beides beginnt mit derselben Nachricht. Für die kostenlose
+        Ersteinschätzung genügt die Adresse deiner Website. Wir melden uns in
+        der Regel innerhalb von ein bis zwei Werktagen.
+      </p>
+      <div class="auf__aktionen">
+        <a class="knopf knopf--voll" href="/kontakt/">
+          Kostenlosen Check anfragen
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="knopf knopf--rand" href="/preise/">Preise ansehen</a>
+      </div>
+      <p class="auf__hinweis">
+        Daraus wird kein Verkaufsgespräch. Wenn wir nicht die Richtigen sind,
+        sagen wir das. Lieber direkt schreiben?
+        <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+      </p>
+    </div>
+  </section>
+
+
+<!-- ====================================================== August-Angebot
+     Auch hier eine <template>: der Inhalt ist bis zum Einsetzen kein Teil
+     des Dokuments, wird also nicht dargestellt, nicht vorgelesen und nicht
+     als Seiteninhalt ausgewertet. Dadurch entsteht beim Einsetzen kein
+     Layoutsprung — das Feld liegt fest ueber der Seite — und nach dem
+     Zeitraum bleibt nichts stehen.
+     ==================================================================== -->
+<template id="aktion-feld">
+  <div class="aktionsfeld">
+    <div class="aktionsfeld__schleier" data-zu></div>
+    <div class="aktionsfeld__tafel" role="dialog" aria-modal="true"
+         aria-labelledby="aktion-titel" aria-describedby="aktion-satz"
+         tabindex="-1">
+      <p class="aktionsfeld__marke">August-Angebot</p>
+      <h2 class="aktionsfeld__titel" id="aktion-titel">Deine Landingpage ab 249&nbsp;€</h2>
+      <p class="aktionsfeld__satz" id="aktion-satz">
+        Nur vom 30.07.2026 bis 31.08.2026. Modern, mobil optimiert und
+        technisch sauber umgesetzt.
+      </p>
+      <div class="auf__aktionen">
+        <a class="knopf knopf--voll" href="/kontakt/?anliegen=Landingpage#check-formular">Angebot anfragen
+          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
+        <button class="knopf knopf--rand" type="button" data-zu>Später ansehen</button>
+      </div>
+      <button class="aktionsfeld__kreuz" type="button" data-zu
+              aria-label="Hinweis schließen"></button>
+    </div>
+  </div>
+</template>
 
 </main>
 
 <footer class="fuss">
-  <div class="feld fuss__unten">
-    <p>© 2026 Vioweb</p>
-    <nav aria-label="Rechtliches">
-      <ul role="list" class="fuss__zeile">
-        <li><a href="/impressum.html">Impressum</a></li>
-        <li><a href="/datenschutz.html">Datenschutz</a></li>
-        <li><a href="https://vioweb.de/">vioweb.de</a></li>
+  <div class="feld fuss__raster">
+    <div class="fuss__marke">
+      <a class="marke" href="/">
+        <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
+             width="815" height="119" loading="lazy" decoding="async">
+      </a>
+      <p>Websites prüfen, verbessern und neu erstellen. Für Betriebe,
+        Vereine und Selbstständige.</p>
+    </div>
+
+    <!-- Vorher standen hier zwei Spalten mit neun Verweisen, von denen acht
+         auf dieselbe Seite zeigten, und die Spalte "Leistungen" war eine
+         zweite Benennung fuer "Preise". Jetzt genau die vier Seiten, die es
+         gibt, mit denselben Woertern wie im Kopfbereich. -->
+    <nav class="fuss__block" aria-labelledby="f-seiten">
+      <h2 id="f-seiten">Seiten</h2>
+      <ul role="list">
+        <li><a href="/">Start</a></li>
+        <li><a href="/preise/">Preise</a></li>
+        <li><a href="/faq/">FAQ</a></li>
+        <li><a href="/kontakt/">Kontakt</a></li>
       </ul>
     </nav>
+
+    <nav class="fuss__block" aria-labelledby="f-thema">
+      <h2 id="f-thema">Auf der Startseite</h2>
+      <ul role="list">
+        <li><a href="/#pruefung">Was geprüft wird</a></li>
+        <li><a href="/#vergleich">Kurzcheck und Check-up</a></li>
+        <li><a href="/#neu">Neue Website</a></li>
+        <li><a href="/#ablauf">Ablauf</a></li>
+      </ul>
+    </nav>
+
+    <div class="fuss__block">
+      <h2 id="f-recht">Kontakt &amp; Rechtliches</h2>
+      <ul role="list" aria-labelledby="f-recht">
+        <li><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></li>
+        <li><a href="https://www.instagram.com/vio.web/" rel="noopener">Instagram</a></li>
+        <li><a href="/datenschutz.html">Datenschutz</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="feld fuss__unten">
+    <p>© 2026 Vioweb</p>
+    <p>Deutschlandweit tätig</p>
   </div>
 </footer>
 
+<!-- Strukturierte Daten fuer Suchmaschinen und Antwortsysteme.
+     Jede Angabe hier muss auch sichtbar auf der Seite stehen.
+
+     Kein "ProfessionalService" und keine "address": Beide Angaben setzen
+     eine vollstaendige, oeffentliche Anschrift voraus. Die liegt noch nicht
+     vor. Ein Platzhalter an dieser Stelle waere schlimmer als gar nichts,
+     weil Google ihn als echte Anschrift uebernehmen wuerde. Sobald die
+     Anschrift feststeht, koennen "address" und der Typ ergaenzt werden,
+     siehe KI-SICHTBARKEIT-UND-SEO.md. "areaServed" traegt so lange die
+     raeumliche Einordnung. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -699,10 +1232,23 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
           }
         ]
       }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://vioweb.de/#pfad",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Startseite",
+          "item": "https://vioweb.de/"
+        }
+      ]
     }
   ]
 }
 </script>
-<script src="js/rennbahn.js" defer></script>
+
+<script src="js/seite.js" defer></script>
 </body>
 </html>

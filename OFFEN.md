@@ -19,6 +19,37 @@ ist noch **nicht** erledigt, sortiert danach, wer es erledigen kann.
 
 ## A · Blocker
 
+### A0 · Das Impressum ist gelöscht — rechtlich offen
+
+Du hast das Löschen angeordnet, ich habe es umgesetzt. Der Stand muss aber
+festgehalten werden:
+
+**§ 5 DDG verlangt für geschäftsmäßige Websites eine Anbieterkennzeichnung.**
+vioweb.de nennt Leistungen und Preise und ist damit geschäftsmäßig, auch ohne
+angemeldetes Gewerbe. Fehlt das Impressum, sind Abmahnungen mit Kosten
+möglich, und zwar durch Mitbewerber oder Verbände.
+
+Zwei Punkte, die dabei leicht untergehen:
+
+1. **Deine Anschrift steht weiterhin in der Datenschutzerklärung**, unter
+   „1. Verantwortlicher". Falls das Löschen dem Schutz deiner Daten dienen
+   sollte: erreicht ist das damit nicht. Die Datenschutzerklärung ist nach
+   Art. 13 DSGVO ebenfalls Pflicht und muss den Verantwortlichen benennen —
+   sie lässt sich nicht einfach mitlöschen.
+2. **Auf der Preisseite und in der FAQ steht, dass Vioweb „Impressum und
+   Datenschutzerklärung" mitliefert.** Eine Website, die das verkauft und
+   selbst keines hat, ist angreifbar — als Argument wie als Eigenwerbung.
+
+Zurückholen ist eine Sache von Sekunden:
+
+```sh
+git revert <commit>          # oder gezielt:
+git checkout <commit>~1 -- impressum.html
+```
+
+Ich bin kein Anwalt, und das hier ist keine Rechtsberatung.
+
+
 ### A1 bis A4 · erledigt
 
 - **`robots.txt`** ist geöffnet, differenziert nach Suchmaschinen,

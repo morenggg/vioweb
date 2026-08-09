@@ -35,12 +35,12 @@ Disallow: /leistungen.html
 #  und verlinkt werden kann.
 # -----------------------------------------------------------------------------
 
-# Antwortsysteme rufen die beiden Rechtsseiten gar nicht ab. Sie enthalten
+# Antwortsysteme rufen die Datenschutzerklaerung gar nicht ab. Sie enthaelt
 # die private Anschrift des Betreibers. Bei diesen Bots ist Disallow das
 # richtige Mittel; ein noindex im HTML wuerde ihnen nichts sagen.
-# Fuer Google und Bing bleibt das Crawlen der beiden Seiten oben ausdruecklich
-# erlaubt, sonst lesen sie das noindex nie und die Adresse koennte trotzdem
-# als nackter Treffer erscheinen.
+# Fuer Google und Bing bleibt das Crawlen oben ausdruecklich erlaubt, sonst
+# lesen sie das noindex nie und die Adresse koennte trotzdem als nackter
+# Treffer erscheinen.
 
 # ChatGPT Search
 User-agent: OAI-SearchBot
@@ -62,7 +62,6 @@ Disallow: /startseite.html
 Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
-Disallow: /impressum.html
 Disallow: /datenschutz.html
 
 # Perplexity
@@ -85,7 +84,6 @@ Disallow: /startseite.html
 Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
-Disallow: /impressum.html
 Disallow: /datenschutz.html
 
 # -----------------------------------------------------------------------------
