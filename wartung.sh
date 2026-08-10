@@ -2,64 +2,71 @@
 # =============================================================================
 #  Wartungsmodus fuer vioweb.de an- und ausschalten.
 #
-#    ./wartung.sh an      Wartungsseite auf /
-#    ./wartung.sh aus     normale Startseite auf /
+#    ./wartung.sh an      jede Seite zeigt die Wartungsseite
+#    ./wartung.sh aus     die normale Website ist zurueck
 #    ./wartung.sh status  zeigt, was gerade aktiv ist
 #
-#  Warum ein Dateitausch und kein Schalter im Code:
-#  Die Seite ist statisch und wird von GitHub Pages ausgeliefert. Ein
-#  Schalter, der erst im Browser greift, wuerde die echte Startseite kurz
-#  aufblitzen lassen und Suchmaschinen sowie Besuchern ohne JavaScript
-#  weiterhin die alte Seite zeigen. Der Tausch der Datei hat keinen dieser
-#  Nachteile.
+#  Was passiert:
+#  Im Wartungsmodus tragen ALLE Einstiegspunkte denselben Inhalt — die
+#  Wartungsseite. Nicht ueber eine Weiterleitung, sondern direkt. Damit gibt
+#  es kein Aufblitzen der echten Seite, keine Weiterleitungsschleife, und es
+#  funktioniert ohne JavaScript. Auch 404.html traegt sie, also landet jede
+#  unbekannte Adresse ebenfalls dort.
 #
-#  Die jeweils nicht aktive Fassung bleibt vollstaendig im Projekt liegen
-#  und traegt noindex, damit sie nicht neben der echten Startseite in den
-#  Suchergebnissen auftaucht.
+#  Warum kein Schalter im Code:
+#  Die Seite ist statisch und wird von GitHub Pages ausgeliefert. Es gibt
+#  kein Build-System und keine Umgebungsvariablen. Ein Schalter, der erst im
+#  Browser greift, wuerde die echte Seite kurz zeigen und Besuchern ohne
+#  JavaScript gar nicht helfen.
+#
+#  Die normale Website liegt waehrenddessen unveraendert in normalbetrieb/.
 # =============================================================================
 set -e
 cd "$(dirname "$0")"
 
-WARTUNG=wartungsseite.html
-NORMAL=startseite.html
-LIVE=index.html
+QUELLE=wartungsseite.html
+ABLAGE=normalbetrieb
 
-INDEX_AN='<meta name="robots" content="index,follow,max-image-preview:large">'
-INDEX_AUS='<meta name="robots" content="noindex,nofollow">'
+# Alle Adressen, unter denen jemand auf der Website landen kann.
+# kurzcheck-muster.html steht bewusst NICHT dabei: das ist ein Musterbericht
+# zum Weitergeben und nicht Teil der Website.
+SEITEN="index.html preise/index.html faq/index.html kontakt/index.html datenschutz.html danke.html 404.html leistungen.html"
 
 fehler() { echo "FEHLER: $1" >&2; exit 1; }
 
-# Welche Fassung liegt gerade auf index.html?
 aktiv() {
-  if grep -q 'id="bahn"' "$LIVE" 2>/dev/null; then echo wartung; else echo normal; fi
+  if grep -q 'Wartungsseite' index.html 2>/dev/null; then echo an; else echo aus; fi
 }
 
 case "$1" in
   an)
-    [ "$(aktiv)" = wartung ] && { echo "Wartungsmodus ist bereits an."; exit 0; }
-    [ -f "$WARTUNG" ] || fehler "$WARTUNG fehlt."
-    cp "$LIVE" "$NORMAL"
-    sed -i "s|$INDEX_AN|$INDEX_AUS|" "$NORMAL"
-    cp "$WARTUNG" "$LIVE"
-    sed -i "s|$INDEX_AUS|$INDEX_AN|" "$LIVE"
-    echo "Wartungsmodus AN. index.html zeigt die Wartungsseite."
-    echo "Die bisherige Startseite liegt in $NORMAL."
+    [ "$(aktiv)" = an ] && { echo "Wartungsmodus ist bereits an."; exit 0; }
+    [ -f "$QUELLE" ] || fehler "$QUELLE fehlt."
+    for s in $SEITEN; do
+      [ -f "$s" ] || continue
+      mkdir -p "$ABLAGE/$(dirname "$s")"
+      cp "$s" "$ABLAGE/$s"
+      cp "$QUELLE" "$s"
+    done
+    echo "Wartungsmodus AN."
+    echo "Jede Adresse zeigt die Wartungsseite; die Website liegt in $ABLAGE/."
     ;;
   aus)
-    [ "$(aktiv)" = normal ] && { echo "Wartungsmodus ist bereits aus."; exit 0; }
-    [ -f "$NORMAL" ] || fehler "$NORMAL fehlt — die Startseite laesst sich nicht zurueckholen."
-    cp "$LIVE" "$WARTUNG"
-    sed -i "s|$INDEX_AN|$INDEX_AUS|" "$WARTUNG"
-    cp "$NORMAL" "$LIVE"
-    sed -i "s|$INDEX_AUS|$INDEX_AN|" "$LIVE"
-    echo "Wartungsmodus AUS. index.html zeigt wieder die normale Startseite."
-    echo "Die Wartungsseite liegt in $WARTUNG."
+    [ "$(aktiv)" = aus ] && { echo "Wartungsmodus ist bereits aus."; exit 0; }
+    [ -d "$ABLAGE" ] || fehler "$ABLAGE/ fehlt — die Website laesst sich nicht zurueckholen."
+    for s in $SEITEN; do
+      [ -f "$ABLAGE/$s" ] || continue
+      cp "$ABLAGE/$s" "$s"
+    done
+    rm -rf "$ABLAGE"
+    echo "Wartungsmodus AUS. Die normale Website ist zurueck."
     ;;
   status|"")
-    if [ "$(aktiv)" = wartung ]; then
-      echo "Wartungsmodus: AN  (index.html = Wartungsseite mit Rennbahn)"
+    if [ "$(aktiv)" = an ]; then
+      echo "Wartungsmodus: AN  (alle Seiten zeigen die Wartungsseite)"
+      echo "Abgelegt in $ABLAGE/: $(find "$ABLAGE" -name '*.html' 2>/dev/null | wc -l | tr -d ' ') Seiten"
     else
-      echo "Wartungsmodus: AUS (index.html = normale Startseite)"
+      echo "Wartungsmodus: AUS (normale Website)"
     fi
     ;;
   *)

@@ -4,42 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Vioweb | Website prüfen lassen oder neu erstellen lassen</title>
-<meta name="description" content="Kostenloser Kurzcheck deiner Website, ausführlicher Check-up als Arbeitsgrundlage, und neue Websites für alle, die noch keine haben. Verständlich statt nur technisch.">
-<link rel="canonical" href="https://vioweb.de/">
-<meta name="robots" content="noindex,nofollow">
+
+<title>Datenschutzerklärung | Vioweb</title>
+<meta name="description" content="Wie Vioweb mit personenbezogenen Daten umgeht. Keine Cookies, keine fremden Server, kein Tracking.">
+<link rel="canonical" href="https://vioweb.de/datenschutz.html">
+<!-- Bewusst nicht im Suchindex: Die Seite enthaelt die private
+     Anschrift des Betreibers. Sie muss erreichbar sein, sie muss
+     aber nicht auffindbar sein.
+     noarchive verhindert die Kopie im Cache, nosnippet den
+     Textauszug in den Ergebnissen.
+     Achtung: In robots.txt darf diese Seite fuer Google und Bing
+     NICHT gesperrt werden. Sonst liest der Crawler dieses noindex
+     nie und die Adresse kann trotzdem als nackter Treffer
+     erscheinen. Crawlen erlauben, Indexieren verbieten. -->
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="theme-color" content="#f7f7fa">
-
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Vioweb">
-<meta property="og:locale" content="de_DE">
-<meta property="og:url" content="https://vioweb.de/">
-<meta property="og:title" content="Vioweb | Website prüfen lassen oder neu erstellen lassen">
-<meta property="og:description" content="Kostenloser Kurzcheck, ausführlicher Check-up als Arbeitsgrundlage, und neue Websites für alle, die noch keine haben.">
-<meta property="og:image" content="https://vioweb.de/img/og-bild.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Vioweb: Analysieren. Optimieren. Entwickeln.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Vioweb | Website prüfen lassen oder neu erstellen lassen">
-<meta name="twitter:description" content="Kostenloser Kurzcheck, ausführlicher Check-up, und neue Websites für alle, die noch keine haben.">
-<meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
-
 <link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="img/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-
-<!-- Nur der lateinische Grundschnitt wird vorgeladen. Er deckt Deutsch
-     vollstaendig ab; die erweiterte Datei holt der Browser nur bei Bedarf. -->
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 
-<!-- =====================================================================
-     KRITISCHES CSS — alles oberhalb der Falz.
-     Der Werte-Block steht in jeder HTML-Datei; ohne Build-Schritt ist das
-     die einzige Moeglichkeit, kritisches CSS inline zu halten. Wird ein
-     Wert geaendert, muss er in allen HTML-Dateien geaendert werden.
-     ===================================================================== -->
 <style>
 /* ------------------------------------------------------- 0. Schriften */
 /* Variabel: eine Datei fuer alle Gewichte von 400 bis 800.
@@ -111,9 +96,7 @@
   --feld: 1200px;
   /* ch ist die Breite der Null und damit breiter als ein
      Durchschnittsbuchstabe. 62ch ergaben gemessen 82 Zeichen je Zeile,
-     nicht 62. 46ch trifft die Vorgabe aus den Richtlinien. Der Wert
-     gilt fuer Fliesstext in Grundgroesse; groessere Schriften brauchen
-     einen eigenen Wert, siehe .vorspann und .auf__satz. */
+     nicht 62. 46ch trifft die Vorgabe aus den Richtlinien. */
   --lesebreite: 46ch;
   --rail: 164px;
   --gasse: 64px;
@@ -215,7 +198,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
   color: var(--akzent); font-weight: 500;
 }
 .vorspann {
-  margin-top: var(--s-md); max-width: 47ch;   /* gemessen 62 Zeichen */
+  margin-top: var(--s-md); max-width: 52ch;
   font-size: clamp(1.05rem, 1rem + .35vw, 1.2rem);
   line-height: 1.6; color: var(--text-leise);
 }
@@ -531,66 +514,6 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 }
 .kopf__cta-kurz { display: none; }
 
-/* ---------------------------------------------------------- 7. Aufmacher */
-.auf { padding-block: var(--s-xl) var(--s-2xl); }
-@media (min-width: 1040px) { .auf { padding-block: var(--s-3xl) var(--s-4xl); } }
-
-/* Der Aufmacher hatte hier eine eigene Pille mit Punkt — ein Muster, das
-   auf jeder Vorlagenseite steht und sonst nirgends auf dieser Seite
-   vorkam. Er nutzt jetzt denselben Kicker wie jeder andere Abschnitt.
-   Damit ist ein Sonderbaustein weniger im Projekt. */
-
-.auf h1 {
-  margin-top: var(--s-lg);
-  /* Nur der untere Anschlag ist gesenkt (war 2.1rem). Er greift erst
-     unter rund 366px Fensterbreite und spart dort eine ganze Zeile.
-     Anstieg und oberer Anschlag bleiben unveraendert, ab 390px ist die
-     Schlagzeile also exakt so gross wie vorher. */
-  font-size: clamp(1.95rem, 1.35rem + 3.3vw, 3.9rem);
-  font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
-  /* 23ch ist der schmalste Wert, bei dem der erste Satzteil auf dem
-     Desktop in eine Zeile passt. Rechts bleibt dadurch Luft. */
-  max-width: 23ch;
-  text-wrap: balance;
-}
-/* Die Schlagzeile nennt zwei Wege. Ab Tablet wird jeder Satzteil ein
-   eigener Kasten: Der Umbruch faellt dann am Scharnier "oder", nicht
-   mitten in den zweiten Weg. Darunter bleibt der Umbruch frei, sonst
-   kostet die Aufteilung auf schmalen Geraeten eine ganze Zeile.
-   Aeltere Browser ohne text-wrap ignorieren die Zeile und brechen
-   normal — die Aussage bleibt in jedem Fall vollstaendig lesbar. */
-@media (min-width: 768px) {
-  .auf h1 .auf__teil { display: inline-block; }
-}
-.auf h1 em { font-style: normal; color: var(--akzent); }
-.auf__satz {
-  margin-top: var(--s-lg); max-width: 53ch;   /* gemessen 62 Zeichen */
-  font-size: clamp(1.05rem, 1rem + .45vw, 1.25rem);
-  line-height: 1.6; color: var(--text-leise);
-  text-wrap: pretty;   /* verhindert ein einzelnes Wort in der letzten Zeile */
-}
-/* Aktionsgruppen. Der Abstand ist --s-md (16 px) statt der frueheren
-   12 px; zwei Knoepfe klebten sonst optisch aneinander. Stehen zwei darin,
-   stapeln sie auf schmalen Geraeten gleich breit uebereinander, statt in
-   ungleichen Breiten nebeneinander zu stehen. Ein einzelner Knopf behaelt
-   seine natuerliche Breite. */
-.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); margin-top: var(--s-xl); }
-@media (max-width: 619px) {
-  /* Gestapelt gleich breit UND gleich hoch. grid-auto-rows: 1fr gibt beiden
-     Zeilen dieselbe Hoehe: bricht der laengere Text auf zwei Zeilen, waechst
-     der zweite Knopf mit, statt dass die beiden ungleich hoch nebeneinander
-     stehen. Ein einzelner Knopf faellt nicht unter diese Regel. */
-  .auf__aktionen:has(.knopf + .knopf) {
-    display: grid; grid-auto-rows: 1fr;
-  }
-  .auf__aktionen:has(.knopf + .knopf) > .knopf { width: 100%; }
-}
-.auf__hinweis {
-  margin-top: var(--s-md); color: var(--text-leise);
-  font-size: clamp(.85rem, .93rem - .123vw, .9rem);
-  max-width: 47ch;   /* hatte gar keine Begrenzung: 85 Zeichen je Zeile */
-}
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
@@ -649,7 +572,6 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
 
 <link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="css/seite.css"></noscript>
-<script>document.documentElement.classList.add('js');</script>
 </head>
 
 <body>
@@ -662,14 +584,12 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
       <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
            width="815" height="119" decoding="async" fetchpriority="high">
     </a>
-
     <nav class="nav" aria-label="Hauptnavigation">
-      <a href="/" aria-current="page">Start</a>
+      <a href="/">Start</a>
       <a href="/preise/">Preise</a>
       <a href="/faq/">FAQ</a>
       <a href="/kontakt/">Kontakt</a>
     </nav>
-
     <details class="menue" id="menue">
       <summary class="menue__knopf" aria-label="Navigation öffnen"
                aria-controls="menue-tafel" aria-expanded="false">
@@ -688,7 +608,7 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
         </div>
 
         <nav class="menue__nav" aria-label="Seiten">
-          <a href="/" aria-current="page">
+          <a href="/">
             <span class="menue__titel">Start</span>
             <span class="menue__unter">Zur Übersicht</span></a>
           <a href="/preise/">
@@ -713,542 +633,219 @@ h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
     </details>
 
     <a class="knopf knopf--voll knopf--klein kopf__cta" href="/kontakt/"><span class="kopf__cta-lang">Kostenlosen Check anfragen</span><span class="kopf__cta-kurz">Anfragen</span></a>
-</div>
+  </div>
 </header>
 
 <main id="inhalt">
-
-  <!-- ======================================================== Aufmacher -->
-  <section class="auf">
+  <article class="dokument">
     <div class="feld">
-      <p class="kicker">Website-Analyse und Webentwicklung</p>
+      <div class="spalte">
+      <p class="kicker">Pflichtangaben</p>
+      <h1>Datenschutz&shy;erklärung</h1>
 
-      <h1><span class="auf__teil">Bestehende Website verbessern</span>
-        <span class="auf__teil">oder eine <em>neue&nbsp;Website</em> erstellen lassen.</span></h1>
-
-      <p class="auf__satz">
-        Wir analysieren bestehende Websites, zeigen verständlich, wo
-        technische, gestalterische oder inhaltliche Probleme liegen, und
-        unterstützen auf Wunsch bei der Umsetzung. Wenn noch keine Website
-        vorhanden ist, entwickeln wir einen neuen, modernen&nbsp;Webauftritt.
+      <h2>1. Verantwortlicher</h2>
+      <p>
+        Verantwortlich für die Verarbeitung personenbezogener Daten auf
+        dieser Website ist:
+      </p>
+      <p>
+        Maurice Sadlon<br>
+        Hölzchenweg 4<br>
+        04860 Dreiheide-Süptitz<br>
+        E-Mail: <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a><br>
+        Telefon: <a href="tel:+4934211860409">034211 860409</a>
       </p>
 
-      <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="/kontakt/">
-          Kostenlosen Website-Check anfragen
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
-        </a>
-        <a class="knopf knopf--rand" href="#neu">Neue Website erstellen lassen</a>
-      </div>
-
-      <p class="auf__hinweis">
-        Der Kurzcheck ist kostenlos und unverbindlich. Zugangsdaten brauchen
-        wir dafür nicht.
+      <h2>2. Was diese Website nicht tut</h2>
+      <p>
+        Diese Website setzt keine Cookies. Sie bindet keine Schriften,
+        Karten, Videos oder Skripte von fremden Servern ein. Es findet
+        keine Reichweitenmessung und kein Tracking statt. Es werden keine
+        Profile gebildet und keine Daten an Dritte weitergegeben.
       </p>
-    </div>
-  </section>
 
-  <!-- ======================================================= Vertrauen -->
-  <section class="band" aria-labelledby="band-titel">
-    <div class="feld">
-      <h2 class="nur-vorlesen" id="band-titel">Was die Analyse ausmacht</h2>
-      <ul class="band__liste" role="list">
-        <li><b>Verständlich statt nur technisch</b>
-          <span>Der Bericht ist so geschrieben, dass du ihn ohne Entwickler verstehst.</span></li>
-        <li><b>Keine reine Werkzeug-Auswertung</b>
-          <span>Messwerte sind der Anfang. Bewertet und gewichtet wird von Hand.</span></li>
-        <li><b>Konkrete Handlungsempfehlungen</b>
-          <span>Was zuerst zu tun ist, warum, und mit welchem Aufwand.</span></li>
-        <li><b>Unabhängig nutzbar</b>
-          <span>Du kannst den Bericht selbst nutzen oder weitergeben, auch ohne uns.</span></li>
-        <li><b>Umsetzung auf Wunsch</b>
-          <span>Einzelne Punkte oder das Ganze, nur wenn du willst.</span></li>
+      <h2>3. Ein Eintrag im lokalen Speicher deines Browsers</h2>
+      <p>
+        Während einer befristeten Aktion zeigt die Startseite einen Hinweis
+        auf das Angebot. Damit dieser Hinweis nicht bei jedem Aufruf erneut
+        erscheint, legt die Seite <strong>einen einzigen Eintrag</strong> im
+        lokalen Speicher deines Browsers ab
+        (<code>vioweb-aktion-august-2026</code>).
+      </p>
+      <p>
+        Darin steht ausschließlich der Zeitpunkt, zu dem du den Hinweis
+        gesehen hast. Keine Kennung, keine Nummer, kein Name, nichts, womit
+        du wiedererkannt werden könntest. Der Eintrag verlässt dein Gerät
+        nicht: er wird nicht übertragen, nicht ausgewertet und ist für uns
+        nicht einsehbar. Nach Ablauf von 24 Stunden gilt er als überholt.
+      </p>
+      <p>
+        Ein Cookie ist das nicht. Du kannst den Eintrag jederzeit löschen,
+        indem du in deinem Browser die Websitedaten für vioweb.de
+        entfernst. Blockiert dein Browser den lokalen Speicher, funktioniert
+        die Seite unverändert; der Hinweis erscheint dann gegebenenfalls
+        einmal je Aufruf.
+      </p>
+      <p>
+        Rechtsgrundlage für diese Speicherung ist unser berechtigtes
+        Interesse an einer nicht wiederholt störenden Darstellung des
+        Hinweises, Art. 6 Abs. 1 lit. f DSGVO. Eine Einwilligungsabfrage
+        halten wir dafür nicht für erforderlich, weil der Eintrag keinerlei
+        Personenbezug hat und ausschließlich der Darstellung dient. Nach
+        dem Ende der Aktion entfällt er vollständig.
+      </p>
+
+      <h2>4. Aufruf der Website (Hosting)</h2>
+      <p>
+        Die Website wird bei GitHub Pages gehostet. Anbieter ist die
+        GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA
+        94107, USA, ein Unternehmen der Microsoft Corporation.
+      </p>
+      <p>
+        Beim Aufruf der Seiten verarbeitet der Anbieter technisch
+        notwendige Zugriffsdaten. Dazu gehören in der Regel die
+        IP-Adresse, Datum und Uhrzeit des Abrufs, die aufgerufene Datei,
+        die zuvor besuchte Seite sowie Angaben zu Browser und
+        Betriebssystem.
+      </p>
+      <p>
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes
+        Interesse besteht am sicheren und zuverlässigen Betrieb dieser
+        Website. Wir haben auf die Speicherdauer dieser Serverprotokolle
+        keinen Einfluss und erhalten sie nicht ausgewertet.
+      </p>
+      <p>
+        Da der Anbieter seinen Sitz in den USA hat, findet eine
+        Übermittlung in ein Drittland statt. GitHub beruft sich auf die
+        Standardvertragsklauseln der EU-Kommission und ist unter dem
+        EU-US Data Privacy Framework zertifiziert. Ein den europäischen
+        Standards vollständig entsprechendes Datenschutzniveau kann
+        dennoch nicht in jedem Fall garantiert werden.
+      </p>
+
+      <h2>5. Kontaktformular</h2>
+      <p>
+        Wenn du uns über das Formular auf der Startseite schreibst,
+        verarbeiten wir die Angaben, die du dort einträgst: die Adresse
+        deiner Website und deine E-Mail-Adresse als Pflichtangaben,
+        freiwillig zusätzlich Name, Betrieb und deine Nachricht.
+      </p>
+      <p>
+        Wir nutzen diese Angaben ausschließlich, um deine Anfrage zu
+        bearbeiten und dir zu antworten. Rechtsgrundlage ist deine
+        Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO sowie
+        Art. 6 Abs. 1 lit. b DSGVO, soweit die Anfrage auf den Abschluss
+        eines Vertrags gerichtet ist.
+      </p>
+      <!-- ============================================================
+           STAND: Es ist KEIN Formulardienst eingerichtet. Im Formular
+           steht data-endpunkt="". Das Absenden oeffnet das E-Mail-
+           Programm des Besuchers mit den eingetragenen Angaben; die
+           Nachricht geht als gewoehnliche E-Mail von seinem eigenen
+           Postfach ab. Es ist also kein Auftragsverarbeiter beteiligt.
+
+           SOBALD ein Formulardienst eingerichtet wird, muss der Absatz
+           unten durch diesen ersetzt werden:
+
+           <p>
+             Zur technischen Uebermittlung setzen wir [NAME], [ANBIETER
+             UND ANSCHRIFT], ein. Mit dem Anbieter besteht ein Vertrag
+             ueber die Auftragsverarbeitung nach Art. 28 DSGVO. Die
+             Verarbeitung findet auf Servern in [SERVERSTANDORT] statt.
+           </p>
+
+           Der Vertrag muss dann tatsaechlich geschlossen sein. Die
+           Einzelheiten stehen in OFFEN.md unter C1.
+           ============================================================ -->
+      <p>
+        Das Formular überträgt die Angaben nicht an einen fremden Dienst.
+        Beim Absenden öffnet sich dein eigenes E-Mail-Programm mit den
+        eingetragenen Angaben, und die Nachricht geht als gewöhnliche
+        E-Mail von deinem Postfach an uns. An der Übermittlung ist damit
+        kein Auftragsverarbeiter beteiligt. Es gelten die Bedingungen
+        deines eigenen E-Mail-Anbieters und unseres.
+      </p>
+      <p>
+        Wir speichern deine Anfrage, bis sie erledigt ist und keine
+        Rückfragen mehr zu erwarten sind, längstens jedoch
+        sechs Monate.
+        Gesetzliche Aufbewahrungsfristen bleiben unberührt.
+      </p>
+
+      <h2>6. Kontakt per E-Mail</h2>
+      <p>
+        Schreibst du uns direkt eine E-Mail, verarbeiten wir deine Adresse
+        und den Inhalt der Nachricht, um sie zu beantworten.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f und, bei
+        Vertragsanbahnung, lit. b DSGVO.
+      </p>
+
+      <h2>7. Deine Rechte</h2>
+      <p>Du hast uns gegenüber jederzeit das Recht auf:</p>
+      <ul class="liste">
+        <li>Auskunft über die zu dir gespeicherten Daten (Art. 15 DSGVO)</li>
+        <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+        <li>Löschung (Art. 17 DSGVO)</li>
+        <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+        <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+        <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
       </ul>
-    </div>
-  </section>
-
-  <!-- ====================================================== Leistungen -->
-  <section class="teil" id="leistungen">
-    <div class="feld">
-      <div>
-        <p class="kicker">Leistungen</p>
-        <h2 class="gross">Zwei Wege: je nachdem, wo du gerade stehst.</h2>
-        <p class="vorspann">
-          Beide beginnen mit einem Gespräch und einer ehrlichen Einschätzung.
-        </p>
-
-        <div class="wege">
-          <article class="weg">
-            <p class="weg__kopf">Du hast bereits eine Website</p>
-            <ol class="weg__liste" role="list">
-              <li>Kostenlosen Kurzcheck anfragen</li>
-              <li>Schwachstellen verständlich erklärt bekommen</li>
-              <li>Auf Wunsch ausführlichen Check-up mit Maßnahmenplan</li>
-              <li>Selbst umsetzen, weitergeben oder von uns umsetzen lassen</li>
-            </ol>
-            <a class="verweis" href="#vergleich">Kurzcheck und Check-up im Vergleich
-              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-          </article>
-
-          <article class="weg">
-            <p class="weg__kopf">Du hast noch keine Website</p>
-            <ol class="weg__liste" role="list">
-              <li>Anforderungen und Ziele besprechen</li>
-              <li>Inhalte und Seitenstruktur planen</li>
-              <li>Gestaltung und technische Umsetzung</li>
-              <li>Veröffentlichung samt Domain und Hosting</li>
-            </ol>
-            <a class="verweis" href="#neu">Wie eine neue Website entsteht
-              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =================================================== Was wird geprüft -->
-  <section class="teil teil--ruhig" id="pruefung">
-    <div class="feld">
-      <div>
-        <p class="kicker">Was geprüft wird</p>
-        <h2 class="gross">Acht Bereiche, immer bezogen auf deinen Betrieb.</h2>
-        <p class="vorspann">
-          Was davon Gewicht hat, hängt davon ab, was deine Website leisten
-          soll. Bei einem Verein zählt anderes als bei einem Onlineshop.
-        </p>
-
-        <dl class="pruef">
-          <div>
-            <dt>Technik und Browser</dt>
-            <dd>Fehler im Aufbau, tote Verweise, Sicherheit, Darstellung in
-              Chrome, Safari, Firefox und Edge.</dd>
-          </div>
-          <div>
-            <dt>Mobile Darstellung</dt>
-            <dd>Bedienbar auf kleinen und großen Smartphones, nicht nur
-              verkleinert.</dd>
-          </div>
-          <div>
-            <dt>Nutzerfreundlichkeit</dt>
-            <dd>Findet ein Besucher ohne Umweg das, wofür er gekommen ist?</dd>
-          </div>
-          <div>
-            <dt>Inhalte und Verständlichkeit</dt>
-            <dd>Steht dort, was du machst, oder Werbesprache?</dd>
-          </div>
-          <div>
-            <dt>SEO-Grundlagen</dt>
-            <dd>Titel, Beschreibungen, Struktur, Indexierbarkeit,
-              Auffindbarkeit für das, was du anbietest.</dd>
-          </div>
-          <div>
-            <dt>Performance</dt>
-            <dd>Ladezeit, Bildgrößen, Seitengewicht, verzögernde Ressourcen.</dd>
-          </div>
-          <div>
-            <dt>Vertrauen und Conversion</dt>
-            <dd>Erkennt ein Fremder, wer dahintersteht? Wie viele Schritte
-              trennen ihn von der Anfrage?</dd>
-          </div>
-          <div>
-            <dt>Barrierefreiheit</dt>
-            <dd>Kontrast, Schriftgrößen, Bedienung mit der Tastatur,
-              Verständlichkeit für Screenreader.</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================= Vergleich -->
-  <section class="teil" id="vergleich">
-    <div class="feld">
-      <div>
-        <h2 class="gross">Erst ein Blick. Dann, wenn du willst, <em>die volle Analyse</em>.</h2>
-
-        <div class="karten">
-          <article class="karte">
-            <p class="karte__marke">Kostenlos</p>
-            <h3>Kurzcheck</h3>
-            <p class="karte__satz">
-              Eine erste Einschätzung mit den auffälligsten Punkten,
-              unverbindlich und ein guter Einstieg.
-            </p>
-            <ul class="karte__liste" role="list">
-              <li>Die wichtigsten Probleme benannt</li>
-              <li>Kurze, verständliche Zusammenfassung</li>
-              <li>Erste Empfehlungen</li>
-              <li>Keine Verpflichtung, kein Nachfassen</li>
-            </ul>
-            <a class="knopf knopf--rand" href="/kontakt/">Kurzcheck anfragen</a>
-          </article>
-
-          <article class="karte karte--betont">
-            <p class="karte__marke">Kostenpflichtig</p>
-            <h3>Ausführlicher Check-up</h3>
-            <p class="karte__satz">
-              Die vollständige Analyse als Arbeitsgrundlage, für dich, für
-              deine Agentur oder für deinen Entwickler.
-            </p>
-            <ul class="karte__liste" role="list">
-              <li>Detaillierte Problemanalyse über alle acht Bereiche</li>
-              <li>Priorisierte Maßnahmenliste nach Dringlichkeit und Wirkung</li>
-              <li>Konkrete Verbesserungsvorschläge, keine Schlagworte</li>
-              <li>Technische Hinweise und Design-Empfehlungen</li>
-              <li>Screenshots und Beispiele</li>
-              <li>Klare nächste Schritte</li>
-            </ul>
-            <a class="knopf knopf--voll" href="/kontakt/">
-              Check-up besprechen
-              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
-            </a>
-            <p class="karte__fuss">
-              85 €, und der Betrag wird bei einer späteren Optimierung
-              vollständig angerechnet.
-            </p>
-            <a class="verweis" href="/preise/">Alle Preise ansehen
-              <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================ Nach der Analyse -->
-  <section class="teil teil--dunkel" id="danach">
-    <div class="feld">
-      <div>
-        <p class="kicker kicker--hell">Nach der Analyse</p>
-        <h2 class="gross">Du entscheidest, was mit dem Bericht passiert.</h2>
-        <p class="vorspann">
-          Der Check-up ist kein Türöffner für einen Auftrag, sondern das
-          Produkt selbst. Was danach kommt, entscheidest du.
-        </p>
-
-        <ol class="optionen" role="list">
-          <li><span aria-hidden="true">01</span>
-            <div><b>Du setzt es selbst um.</b>
-              Der Bericht ist so geschrieben, dass du damit arbeiten kannst.</div></li>
-          <li><span aria-hidden="true">02</span>
-            <div><b>Du gibst ihn an deine Agentur weiter.</b>
-              Auch an die, die deine Website gebaut hat. Das ist ausdrücklich in Ordnung.</div></li>
-          <li><span aria-hidden="true">03</span>
-            <div><b>Wir beheben einzelne Punkte.</b>
-              Nur das, was du beauftragst, der Rest bleibt liegen.</div></li>
-          <li><span aria-hidden="true">04</span>
-            <div><b>Wir übernehmen die ganze Überarbeitung.</b>
-              Von der Technik bis zu den Texten.</div></li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- =================================================== Neue Website -->
-  <section class="teil" id="neu">
-    <div class="feld">
-      <div>
-        <h2 class="gross">Noch keine Website vorhanden?</h2>
-        <p class="vorspann">
-          Auch dann können wir starten. Gemeinsam klären wir, welche Inhalte
-          nötig sind, wie die Seite aufgebaut sein sollte und welche
-          Funktionen wirklich Sinn ergeben. Danach entsteht ein moderner,
-          mobiltauglicher und technisch sauberer Auftritt.
-        </p>
-
-        <ul class="leistungsliste" role="list">
-          <li>Konzeption und Seitenstruktur</li>
-          <li>Gestaltung</li>
-          <li>Technische Umsetzung</li>
-          <li>Darstellung auf allen Geräten</li>
-          <li>Kontaktmöglichkeiten und Formulare</li>
-          <li>Grundlegende Suchmaschinenoptimierung</li>
-          <li>Unterstützung bei Domain und Hosting</li>
-          <li>Veröffentlichung</li>
-        </ul>
-
-        <div class="auf__aktionen">
-          <a class="knopf knopf--voll" href="/kontakt/">
-            Neue Website anfragen
-            <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ Ablauf -->
-  <section class="teil teil--ruhig" id="ablauf">
-    <div class="feld">
-      <div>
-        <p class="kicker">Ablauf</p>
-        <h2 class="gross">Fünf Schritte, ohne Überraschungen.</h2>
-
-        <ol class="schritte" role="list">
-          <li>
-            <p class="schritte__nr" aria-hidden="true">01</p>
-            <h3>Anfrage</h3>
-            <p>Du beschreibst kurz deine Website oder dein Vorhaben.</p>
-          </li>
-          <li>
-            <p class="schritte__nr" aria-hidden="true">02</p>
-            <h3>Kostenlose Ersteinschätzung</h3>
-            <p>Wir sehen uns an, was da ist, und melden uns mit dem, was auffällt.</p>
-          </li>
-          <li>
-            <p class="schritte__nr" aria-hidden="true">03</p>
-            <h3>Entscheidung</h3>
-            <p>Kurzcheck genügt, ausführlicher Check-up oder gleich eine neue Website.</p>
-          </li>
-          <li>
-            <p class="schritte__nr" aria-hidden="true">04</p>
-            <h3>Analyse oder Konzeption</h3>
-            <p>Wir arbeiten und halten dich dabei auf dem Laufenden.</p>
-          </li>
-          <li>
-            <p class="schritte__nr" aria-hidden="true">05</p>
-            <h3>Bericht, Umsetzung oder fertige Website</h3>
-            <p>Je nachdem, wofür du dich entschieden hast.</p>
-          </li>
-        </ol>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ Fragen -->
-  <section class="teil" id="fragen">
-    <div class="feld">
-      <div>
-        <h2 class="gross">Was du vermutlich wissen willst.</h2>
-        <p class="vorspann">
-          46 Fragen und Antworten, nach Themen sortiert: Analyse, neue
-          Website, Optimierung, SEO, Wartung und Zusammenarbeit.
-        </p>
-        <a class="verweis" href="/faq/">Alle Fragen und Antworten
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================================================== Kontakt -->
-  <!-- Das Formular liegt seit dem Umbau auf /kontakt/. Hier steht nur noch
-     die Aufforderung dorthin: eine eigene Adresse statt eines
-     Sprungankers, damit die Hauptnavigation ohne Rautezeichen auskommt. -->
-  <section class="schluss" id="anfragen">
-    <div class="feld">
-      <p class="kicker">Kontakt</p>
-      <h2 class="gross">Website prüfen lassen oder <em>neu planen</em>.</h2>
-      <p class="vorspann">
-        Beides beginnt mit derselben Nachricht. Für die kostenlose
-        Ersteinschätzung genügt die Adresse deiner Website. Wir melden uns in
-        der Regel innerhalb von ein bis zwei Werktagen.
+      <p>
+        Eine erteilte Einwilligung kannst du jederzeit mit Wirkung für die
+        Zukunft widerrufen. Eine formlose Nachricht an
+        <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a> genügt.
+        Die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt
+        davon unberührt.
       </p>
-      <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="/kontakt/">
-          Kostenlosen Check anfragen
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span>
-        </a>
-        <a class="knopf knopf--rand" href="/preise/">Preise ansehen</a>
-      </div>
-      <p class="auf__hinweis">
-        Daraus wird kein Verkaufsgespräch. Wenn wir nicht die Richtigen sind,
-        sagen wir das. Lieber direkt schreiben?
-        <a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a>
+
+      <h2>8. Beschwerderecht</h2>
+      <p>
+        Du kannst dich bei einer Datenschutz-Aufsichtsbehörde beschweren.
+        Zuständig ist die Behörde deines Wohnsitzes oder unseres Sitzes:
+        Der Sächsische Datenschutzbeauftragte, Devrientstraße 5, 01067
+        Dresden.
       </p>
-    </div>
-  </section>
 
-
-<!-- ====================================================== August-Angebot
-     Auch hier eine <template>: der Inhalt ist bis zum Einsetzen kein Teil
-     des Dokuments, wird also nicht dargestellt, nicht vorgelesen und nicht
-     als Seiteninhalt ausgewertet. Dadurch entsteht beim Einsetzen kein
-     Layoutsprung — das Feld liegt fest ueber der Seite — und nach dem
-     Zeitraum bleibt nichts stehen.
-     ==================================================================== -->
-<template id="aktion-feld">
-  <div class="aktionsfeld">
-    <div class="aktionsfeld__schleier" data-zu></div>
-    <div class="aktionsfeld__tafel" role="dialog" aria-modal="true"
-         aria-labelledby="aktion-titel" aria-describedby="aktion-satz"
-         tabindex="-1">
-      <p class="aktionsfeld__marke">August-Angebot</p>
-      <h2 class="aktionsfeld__titel" id="aktion-titel">Deine Landingpage ab 249&nbsp;€</h2>
-      <p class="aktionsfeld__satz" id="aktion-satz">
-        Nur vom 30.07.2026 bis 31.08.2026. Modern, mobil optimiert und
-        technisch sauber umgesetzt.
+      <h2>9. Verschlüsselung</h2>
+      <p>
+        Diese Seite wird ausschließlich über eine verschlüsselte
+        Verbindung ausgeliefert (HTTPS). Du erkennst das am Schloss in der
+        Adresszeile deines Browsers.
       </p>
-      <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="/kontakt/?anliegen=Landingpage#check-formular">Angebot anfragen
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-        <button class="knopf knopf--rand" type="button" data-zu>Später ansehen</button>
-      </div>
-      <button class="aktionsfeld__kreuz" type="button" data-zu
-              aria-label="Hinweis schließen"></button>
-    </div>
-  </div>
-</template>
 
+      <h2>10. Stand</h2>
+      <p>
+        Stand dieser Erklärung: 28. Juli 2026.
+        Wir passen sie an, wenn sich die Verarbeitung ändert.
+      </p>
+      </div>
+    </div>
+  </article>
 </main>
 
 <footer class="fuss">
-  <div class="feld fuss__raster">
-    <div class="fuss__marke">
-      <a class="marke" href="/">
-        <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
-             width="815" height="119" loading="lazy" decoding="async">
-      </a>
-      <p>Websites prüfen, verbessern und neu erstellen. Für Betriebe,
-        Vereine und Selbstständige.</p>
-    </div>
-
-    <!-- Vorher standen hier zwei Spalten mit neun Verweisen, von denen acht
-         auf dieselbe Seite zeigten, und die Spalte "Leistungen" war eine
-         zweite Benennung fuer "Preise". Jetzt genau die vier Seiten, die es
-         gibt, mit denselben Woertern wie im Kopfbereich. -->
-    <nav class="fuss__block" aria-labelledby="f-seiten">
-      <h2 id="f-seiten">Seiten</h2>
-      <ul role="list">
+  <div class="feld fuss__unten">
+    <p>© 2026 Vioweb</p>
+    <nav aria-label="Rechtliches">
+      <ul role="list" class="fuss__zeile">
         <li><a href="/">Start</a></li>
         <li><a href="/preise/">Preise</a></li>
         <li><a href="/faq/">FAQ</a></li>
         <li><a href="/kontakt/">Kontakt</a></li>
-      </ul>
-    </nav>
-
-    <nav class="fuss__block" aria-labelledby="f-thema">
-      <h2 id="f-thema">Auf der Startseite</h2>
-      <ul role="list">
-        <li><a href="/#pruefung">Was geprüft wird</a></li>
-        <li><a href="/#vergleich">Kurzcheck und Check-up</a></li>
-        <li><a href="/#neu">Neue Website</a></li>
-        <li><a href="/#ablauf">Ablauf</a></li>
-      </ul>
-    </nav>
-
-    <div class="fuss__block">
-      <h2 id="f-recht">Kontakt &amp; Rechtliches</h2>
-      <ul role="list" aria-labelledby="f-recht">
-        <li><a href="mailto:kontakt@vioweb.de">kontakt@vioweb.de</a></li>
-        <li><a href="https://www.instagram.com/vio.web/" rel="noopener">Instagram</a></li>
         <li><a href="/datenschutz.html">Datenschutz</a></li>
       </ul>
-    </div>
-  </div>
-
-  <div class="feld fuss__unten">
-    <p>© 2026 Vioweb</p>
-    <p>Deutschlandweit tätig</p>
+    </nav>
   </div>
 </footer>
-
-<!-- Strukturierte Daten fuer Suchmaschinen und Antwortsysteme.
-     Jede Angabe hier muss auch sichtbar auf der Seite stehen.
-
-     Kein "ProfessionalService" und keine "address": Beide Angaben setzen
-     eine vollstaendige, oeffentliche Anschrift voraus. Die liegt noch nicht
-     vor. Ein Platzhalter an dieser Stelle waere schlimmer als gar nichts,
-     weil Google ihn als echte Anschrift uebernehmen wuerde. Sobald die
-     Anschrift feststeht, koennen "address" und der Typ ergaenzt werden,
-     siehe KI-SICHTBARKEIT-UND-SEO.md. "areaServed" traegt so lange die
-     raeumliche Einordnung. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://vioweb.de/#website",
-      "url": "https://vioweb.de/",
-      "name": "Vioweb",
-      "inLanguage": "de-DE",
-      "publisher": {
-        "@id": "https://vioweb.de/#betrieb"
-      }
-    },
-    {
-      "@type": "Organization",
-      "@id": "https://vioweb.de/#betrieb",
-      "name": "Vioweb",
-      "url": "https://vioweb.de/",
-      "email": "kontakt@vioweb.de",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://vioweb.de/img/favicon-512.png",
-        "width": 512,
-        "height": 512
-      },
-      "image": "https://vioweb.de/img/og-bild.png",
-      "description": "Website-Analyse, Optimierung und Erstellung neuer Websites für Betriebe, Vereine und Selbstständige.",
-      "slogan": "Analysieren. Optimieren. Entwickeln.",
-      "areaServed": {
-        "@type": "Country",
-        "name": "Deutschland"
-      },
-      "sameAs": [
-        "https://www.instagram.com/vio.web/"
-      ],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Leistungen",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Kostenloser Website-Kurzcheck",
-              "description": "Erste Einschätzung mit den auffälligsten Punkten."
-            },
-            "price": "0",
-            "priceCurrency": "EUR"
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Ausführlicher Website-Check-up",
-              "description": "Detaillierte Analyse mit priorisierter Maßnahmenliste als unabhängig nutzbare Arbeitsgrundlage. 85 Euro, bei späterer Optimierung anrechenbar.",
-              "offers": {
-                "@type": "Offer",
-                "price": "85",
-                "priceCurrency": "EUR"
-              }
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Umsetzung von Verbesserungen",
-              "description": "Behebung einzelner Punkte bis zur kompletten Überarbeitung."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Erstellung neuer Websites",
-              "description": "Konzeption, Gestaltung, technische Umsetzung und Veröffentlichung."
-            }
-          }
-        ]
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://vioweb.de/#pfad",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Startseite",
-          "item": "https://vioweb.de/"
-        }
-      ]
-    }
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Startseite", "item": "https://vioweb.de/" },
+    { "@type": "ListItem", "position": 2, "name": "Datenschutzerklärung", "item": "https://vioweb.de/datenschutz.html" }
   ]
 }
 </script>
-
-<script src="js/seite.js" defer></script>
 </body>
 </html>

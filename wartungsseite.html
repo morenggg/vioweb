@@ -2,51 +2,41 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-<title>vioweb wird gerade optimiert</title>
-<meta name="description" content="Unsere Website wird aktuell überarbeitet. vioweb ist weiterhin für Website-Analysen, Optimierungen und neue Webprojekte erreichbar.">
-<link rel="canonical" href="https://vioweb.de/">
+<title>Vioweb</title>
+<meta name="description" content="Die Website von Vioweb wird gerade überarbeitet.">
+
+<!-- Waehrend der Wartung soll diese duenne Seite nicht an die Stelle der
+     echten Inhalte in den Suchergebnissen treten. Gecrawlt werden darf sie,
+     sonst liest niemand das noindex. -->
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#f7f7fa">
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Vioweb">
-<meta property="og:locale" content="de_DE">
-<meta property="og:url" content="https://vioweb.de/">
-<meta property="og:title" content="vioweb wird gerade optimiert">
-<meta property="og:description" content="Unsere Website wird aktuell überarbeitet. Für Website-Analysen, Optimierungen und neue Webprojekte sind wir weiterhin erreichbar.">
-<meta property="og:image" content="https://vioweb.de/img/og-bild.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Vioweb: Analysieren. Optimieren. Entwickeln.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="vioweb wird gerade optimiert">
-<meta name="twitter:description" content="Unsere Website wird aktuell überarbeitet. Für Analysen und neue Projekte sind wir weiterhin erreichbar.">
-<meta name="twitter:image" content="https://vioweb.de/img/og-bild.png">
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/img/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 
-<link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="img/favicon-192.png" sizes="192x192" type="image/png">
-<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-
-<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
-
-<!-- =====================================================================
-     WARTUNGSSEITE. Die bisherige Startseite liegt unveraendert in
-     startseite.html. Umschalten: siehe WARTUNGSMODUS.md oder ./wartung.sh
-     Der Wertesatz unten ist Zeichen fuer Zeichen derselbe wie in den
-     uebrigen HTML-Dateien; die Abschnitte fuer Schublade und Aufmacher
-     fehlen, weil diese Seite beides nicht hat.
-     ===================================================================== -->
 <style>
-/* ------------------------------------------------------- 0. Schriften */
-/* Variabel: eine Datei fuer alle Gewichte von 400 bis 800.
-   font-display: swap — Text ist sofort lesbar, auch bevor die Schrift da
-   ist. size-adjust haelt den Umbruch beim Wechsel ruhig. */
+/* =========================================================================
+   Vioweb — Wartungsseite.
+
+   Bewusst eine einzige Datei ohne Skript und ohne aeusseres Stylesheet:
+   die Seite zeigt nur die Marke, und dafuer soll nichts nachgeladen werden.
+
+   Aus dem Wertesatz der Website stehen hier nur die Werte, die diese Seite
+   wirklich benutzt. Der vollstaendige Satz waere hier toter Code — die
+   uebrigen Seiten fuehren ihn weiter.
+
+   Warum heller Grund und nicht dunkel wie auf Instagram: Die Wortmarke ist
+   dunkles #1A1C22 auf transparentem Grund. Auf dunklem Hintergrund
+   verschwindet sie, und die Datei wird nicht veraendert. Solange es keine
+   helle Variante gibt, bleibt der Grund hell.
+   ========================================================================= */
+
 @font-face {
   font-family: "Manrope";
-  src: url("fonts/manrope-latin.woff2") format("woff2");
+  src: url("/fonts/manrope-latin.woff2") format("woff2");
   font-weight: 400 800;
   font-style: normal;
   font-display: swap;
@@ -54,654 +44,85 @@
     U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
     U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face {
-  font-family: "Manrope";
-  src: url("fonts/manrope-latin-ext.woff2") format("woff2");
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
-    U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
-    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
-    U+A720-A7FF;
-}
 
-/* ------------------------------------------------------------ 1. Werte */
 :root {
   color-scheme: light;
-
-  --grund:        #F7F7FA;   /* warmes Off-White, Hauptflaeche */
-  --flaeche:      #FFFFFF;   /* Karten, erhoehte Bereiche */
-  --flaeche-ruhig:#F0EFF6;   /* abgesetzte Abschnitte */
-  --dunkel:       #1C1824;   /* die wenigen dunklen Baender */
-  --dunkel-2:     #272134;
-
-  --text:         #17151D;   /* 17,1:1 auf --grund */
-  --text-leise:   #625F6B;   /*  5,8:1 auf --grund */
-  --text-hell:    #EFEDF3;   /* Text auf --dunkel */
-  --text-hell-leise: #B9B4C4;/*  8,4:1 auf --dunkel */
-
-  --linie:        rgba(23, 21, 29, .10);  /* dekorative Haarlinien */
-  --linie-kraeftig: rgba(23, 21, 29, .18);
-  --linie-feld:   #8B8894;   /* Formularrahmen — 3,1:1, WCAG 1.4.11 */
-  --linie-dunkel: rgba(255, 255, 255, .14);
-
-  --akzent:       #7C3AED;   /*  5,3:1 auf --grund, Weiss darauf 5,7:1 */
-  --akzent-tief:  #6D28D9;   /* Hover */
-  --akzent-zart:  #EDE9FE;   /* sehr dezente Flaeche */
-  --akzent-hell:  #C4B5FD;   /* Akzent auf dunklem Grund */
-
-  --gut: #15803D;  --mittel: #B45309;  --schlecht: #B91C1C;
-
+  --grund:      #F7F7FA;
+  --text-leise: #625F6B;
+  --akzent:     #7C3AED;
   --schrift: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI",
              Roboto, "Helvetica Neue", Arial, sans-serif;
-  --schrift-technik: ui-monospace, "SF Mono", Menlo, Consolas,
-                     "Liberation Mono", monospace;
-
-  /* Ein Abstandssystem statt zufaelliger Werte. */
-  --s-xs: .5rem;  --s-sm: .75rem; --s-md: 1rem;   --s-lg: 1.5rem;
-  --s-xl: 2.5rem; --s-2xl: 4rem;  --s-3xl: 6rem;  --s-4xl: 8rem;
-
-  --rund: 10px;
-  --rund-gross: 16px;
-  --hebung: 0 1px 2px rgba(23, 21, 29, .04), 0 8px 24px -12px rgba(23, 21, 29, .10);
-
-  --rand: 20px;
-  --feld: 1200px;
-  /* ch ist die Breite der Null und damit breiter als ein
-     Durchschnittsbuchstabe. 62ch ergaben gemessen 82 Zeichen je Zeile,
-     nicht 62. 46ch trifft die Vorgabe aus den Richtlinien. Der Wert
-     gilt fuer Fliesstext in Grundgroesse; groessere Schriften brauchen
-     einen eigenen Wert, siehe .vorspann und .auf__satz. */
-  --lesebreite: 46ch;
-  --rail: 164px;
-  --gasse: 64px;
-  --kopfhoehe: 66px;
-
-  --schnell: 160ms;
-  --mittel: 280ms;
-  --lang: 460ms;
-  --verlauf: cubic-bezier(.22, 1, .36, 1);
 }
-@media (min-width: 560px) { :root { --rand: 28px; } }
-@media (min-width: 900px) { :root { --rand: 48px; --kopfhoehe: 74px; } }
 
-/* ------------------------------------------------------------ 2. Basis */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 
-html {
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--kopfhoehe) + var(--s-lg));
-}
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  background: var(--grund);
-  color: var(--text);
-  font-family: var(--schrift);
-  font-size: 1.0625rem;
-  line-height: 1.65;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  overflow-wrap: break-word;
-  /* clip statt hidden: hidden kann den Body zum Scrollcontainer machen,
-     clip schneidet nur ab. Sicherheitsnetz gegen seitliches Wackeln —
-     ueberstehende Elemente gibt es laut Pruefung ab 320 px keine. */
-  overflow-x: clip;
-}
-
-img, svg { display: block; max-width: 100%; }
-a { color: inherit; }
-ul, ol { list-style: none; padding: 0; }
-button, input, textarea, select { font: inherit; color: inherit; }
-summary::-webkit-details-marker { display: none; }
-
-h1, h2, h3, h4 { font-weight: 800; letter-spacing: -.022em; line-height: 1.12; }
-
-:focus-visible {
-  outline: 2px solid var(--akzent);
-  outline-offset: 3px;
-  border-radius: 3px;
-}
-
-.nur-vorlesen {
-  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
-}
-.sprung {
-  position: absolute; left: var(--rand); top: 10px; z-index: 130;
-  transform: translateY(-300%);
-  background: var(--akzent); color: #FFF;
-  padding: 12px 18px; text-decoration: none; font-size: .9rem;
-  border-radius: var(--rund);
-  transition: transform var(--schnell) var(--verlauf);
-}
-.sprung:focus { transform: translateY(0); }
-
-.feld {
-  width: 100%; max-width: var(--feld);
-  margin-inline: auto; padding-inline: var(--rand);
-}
-
-/* Die frueher hier stehende Randspalte ist entfallen. Sie enthielt nur das
-   graue Kleinlabel, blieb sonst leer und schob die Ueberschriften nach
-   rechts. Das Label steht jetzt direkt ueber der Ueberschrift, auf
-   derselben linken Kante. Die Werte --rail und --gasse bleiben im
-   Wertesatz, falls das Raster spaeter mit echtem Inhalt zurueckkommt. */
-.kicker + h1, .kicker + h2 { margin-top: .75rem; }
-
-/* ---------------------------------------------- 3. Fortschrittsbalken */
-/* Sitzt ueber allem, nimmt keinen Platz im Fluss ein und kann deshalb
-   nichts verschieben. Die Breite setzt das Skript ueber scaleX. */
-.fortschritt {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 140;
-  height: 3px; pointer-events: none;
-  background: var(--akzent);
-  transform: scaleX(0); transform-origin: 0 50%;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .fortschritt { transition: transform 90ms linear; }
-}
-
-/* ------------------------------------------------ 4. Wiederkehrende Teile */
-.kicker {
-  font-family: var(--schrift-technik);
-  font-size: clamp(.7rem, .83rem - .2vw, .78rem);
-  text-transform: uppercase; letter-spacing: .16em;
-  color: var(--akzent); font-weight: 500;
-}
-.vorspann {
-  margin-top: var(--s-md); max-width: 47ch;   /* gemessen 62 Zeichen */
-  font-size: clamp(1.05rem, 1rem + .35vw, 1.2rem);
-  line-height: 1.6; color: var(--text-leise);
-}
-
-.knopf {
-  display: inline-flex; align-items: center; justify-content: center; gap: .6rem;
-  min-height: 52px; padding: .85rem 1.5rem;
-  border-radius: var(--rund);
-  font-size: .95rem; font-weight: 700; letter-spacing: -.008em;
-  text-decoration: none; border: 1px solid transparent;
-  transition: background-color var(--schnell) var(--verlauf),
-              border-color var(--schnell) var(--verlauf),
-              color var(--schnell) var(--verlauf),
-              box-shadow var(--schnell) var(--verlauf);
-}
-.knopf--voll { background: var(--akzent); color: #FFFFFF; }
-@media (hover: hover) {
-  .knopf--voll:hover { background: var(--akzent-tief); }
-}
-.knopf--rand {
-  border-color: var(--linie-kraeftig); color: var(--text); background: var(--flaeche);
-}
-@media (hover: hover) {
-  .knopf--rand:hover { border-color: var(--akzent); color: var(--akzent); }
-}
-.knopf--klein { min-height: 44px; padding: .6rem 1.1rem; font-size: .875rem; }
-.knopf__pfeil { transition: transform var(--schnell) var(--verlauf); }
-@media (hover: hover) {
-  .knopf:hover .knopf__pfeil { transform: translateX(3px); }
-}
-
-/* -------------------------------------------------------- 5. Kopfbereich */
-.kopf {
-  position: sticky; top: 0; z-index: 90;
-  background: var(--grund);
-  border-bottom: 1px solid transparent;
-  transition: border-color var(--mittel) var(--verlauf);
-}
-@supports (backdrop-filter: blur(1px)) {
-  .kopf { background: rgba(247, 247, 250, .82); backdrop-filter: saturate(150%) blur(12px); }
-}
-.kopf.gescrollt { border-bottom-color: var(--linie); }
-
-/* Bei offenem Menue: backdrop-filter macht den Kopfbereich zum
-   Bezugsrahmen fuer position:fixed — Tafel und Schleier waeren dann auf
-   die Kopfzeile eingesperrt. Deshalb hier abschalten. Der hoehere
-   z-index haelt zugleich Logo und Schliessen-Knopf sichtbar. */
-@supports (backdrop-filter: blur(1px)) {
-}
-
-/* Drei Spalten, aussen gleich breit: die Marke steht damit exakt auf der
-   Mitte des Inhaltsmasses, unabhaengig davon, wie breit Navigation und
-   Aufruf gerade sind. Genau deshalb Raster und nicht space-between — bei
-   flex wanderte die Marke mit der Breite der Nachbarn, und der Kopf
-   springt beim Seitenwechsel. Mobil ist die linke Spalte leer, die Marke
-   bleibt mittig, der Menueknopf sitzt rechts an der Kante.
-   Die Richtlinien verlangen sonst durchgehend linksbuendig; die zentrierte
-   Marke im Kopf ist die ausdrueckliche Ausnahme davon, siehe Abschnitt 5. */
-.kopf__inhalt {
-  position: relative;   /* Bezug fuer die Menuetafel, siehe unten */
+  min-height: 100vh;
+  min-height: 100dvh;   /* auf iOS ist 100vh die Hoehe OHNE Werkzeugleisten */
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--s-sm); min-height: var(--kopfhoehe);
+  place-items: center;
+  padding: max(2rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right))
+           max(2rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
+  background: var(--grund);
+  font-family: var(--schrift);
+  -webkit-font-smoothing: antialiased;
+  /* Der Schein liegt hinter der Marke und faerbt den Grund nur an. Kein
+     Verlauf ueber die ganze Flaeche, kein zweiter Farbton. */
+  background-image:
+    radial-gradient(60% 45% at 50% 46%, rgba(124, 58, 237, .14), transparent 70%);
+  background-repeat: no-repeat;
 }
-/* grid-row: 1 an allen drei Stellen, und das ist nicht ueberfluessig:
-   Das Raster platziert lueckenlos vorwaerts. Die Marke steht als erstes im
-   Markup und sitzt in Spalte 2 — danach kann die Navigation mit
-   grid-column: 1 nicht mehr zurueck in Zeile 1 und landet in Zeile 2. Der
-   Kopf war dadurch ab 900 px zweizeilig: Marke oben, Navigation darunter.
-   Auf schmalen Geraeten fiel es nicht auf, weil die Textnavigation dort
-   ausgeblendet ist und der Menueknopf in Spalte 3 hinter der Marke liegt. */
-.kopf__inhalt > .marke { grid-column: 2; grid-row: 1; justify-self: center; }
-.kopf__inhalt > .nav { grid-column: 1; grid-row: 1; justify-self: start; }
-.kopf__inhalt > .menue,
-.kopf__inhalt > .kopf__cta { grid-column: 3; grid-row: 1; justify-self: end; }
+
 .marke {
-  position: relative;
-  display: flex; align-items: center; text-decoration: none;
-  min-height: 48px;   /* Klickflaeche, das Bild selbst bleibt niedriger */
-  transition: opacity var(--schnell) var(--verlauf), visibility 0s;
-}
-/* Die Wortmarke im Original: dunkle Schrift auf transparentem Grund, der
-   Schriftzug "Vioweb" ist Teil der Datei. Deshalb keine Textspanne daneben
-   mehr — sie waere eine zweite Marke — und keine dunkle Kachel mehr. Die
-   brauchte das alte Zeichen, weil dessen weisse Haelfte auf hellem Grund
-   verschwand. Die Wortmarke steht ueberall auf hellem Grund: Kopfbereich,
-   Schublade, Fusszeile. Nicht nachgebaut, nicht beschnitten, nicht
-   umgefaerbt — nur in der Hoehe gesetzt, die Breite folgt dem Seitenmass.
-   Die Hoehe waechst leicht mit der Fensterbreite und bleibt bei 320 px so
-   schmal, dass links und rechts je 48 px fuer den Menueknopf bleiben. */
-.marke__bild {
-  height: clamp(21px, 18px + 1vw, 28px);
-  width: auto; flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 1.9rem;
+  text-align: center;
 }
 
-
-/* ------------------------------------------------- 6. Wartungsseite */
-/* Die Seite ist bewusst ruhig: heller Grund, dunkle Typografie, ein
-   Akzent. Spielerisch ist allein die Bahn — sie steht als dunkle Flaeche
-   darin und traegt die Farbe. Alles andere sieht aus wie der Rest der
-   Website, damit die Seite nach Dienstleister aussieht und nicht nach
-   Baustellenschild. */
-.wartung { padding-block: var(--s-xl) var(--s-2xl); }
-@media (min-width: 900px) { .wartung { padding-block: var(--s-2xl) var(--s-3xl); } }
-
-/* Statusanzeige mit ruhigem Puls. Der Punkt ist zusaetzlich beschriftet,
-   die Aussage haengt also nicht an der Farbe. */
-.status {
-  display: inline-flex; align-items: center; gap: .55rem;
-  padding: .35rem .8rem .35rem .7rem;
-  border: 1px solid var(--linie-kraeftig); border-radius: 999px;
-  background: var(--flaeche);
-  font-size: clamp(.78rem, .88rem - .154vw, .84rem);
-  font-weight: 600; color: var(--text-leise);
+/* Gross, aber nie breiter als der Bildschirm. Im Hochformat einer
+   Story-Kachel traegt die Marke etwa zwei Drittel der Breite, am
+   Schreibtisch bleibt sie bei einer festen Obergrenze stehen. */
+.marke img {
+  display: block;
+  width: min(68vw, 30rem);
+  height: auto;
 }
-.status__punkt {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--akzent); flex: none;
+
+/* Nie breiter als die Marke darueber. Ohne die Begrenzung lief die Zeile
+   auf dem Telefon ueber das Logo hinaus und kippte die Ordnung. Sie bricht
+   dann lieber auf zwei Zeilen. */
+.marke p {
+  max-width: min(68vw, 30rem);
+  font-size: clamp(.72rem, .66rem + .3vw, .82rem);
+  font-weight: 600;
+  line-height: 1.7;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--text-leise);
+  text-wrap: balance;
 }
+
+/* Ein langsames Atmen des Scheins, sonst nichts. Bei reduzierter Bewegung
+   entfaellt es ersatzlos; die Seite bleibt vollstaendig lesbar. */
 @media (prefers-reduced-motion: no-preference) {
-  .status__punkt { animation: puls 2.4s ease-in-out infinite; }
-  @keyframes puls {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: .45; transform: scale(.8); }
+  body { animation: atmen 7s ease-in-out infinite; }
+  @keyframes atmen {
+    0%, 100% { background-size: 100% 100%; }
+    50%      { background-size: 118% 118%; }
   }
-}
-
-.wartung h1 {
-  margin-top: var(--s-lg);
-  font-size: clamp(1.9rem, 1.35rem + 3vw, 3.6rem);
-  font-weight: 800; letter-spacing: -.032em; line-height: 1.08;
-  max-width: 20ch; text-wrap: balance;
-}
-.wartung h1 em { font-style: normal; color: var(--akzent); }
-.wartung__satz {
-  margin-top: var(--s-lg); max-width: 54ch;
-  font-size: clamp(1.02rem, .98rem + .4vw, 1.2rem);
-  line-height: 1.6; color: var(--text-leise); text-wrap: pretty;
-}
-.wartung__klein {
-  margin-top: var(--s-md); max-width: 47ch;
-  font-size: clamp(.85rem, .93rem - .123vw, .9rem);
-  color: var(--text-leise);
-}
-
-/* ------------------------------------------------------ Die Rennbahn */
-.spiel { margin-top: var(--s-xl); }
-@media (min-width: 1040px) {
-  /* Ab Schreibtischbreite stehen Text und Bahn nebeneinander, sonst
-     bleibt rechts eine leere Haelfte stehen. */
-  .wartung__raster {
-    display: grid; grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
-    gap: var(--s-2xl); align-items: start;
-  }
-  .spiel { margin-top: 0; }
-}
-
-.bahn__flaeche {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--rund-gross);
-  overflow: hidden;
-  background: #141119;
-  border: 1px solid rgba(23, 21, 29, .22);
-  box-shadow: var(--hebung);
-}
-@media (min-width: 620px) { .bahn__flaeche { aspect-ratio: 16 / 10; } }
-.bahn__flaeche canvas { display: block; width: 100%; height: 100%; }
-
-/* Der Hinweis liegt ueber der Bahn und nimmt keinen Platz im Fluss —
-   dadurch springt beim Einblenden nichts. */
-.bahn__hinweis {
-  position: absolute; left: 50%; top: var(--s-md);
-  transform: translateX(-50%);
-  padding: .35rem .8rem; border-radius: 999px;
-  background: rgba(23, 21, 29, .78); color: #FFFFFF;
-  font-size: .82rem; font-weight: 700; letter-spacing: .01em;
-  white-space: nowrap; pointer-events: none;
-}
-.bahn__hinweis:empty { display: none; }
-
-/* Anzeigen. Zahlen in gleicher Breite, damit die Zeile beim Zaehlen
-   nicht zappelt. */
-.anzeigen {
-  margin-top: var(--s-md);
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-sm);
-}
-@media (min-width: 520px) { .anzeigen { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.anzeige {
-  padding: .6rem .8rem;
-  background: var(--flaeche); border: 1px solid var(--linie);
-  border-radius: var(--rund);
-}
-.anzeige dt {
-  font-family: var(--schrift-technik);
-  font-size: clamp(.7rem, .83rem - .2vw, .78rem);
-  letter-spacing: .12em; text-transform: uppercase; color: var(--text-leise);
-}
-.anzeige dd {
-  margin: .15rem 0 0;
-  font-size: clamp(1.05rem, 1rem + .4vw, 1.25rem);
-  font-weight: 800; letter-spacing: -.02em;
-  font-variant-numeric: tabular-nums;
-}
-.anzeige dd small { font-size: .6em; font-weight: 600; color: var(--text-leise); margin-left: .2rem; }
-
-/* ------------------------------------------------------- Fahrknoepfe */
-.fahrknoepfe {
-  margin-top: var(--s-md);
-  display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-md);
-}
-.fahrknopf {
-  display: flex; align-items: center; justify-content: center; gap: .5rem;
-  min-height: 68px; padding: .9rem 1rem;
-  border: 1px solid transparent; border-radius: var(--rund-gross);
-  font-family: inherit; font-size: 1.02rem; font-weight: 800;
-  letter-spacing: .04em; text-transform: uppercase;
-  cursor: pointer;
-  /* Beim Halten darf der Browser nicht scrollen oder Text markieren. */
-  touch-action: none; user-select: none; -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform var(--schnell) var(--verlauf),
-              box-shadow var(--schnell) var(--verlauf),
-              background-color var(--schnell) var(--verlauf);
-}
-.fahrknopf svg { width: 20px; height: 20px; flex: none; }
-/* Gas traegt den Akzent, Bremse steht dunkel daneben. Unterschieden werden
-   sie zusaetzlich ueber Beschriftung und Zeichen, nicht nur ueber Farbe. */
-.fahrknopf--gas {
-  background: var(--akzent); color: #FFFFFF;
-  box-shadow: 0 4px 0 var(--akzent-tief), 0 10px 20px -10px rgba(124, 58, 237, .6);
-}
-.fahrknopf--bremse {
-  background: var(--dunkel); color: var(--text-hell);
-  box-shadow: 0 4px 0 #0F0D14, 0 10px 20px -12px rgba(23, 21, 29, .5);
-}
-/* Gedrueckt sinkt der Knopf auf seinen Sockel — dieselbe Tiefe, nur ohne
-   Luft darunter. */
-.fahrknopf--aktiv { transform: translateY(4px); box-shadow: 0 0 0 currentColor; }
-.fahrknopf--gas.fahrknopf--aktiv { background: var(--akzent-tief); box-shadow: none; }
-.fahrknopf--bremse.fahrknopf--aktiv { background: #0F0D14; box-shadow: none; }
-@media (prefers-reduced-motion: reduce) {
-  .fahrknopf { transition: none; }
-  .fahrknopf--aktiv { transform: none; }
-}
-
-.spiel__fuss {
-  margin-top: var(--s-sm);
-  display: flex; flex-wrap: wrap; gap: .4rem var(--s-md);
-  justify-content: space-between; align-items: center;
-}
-.spiel__hilfe {
-  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
-  color: var(--text-leise);
-}
-.spiel__loeschen {
-  display: inline-flex; align-items: center; min-height: 44px;
-  padding: 0 .2rem; border: 0; background: none;
-  font-family: inherit;
-  font-size: clamp(.82rem, .92rem - .154vw, .88rem);
-  color: var(--text-leise); cursor: pointer;
-  text-decoration: underline; text-underline-offset: 3px;
-}
-@media (hover: hover) { .spiel__loeschen:hover { color: var(--akzent); } }
-
-/* ------------------------------------------------------- Kontaktteil */
-.schluss { border-top: 1px solid var(--linie); padding-block: var(--s-2xl); }
-.schluss h2 {
-  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.2rem);
-  font-weight: 800; letter-spacing: -.026em; line-height: 1.15;
-  max-width: 24ch; text-wrap: balance;
-}
-.schluss .auf__aktionen { margin-top: var(--s-lg); }
-.auf__aktionen { display: flex; flex-wrap: wrap; gap: var(--s-md); }
-@media (max-width: 619px) {
-  .auf__aktionen:has(.knopf + .knopf) { display: grid; grid-auto-rows: 1fr; }
-  .auf__aktionen:has(.knopf + .knopf) > .knopf { width: 100%; }
-}
-
-/* Der Kopfbereich dieser Seite traegt nur Marke und Status. */
-.kopf__inhalt--wartung {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: var(--s-md); min-height: var(--kopfhoehe);
-}
-@media (max-width: 479px) {
-  /* Nebeneinander wird es unter 480 px zu eng; der Status rutscht unter
-     die Marke, statt die Schrift zu verkleinern. */
-  .kopf__inhalt--wartung { flex-direction: column; align-items: flex-start;
-                           gap: var(--s-xs); padding-block: var(--s-sm); }
 }
 </style>
-
-<link rel="stylesheet" href="css/seite.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="css/seite.css"></noscript>
 </head>
 <body>
 
-<a class="sprung" href="#inhalt">Zum Inhalt springen</a>
+<div class="marke">
+  <img src="/img/wortmarke.png" alt="Vioweb" width="815" height="119" fetchpriority="high">
+  <p>Die Website wird gerade überarbeitet</p>
+</div>
 
-<header class="kopf" id="kopf">
-  <div class="feld kopf__inhalt--wartung">
-    <a class="marke" href="/">
-      <img class="marke__bild" src="img/wortmarke.png" alt="Vioweb"
-           width="815" height="119" decoding="async" fetchpriority="high">
-    </a>
-    <p class="status">
-      <span class="status__punkt" aria-hidden="true"></span>
-      Website wird gerade optimiert
-    </p>
-  </div>
-</header>
-
-<main id="inhalt">
-
-  <section class="wartung">
-    <div class="feld wartung__raster">
-
-      <div>
-        <h1>Wir machen gerade unsere <em>eigene</em> Website besser.</h1>
-        <p class="wartung__satz">
-          Schließlich analysieren wir nicht nur andere Websites. vioweb wird
-          aktuell überarbeitet und optimiert. Während wir Ladezeiten, Inhalte
-          und Nutzerführung verbessern, kannst du hier eine kleine Runde
-          drehen.
-        </p>
-        <p class="wartung__klein">
-          Bei Fragen oder Interesse an einer Website-Analyse sind wir
-          trotzdem erreichbar.
-        </p>
-      </div>
-
-      <div class="spiel">
-        <div class="bahn__flaeche">
-          <canvas id="bahn" role="img"
-                  aria-label="Kleine Rennbahn in Schrägansicht. Ein violettes Rennauto fährt einen geschlossenen Rundkurs. Steuerbar über die Schaltflächen Gas und Bremse darunter."></canvas>
-          <p class="bahn__hinweis" id="bahn-hinweis" role="status" aria-live="polite"></p>
-        </div>
-
-        <dl class="anzeigen">
-          <div class="anzeige"><dt>Runde</dt><dd id="anz-runde">01</dd></div>
-          <div class="anzeige"><dt>Zeit</dt><dd id="anz-zeit">00:00.00</dd></div>
-          <div class="anzeige"><dt>Bestzeit</dt><dd id="anz-best">--:--.--</dd></div>
-          <div class="anzeige"><dt>Tempo</dt><dd><span id="anz-tempo">0</span><small>km/h</small></dd></div>
-        </dl>
-
-        <div class="fahrknoepfe">
-          <button class="fahrknopf fahrknopf--gas" id="knopf-gas" type="button"
-                  aria-pressed="false" aria-label="Gas geben, gedrückt halten">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/>
-            </svg>
-            Gas
-          </button>
-          <button class="fahrknopf fahrknopf--bremse" id="knopf-bremse" type="button"
-                  aria-pressed="false" aria-label="Bremsen, gedrückt halten">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
-              <circle cx="12" cy="12" r="8.6"/>
-              <path d="M12 3.4v17.2M3.4 12h17.2" transform="rotate(45 12 12)"/>
-            </svg>
-            Bremse
-          </button>
-        </div>
-
-        <p class="spiel__fuss">
-          <span class="spiel__hilfe">
-            Tastatur: Leertaste, Pfeil&nbsp;hoch oder&nbsp;W für Gas,
-            Pfeil&nbsp;runter oder&nbsp;S für die Bremse.
-          </span>
-          <button class="spiel__loeschen" id="bestzeit-loeschen" type="button">Bestzeit zurücksetzen</button>
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <section class="schluss">
-    <div class="feld">
-      <h2>Du möchtest deine Website ebenfalls auf die Überholspur bringen?</h2>
-      <div class="auf__aktionen">
-        <a class="knopf knopf--voll" href="/kontakt/">Website-Analyse anfragen
-          <span class="knopf__pfeil" aria-hidden="true">&rarr;</span></a>
-        <a class="knopf knopf--rand" href="mailto:kontakt@vioweb.de">E-Mail schreiben</a>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer class="fuss">
-  <div class="feld fuss__unten">
-    <p>© 2026 Vioweb</p>
-    <nav aria-label="Rechtliches">
-      <ul role="list" class="fuss__zeile">
-        <li><a href="/datenschutz.html">Datenschutz</a></li>
-        <li><a href="https://vioweb.de/">vioweb.de</a></li>
-      </ul>
-    </nav>
-  </div>
-</footer>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://vioweb.de/#website",
-      "url": "https://vioweb.de/",
-      "name": "Vioweb",
-      "inLanguage": "de-DE",
-      "publisher": {
-        "@id": "https://vioweb.de/#betrieb"
-      }
-    },
-    {
-      "@type": "Organization",
-      "@id": "https://vioweb.de/#betrieb",
-      "name": "Vioweb",
-      "url": "https://vioweb.de/",
-      "email": "kontakt@vioweb.de",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://vioweb.de/img/favicon-512.png",
-        "width": 512,
-        "height": 512
-      },
-      "image": "https://vioweb.de/img/og-bild.png",
-      "description": "Website-Analyse, Optimierung und Erstellung neuer Websites für Betriebe, Vereine und Selbstständige.",
-      "slogan": "Analysieren. Optimieren. Entwickeln.",
-      "areaServed": {
-        "@type": "Country",
-        "name": "Deutschland"
-      },
-      "sameAs": [
-        "https://www.instagram.com/vio.web/"
-      ],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Leistungen",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Kostenloser Website-Kurzcheck",
-              "description": "Erste Einschätzung mit den auffälligsten Punkten."
-            },
-            "price": "0",
-            "priceCurrency": "EUR"
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Ausführlicher Website-Check-up",
-              "description": "Detaillierte Analyse mit priorisierter Maßnahmenliste als unabhängig nutzbare Arbeitsgrundlage. 85 Euro, bei späterer Optimierung anrechenbar.",
-              "offers": {
-                "@type": "Offer",
-                "price": "85",
-                "priceCurrency": "EUR"
-              }
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Umsetzung von Verbesserungen",
-              "description": "Behebung einzelner Punkte bis zur kompletten Überarbeitung."
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Erstellung neuer Websites",
-              "description": "Konzeption, Gestaltung, technische Umsetzung und Veröffentlichung."
-            }
-          }
-        ]
-      }
-    }
-  ]
-}
-</script>
-<script src="js/rennbahn.js" defer></script>
 </body>
 </html>

@@ -1,126 +1,105 @@
 # Wartungsmodus
 
-Die Startseite kann durch eine Wartungsseite mit kleiner Rennbahn ersetzt
-werden. Alles andere — Preise, FAQ, Kontakt, Impressum, Datenschutz — bleibt
-unverändert erreichbar.
+Im Wartungsmodus zeigt **jede Adresse** dieselbe Seite: die Wortmarke, groß
+und mittig, darunter eine Zeile. Sonst nichts — keine Verweise, kein
+Formular, kein Skript.
 
 ---
 
 ## Ein- und ausschalten
 
 ```sh
-./wartung.sh an       # Wartungsseite auf /
-./wartung.sh aus      # normale Startseite auf /
+./wartung.sh an       # jede Seite zeigt die Wartungsseite
+./wartung.sh aus      # die normale Website ist zurück
 ./wartung.sh status   # zeigt, was gerade aktiv ist
 ```
 
-Danach committen und pushen. GitHub Pages übernimmt die Änderung von selbst.
+Danach committen und pushen. GitHub Pages übernimmt es von selbst.
 
-Ohne Skript geht es genauso von Hand:
+---
 
-| Ziel | Schritte |
-|---|---|
-| **an** | `index.html` → `startseite.html` kopieren, dort `robots` auf `noindex,nofollow` setzen. `wartungsseite.html` → `index.html` kopieren, dort `robots` auf `index,follow,max-image-preview:large` setzen |
-| **aus** | dasselbe in die andere Richtung |
+## Wie es funktioniert
 
-Genau eine der beiden Fassungen ist indexierbar. Die andere trägt `noindex`
-und steht zusätzlich in `robots.txt`, damit sie nicht neben der echten
-Startseite in den Suchergebnissen auftaucht.
+Im Wartungsmodus tragen alle Einstiegspunkte **denselben Inhalt** — direkt,
+nicht über eine Weiterleitung:
+
+```
+index.html            preise/index.html     faq/index.html
+kontakt/index.html    datenschutz.html      danke.html
+404.html              leistungen.html
+```
+
+Weil auch `404.html` die Wartungsseite trägt, landet **jede unbekannte
+Adresse** ebenfalls dort. Es gibt kein Aufblitzen der echten Seite, keine
+Weiterleitungsschleife, und es funktioniert ohne JavaScript.
+
+Die normale Website liegt währenddessen unverändert in `normalbetrieb/` und
+wird beim Ausschalten zurückgespielt. Nachgemessen: alle acht Seiten kommen
+**byte-identisch** zurück.
+
+**Nicht betroffen:** `kurzcheck-muster.html`. Das ist ein Musterbericht zum
+Weitergeben und nicht Teil der Website — falls du den Link gerade jemandem
+geschickt hast, funktioniert er weiter.
 
 ---
 
 ## Warum kein Schalter im Code
 
-Der Auftrag sah `VITE_MAINTENANCE_MODE` oder `export const MAINTENANCE_MODE`
-vor. Beides passt hier nicht:
-
-- Es gibt **kein Build-System** — kein `package.json`, kein Vite, kein npm.
-  Die Seite ist reines HTML, CSS und JavaScript und wird von GitHub Pages
-  unverändert ausgeliefert. Umgebungsvariablen werden nirgends eingelesen.
-- Ein Schalter, der **erst im Browser** greift, hätte drei Nachteile: die
-  echte Startseite blitzt kurz auf, bevor das Skript sie ersetzt;
-  Suchmaschinen sehen weiter die alte Seite; und ohne JavaScript bliebe die
-  alte Seite ganz stehen.
-
-Der Tausch der Datei hat keinen dieser Nachteile und ist ein Befehl.
+Die Seite ist statisch und wird von GitHub Pages ausgeliefert: kein
+Build-System, keine Umgebungsvariablen. Ein Schalter, der erst im Browser
+greift, würde die echte Seite kurz zeigen und Besuchern ohne JavaScript gar
+nicht helfen.
 
 ---
 
-## Was neu ist
+## Zum Aussehen
 
-| Datei | Zweck |
-|---|---|
-| `wartungsseite.html` | die Wartungsseite, abgelegte Fassung |
-| `startseite.html` | die bisherige Startseite, abgelegte Fassung |
-| `js/rennbahn.js` | die Rennbahn, rund 20 KB, ohne Fremdcode |
-| `wartung.sh` | der Umschalter |
-| `WARTUNGSMODUS.md` | diese Datei |
+- **Heller Grund, kein dunkler.** Die Wortmarke ist dunkles `#1A1C22` auf
+  transparentem Grund. Auf dunklem Hintergrund verschwindet sie, und die
+  Datei wird nicht verändert. Für eine dunkle Fassung braucht es eine helle
+  Logovariante — die gibt es bisher nicht.
+- Das Logo nimmt 68 % der Bildschirmbreite ein, höchstens 480 px. Damit
+  wirkt es im Hochformat wie eine Story-Kachel und bleibt am Schreibtisch
+  ruhig.
+- Hinter dem Logo ein sehr dezenter violetter Schein, der langsam atmet. Bei
+  `prefers-reduced-motion` entfällt er ersatzlos.
+- Die Seite passt auf allen geprüften Breiten ohne Scrollen auf einen
+  Bildschirm: 320, 360, 375, 390, 430, 768 und 1440 px.
 
-**Geändert:** `index.html` (trägt jetzt die Wartungsseite) und `robots.txt`
-(vier neue Einträge in allen drei Bot-Gruppen).
-
-**Bibliotheken:** keine. Die Bahn läuft auf Canvas 2D, das jeder Browser
-mitbringt. Eine 3D-Bibliothek wäre ein Vielfaches des gesamten übrigen
-Seitengewichts gewesen, und die Seite darf beim Aufruf keine einzige Anfrage
-an einen fremden Server stellen — das ist die Kernaussage der Marke.
-
----
-
-## Wie das Spiel funktioniert
-
-Das Auto fährt einen festen Rundkurs. Gesteuert wird nur das Tempo.
-
-- **Gas** — Knöpfe gedrückt halten, oder Leertaste, Pfeil hoch, `W`
-- **Bremse** — Knopf gedrückt halten, oder Pfeil runter, `S`
-
-Die Fahrwerte hängen zusammen und sind aufeinander abgestimmt: Aus Gaskraft,
-Rollwiderstand und Luftwiderstand ergibt sich die Endgeschwindigkeit von
-selbst — rund 130 km/h. Jede Kurve hat ein eigenes Grenztempo, das sich aus
-ihrer Krümmung ergibt. Wer zu schnell hineinfährt, rutscht nach außen,
-verliert Tempo und sieht kurz **„Zu schnell!"**. Das Auto fängt sich wieder,
-es gibt kein Ausscheiden.
-
-Eine Runde dauert bei zügiger Fahrt etwa 13 Sekunden. Die Strecke ist rund
-380 Meter lang; daraus und aus dem Tempo entstehen alle angezeigten Zahlen.
-Nichts davon ist zufällig.
-
-**Die erste Runde zählt nicht als Bestzeit.** Sie beginnt aus dem Stand und
-wäre nicht vergleichbar — wie eine Auslaufrunde im echten Rennsport.
+**Texte ändern:** alles steht in `wartungsseite.html`. Die Zeile unter dem
+Logo ist ein einzelnes `<p>` — willst du wirklich nur das Logo, lösch die
+Zeile heraus. Nach jeder Änderung einmal `./wartung.sh aus` und
+`./wartung.sh an`, damit sie auf alle Seiten verteilt wird.
 
 ---
 
-## Bestzeit zurücksetzen
+## Impressum und Datenschutz
 
-Auf der Seite: der Verweis **„Bestzeit zurücksetzen"** unter den Knöpfen.
+Beides ist im Wartungsmodus **nicht** erreichbar, und das ist vertretbar:
+Die Seite bietet keine Leistungen an, nennt keine Preise, erhebt keine Daten
+und setzt nichts auf dem Gerät ab. Eine reine Platzhalterseite ist keine
+geschäftsmäßige Telemedien-Nutzung im Sinne von § 5 DDG.
 
-Von Hand: in den Entwicklerwerkzeugen des Browsers unter *Application →
-Local Storage* den Eintrag `vioweb-bestzeit` löschen. Er enthält nur eine
-Zahl — die Sekunden der schnellsten Runde. Kein Personenbezug, nichts wird
-übertragen.
+Sobald die Website wieder online geht, ändert sich das: Dann gilt die
+Impressumspflicht erneut. Das Impressum wurde vorher gelöscht — siehe A0 in
+`OFFEN.md`. Ich bin kein Anwalt, und das ist keine Rechtsberatung.
 
 ---
 
-## Texte und Verweise ändern
+## Suchmaschinen
 
-Alles steht in `wartungsseite.html`:
+Die Wartungsseite trägt `noindex,nofollow`. Grund: Sonst würde diese dünne
+Seite in den Suchergebnissen an die Stelle der echten Inhalte treten.
+Gecrawlt werden darf sie weiterhin — sonst liest niemand das `noindex`.
 
-| Was | Wo |
-|---|---|
-| Statuszeile | `<p class="status">` |
-| Überschrift | `<h1>` |
-| Beschreibung | `.wartung__satz` und `.wartung__klein` |
-| Kontaktbereich | `<section class="schluss">` |
-| E-Mail-Adresse | im Verweis `mailto:kontakt@vioweb.de` |
-| Fußzeile | `<footer class="fuss">` |
+**Das hat einen Preis.** Dauert die Wartung Wochen, fallen die Adressen aus
+dem Index und müssen sich danach neu aufbauen. Für ein paar Tage ist es der
+geringere Schaden. Sauberer wäre ein HTTP-Status 503, den kann GitHub Pages
+aber nicht liefern.
 
-Die Streckenbeschriftungen (`ANALYSE`, `PERFORMANCE`, `SEO`,
-`SICHTBARKEIT`, `CONVERSION`, `VIOWEB`) stehen in `js/rennbahn.js` in der
-Liste `BANDEN`.
-
-Wird die Datei bearbeitet, während der Wartungsmodus **an** ist, muss die
-Änderung in `index.html` gemacht werden — `wartungsseite.html` ist dann nur
-die Ablage. `./wartung.sh aus` schreibt den aktuellen Stand automatisch
-zurück in die Ablage.
+`sitemap.xml` nennt weiterhin die vier normalen Adressen. Das ist während der
+Wartung ein Widerspruch zum `noindex`, aber harmlos und nach dem Ausschalten
+wieder richtig.
 
 ---
 
@@ -130,37 +109,34 @@ zurück in die Ablage.
 python3 -m http.server 8099
 ```
 
-Dann `http://127.0.0.1:8099/` aufrufen. Ein einfaches Öffnen der Datei über
-`file://` reicht nicht: die Schriften und das Stylesheet werden dann nicht
-geladen.
+Dann `http://127.0.0.1:8099/` aufrufen. Ein Aufruf über `file://` reicht
+nicht, weil Schrift und Logo über absolute Pfade geladen werden.
+
+Ein Unterschied zum echten Betrieb: Der Testserver zeigt bei unbekannten
+Adressen seine eigene Fehlerseite. GitHub Pages liefert dort `404.html` aus —
+und die trägt die Wartungsseite.
 
 ---
 
 ## Was geprüft wurde
 
-- Breiten 375 × 667, 390 × 844, 768 × 1024 und 1440 × 900: kein seitliches
-  Scrollen, nichts über dem Rand, Bahn vollständig sichtbar
-- Gas beschleunigt, Bremse verzögert bis zum Stillstand, ohne Gas rollt das
-  Auto aus, die Endgeschwindigkeit ist begrenzt
-- Runden werden gezählt, Zeiten laufen, die Bestzeit übersteht das Neuladen
-- Steuerung über Maus, Finger und Tastatur; Fokus sichtbar; Leertaste
-  scrollt die Seite nicht
-- Bei `prefers-reduced-motion` bleibt das Auto steuerbar, die Bewegung
-  drumherum entfällt
-- Im Hintergrund rechnet nichts weiter
-- Kontraste mindestens 4,5:1
+- Alle acht Adressen liefern die Wartungsseite, ohne Verweise und ohne Skript
+- Nirgends steht noch „Impressum", „Datenschutz", „Preis" oder Inhalt der
+  alten Seiten im Quelltext
 - Keine Anfrage an fremde Server, keine Konsolenfehler
-- Impressum, Datenschutz, Preise, FAQ und Kontakt erreichbar
+- Ohne JavaScript sichtbar, bei reduzierter Bewegung ohne Animation
+- Sieben Breiten von 320 bis 1440 px: kein Querlauf, kein Scrollen nötig,
+  Zeile nie breiter als die Marke
+- Zurückschalten liefert alle acht Seiten byte-identisch; im Normalbetrieb
+  laufen die bestehenden Prüfungen grün
 
 ---
 
-## Offen
+## Die alte Wartungsseite
 
-- **Das August-Angebot erscheint nicht mehr auf der Startseite.** Das
-  Hinweisfeld lag dort und ist mit der alten Startseite in die Ablage
-  gewandert. Auf `/preise/` steht der Angebotspreis weiterhin. Ein
-  Verkaufsfenster auf einer Wartungsseite wäre ein Widerspruch — wenn du es
-  trotzdem willst, sag Bescheid.
-- **Lighthouse ist nicht gemessen.** Örtlich fehlen Komprimierung und
-  Zwischenspeicherung, die Zahlen wären nicht aussagekräftig. Sinnvoll ist
-  eine Messung gegen die veröffentlichte Seite.
+Die frühere Fassung mit der Rennbahn liegt in der Git-Historie bei Commit
+`ed975b6`. Zurückholen:
+
+```sh
+git checkout ed975b6 -- wartungsseite.html js/rennbahn.js
+```

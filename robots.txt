@@ -23,9 +23,9 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
-# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
-# noindex; der Eintrag hier spart den Abruf.
-Disallow: /startseite.html
+# Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
+# soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
+Disallow: /normalbetrieb/
 Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
@@ -56,9 +56,9 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
-# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
-# noindex; der Eintrag hier spart den Abruf.
-Disallow: /startseite.html
+# Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
+# soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
+Disallow: /normalbetrieb/
 Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
@@ -78,9 +78,9 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
-# Die jeweils nicht aktive Fassung der Startseite. Traegt zusaetzlich
-# noindex; der Eintrag hier spart den Abruf.
-Disallow: /startseite.html
+# Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
+# soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
+Disallow: /normalbetrieb/
 Disallow: /wartungsseite.html
 Disallow: /kurzcheck-muster.html
 Disallow: /leistungen.html
