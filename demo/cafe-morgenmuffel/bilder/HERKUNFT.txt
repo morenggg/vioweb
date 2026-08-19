@@ -1,0 +1,31 @@
+Bildquellen — Café Morgenmuffel (Demo)
+======================================
+
+Alle vier Dateien sind die unveränderten Original-Screenshots aus dem
+Projektauftrag. Es wurde kein Pixel bearbeitet, nichts zugeschnitten,
+nichts erzeugt, nichts aus dem Netz ergänzt.
+
+  cafe-fotos.png      1290 × 2796   ehem. IMG_3649.PNG
+                      drei Aufnahmen untereinander:
+                      Schaufenster am Abend  (y 177–941)
+                      Matcha im Glas         (y 941–1706)
+                      Siebträgermaschine     (y 1706–2470)
+
+  cafe-profil.png     1290 × 2796   ehem. IMG_3646.PNG
+                      Instagram-Profil, darin sechs Beitragsbilder
+                      Raster: Spalten x 0/431/862 (je 428 breit)
+                              Zeilen  y 1806 (571 hoch) und y 2380 (416 sichtbar)
+
+  speisekarte-1.png   1290 × 2796   ehem. IMG_3647.PNG
+                      Karte mit Logo, Espresso, Koffein Specials
+                      Logo-Signet  x 96–897,  y 360–1008
+                      Botanik      x 913–1253, y 380–720
+
+  speisekarte-2.png   1290 × 2796   ehem. IMG_3648.PNG
+                      Karte mit Heiße Getränke, Matcha, Speisen, Frappés
+                      Botanik      x 1075–1285, y 1960–2270
+
+Die Website schneidet ausschließlich per CSS zu (siehe „Bildschnitt“ in
+style.css). Dadurch bleibt jede Datei im Original und wird vom Browser
+je Datei nur ein einziges Mal geladen, egal wie viele Ausschnitte sie
+auf der Seite füllt.
