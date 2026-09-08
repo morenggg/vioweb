@@ -1,43 +1,51 @@
 /* =========================================================================
    Campus — Zustand.
 
-   Alles, was der Nutzer im Prototyp veraendert, liegt hier: belegte
-   Module, angepinnte Module, Favoriten, gekaufte Materialien, Haken auf
-   Checklisten, Thema, gelesene Chats, letzte Suchen.
+   Die einzige Quelle fuer alles, was den Nutzer betrifft: Name,
+   Hochschule, Studiengang, Fach, Semester, belegte Module, angepinnte
+   Module, Favoriten, gekaufte Materialien, Haken auf Checklisten,
+   Thema, gelesene Chats, letzte Suchen.
 
-   Gespeichert wird in localStorage. Das ist bewusst der einzige Speicher:
-   der Prototyp hat kein Backend, und es werden keine echten Daten
-   erhoben. Faellt localStorage aus (privates Fenster, gesperrte
-   Speicherung), laeuft die App weiter, merkt sich aber nichts.
+   Kopf, Home, Studium, Feed, Entdecken und Profil lesen ausschliesslich
+   hier — es gibt keinen zweiten Nutzerzustand daneben und keinen Namen
+   im Markup.
 
-   Spaeter tritt an die Stelle von speichern() ein Aufruf an den Server.
-   Die Ansichten fassen den Speicher nie direkt an, sie fragen nur ueber
-   die Funktionen hier.
+   Die Modulliste ist normalerweise NICHT gespeichert: sie ergibt sich
+   aus Studiengang, Fach und Semester. Erst wenn der Nutzer selbst ein
+   Modul hinzufuegt oder entfernt, wird die Liste festgeschrieben. So
+   folgt ein Wechsel des Studiengangs sofort, ohne dass alte Module
+   haengen bleiben.
+
+   Gespeichert wird in localStorage, nur in diesem Browser. Faellt der
+   Speicher aus (privates Fenster), laeuft die App weiter und merkt sich
+   nichts. Spaeter tritt an die Stelle von speichern() ein Aufruf an den
+   Server.
    ========================================================================= */
 window.Uni = window.Uni || {};
 
 Uni.zustand = (function () {
   'use strict';
 
-  var SCHLUESSEL = 'uni.zustand.v1';
+  var SCHLUESSEL = 'uni.zustand.v2';
 
   var grundstand = {
     profil: {
+      name: '',              /* leer erlaubt: dann gruesst die App ohne Namen */
       hochschule: 'uni-leipzig',
       studiengang: 'bwl',
+      fach: null,            /* nur bei Studiengaengen mit Faechern */
       semester: 3,
       onboardingFertig: false
     },
-    /* Module des laufenden Semesters, in dieser Reihenfolge. */
-    module: ['statistik-2', 'marketing', 'wirtschaftsrecht', 'investition-finanzierung', 'wirtschaftsinformatik', 'wirtschaftsenglisch'],
-    gepinnt: ['statistik-2', 'marketing'],
-    favoriten: ['marketing-lernzettel'],
-    gekauft: ['formelsammlung-statistik-2'],
-    gefolgt: ['v-lena'],
-    haken: {},            /* terminId -> [Indizes der erledigten Punkte] */
-    gelesen: [],          /* Chat-Kennungen */
-    letzteSuchen: ['Statistik II Klausur', 'Taschenrechner', 'Nachhilfe'],
-    thema: 'system',      /* system | hell | dunkel */
+    module: null,            /* null = automatisch aus dem Studiengang */
+    gepinnt: [],
+    favoriten: [],
+    gekauft: [],
+    gefolgt: [],
+    haken: {},               /* terminId -> [Indizes der erledigten Punkte] */
+    gelesen: [],             /* Chat-Kennungen */
+    letzteSuchen: [],
+    thema: 'system',         /* system | hell | dunkel */
     benachrichtigungen: 'wichtig'
   };
 
@@ -73,7 +81,9 @@ Uni.zustand = (function () {
     horcher.forEach(function (f) { f(stand); });
   }
 
-  function inListe(liste, wert) { return stand[liste].indexOf(wert) > -1; }
+  function s() { return stand || laden(); }
+
+  function inListe(liste, wert) { return s()[liste].indexOf(wert) > -1; }
 
   function umschalten(liste, wert) {
     var i = stand[liste].indexOf(wert);
@@ -82,46 +92,90 @@ Uni.zustand = (function () {
     return i === -1;
   }
 
+  /* Die Module, die sich aus Studiengang, Fach und Semester ergeben.
+     Gibt es fuer diese Kombination nichts, ist die Liste leer — es wird
+     NIE auf einen anderen Studiengang ausgewichen. */
+  function moduleAusStudiengang(profil) {
+    profil = profil || s().profil;
+    return Uni.daten.module.filter(function (m) {
+      return m.studiengang === profil.studiengang
+        && (!m.fach || m.fach === profil.fach)
+        && m.semester === profil.semester;
+    }).map(function (m) { return m.slug; });
+  }
+
+  /* Aus der abgeleiteten Liste eine eigene machen, sobald der Nutzer
+     selbst eingreift. */
+  function festschreiben() {
+    if (stand.module === null) stand.module = moduleAusStudiengang();
+  }
+
   return {
     laden: laden,
     speichern: speichern,
     horchen: function (f) { horcher.push(f); },
+    stand: s,
+    profil: function () { return s().profil; },
 
-    stand: function () { return stand || laden(); },
-    profil: function () { return (stand || laden()).profil; },
+    /* --- Name ------------------------------------------------------ */
+    name: function () { return s().profil.name || ''; },
+    kuerzel: function () {
+      var n = s().profil.name.trim();
+      return n ? n.charAt(0).toUpperCase() : '';
+    },
+    nameSetzen: function (wert) {
+      stand.profil.name = String(wert || '').trim().slice(0, 40);
+      speichern();
+    },
 
-    /* --- Module --------------------------------------------------- */
-    module: function () { return (stand || laden()).module.slice(); },
-    belegt: function (slug) { return inListe('module', slug); },
+    /* --- Module ---------------------------------------------------- */
+    moduleAusStudiengang: moduleAusStudiengang,
+    module: function () {
+      var st = s();
+      return st.module === null ? moduleAusStudiengang(st.profil) : st.module.slice();
+    },
+    eigeneModulliste: function () { return s().module !== null; },
+    belegt: function (slug) { return this.module().indexOf(slug) > -1; },
     modulHinzufuegen: function (slug) {
-      if (!inListe('module', slug)) { stand.module.push(slug); speichern(); }
+      festschreiben();
+      if (stand.module.indexOf(slug) === -1) { stand.module.push(slug); speichern(); }
     },
     modulEntfernen: function (slug) {
+      festschreiben();
       var i = stand.module.indexOf(slug);
-      if (i > -1) { stand.module.splice(i, 1); speichern(); }
+      if (i > -1) stand.module.splice(i, 1);
       var j = stand.gepinnt.indexOf(slug);
-      if (j > -1) { stand.gepinnt.splice(j, 1); speichern(); }
+      if (j > -1) stand.gepinnt.splice(j, 1);
+      speichern();
+    },
+    /* Eigene Auswahl verwerfen: die Liste kommt wieder aus dem
+       Studiengang. */
+    moduleAbleiten: function () {
+      stand.module = null;
+      var neue = moduleAusStudiengang();
+      stand.gepinnt = stand.gepinnt.filter(function (x) { return neue.indexOf(x) > -1; });
+      speichern();
     },
     gepinnt: function (slug) { return inListe('gepinnt', slug); },
     pinUmschalten: function (slug) { return umschalten('gepinnt', slug); },
 
-    /* --- Marktplatz ----------------------------------------------- */
+    /* --- Marktplatz ------------------------------------------------- */
     favorit: function (slug) { return inListe('favoriten', slug); },
     favoritUmschalten: function (slug) { return umschalten('favoriten', slug); },
-    favoriten: function () { return (stand || laden()).favoriten.slice(); },
+    favoriten: function () { return s().favoriten.slice(); },
     gekauft: function (slug) { return inListe('gekauft', slug); },
+    kaeufe: function () { return s().gekauft.slice(); },
     kaufMerken: function (slug) { if (!inListe('gekauft', slug)) { stand.gekauft.push(slug); speichern(); } },
     folgt: function (id) { return inListe('gefolgt', id); },
     folgenUmschalten: function (id) { return umschalten('gefolgt', id); },
 
-    /* --- Checklisten auf Abgaben ----------------------------------
+    /* --- Checklisten auf Abgaben ------------------------------------
        Solange der Nutzer nichts angetippt hat, gilt der Stand aus den
-       Musterdaten. Beim ersten Antippen wird dieser Stand uebernommen
-       und ab dann hier gefuehrt. */
+       Musterdaten. Beim ersten Antippen wird er uebernommen. */
     hakenVorhanden: function (terminId) {
-      return Object.prototype.hasOwnProperty.call((stand || laden()).haken, terminId);
+      return Object.prototype.hasOwnProperty.call(s().haken, terminId);
     },
-    hakenListe: function (terminId) { return (stand || laden()).haken[terminId] || []; },
+    hakenListe: function (terminId) { return s().haken[terminId] || []; },
     hakenUmschalten: function (terminId, index, grund) {
       var l = Object.prototype.hasOwnProperty.call(stand.haken, terminId)
         ? stand.haken[terminId] : (grund || []).slice();
@@ -131,12 +185,12 @@ Uni.zustand = (function () {
       speichern();
     },
 
-    /* --- Inbox ----------------------------------------------------- */
+    /* --- Inbox ------------------------------------------------------- */
     gelesen: function (id) { return inListe('gelesen', id); },
     alsGelesen: function (id) { if (!inListe('gelesen', id)) { stand.gelesen.push(id); speichern(); } },
 
-    /* --- Suche ----------------------------------------------------- */
-    letzteSuchen: function () { return (stand || laden()).letzteSuchen.slice(0, 5); },
+    /* --- Suche ------------------------------------------------------- */
+    letzteSuchen: function () { return s().letzteSuchen.slice(0, 5); },
     sucheMerken: function (text) {
       text = (text || '').trim();
       if (!text) return;
@@ -147,29 +201,36 @@ Uni.zustand = (function () {
       speichern();
     },
 
-    /* --- Einstellungen --------------------------------------------- */
-    thema: function () { return (stand || laden()).thema; },
+    /* --- Einstellungen ----------------------------------------------- */
+    thema: function () { return s().thema; },
     themaSetzen: function (wert) {
       stand.thema = wert;
-      if (wert === 'system') document.documentElement.removeAttribute('data-thema');
-      else document.documentElement.setAttribute('data-thema', wert);
+      this.themaAnwenden();
       speichern();
     },
     themaAnwenden: function () {
-      var w = (stand || laden()).thema;
+      var w = s().thema;
       if (w === 'system') document.documentElement.removeAttribute('data-thema');
       else document.documentElement.setAttribute('data-thema', w);
     },
-    benachrichtigungen: function () { return (stand || laden()).benachrichtigungen; },
+    benachrichtigungen: function () { return s().benachrichtigungen; },
     benachrichtigungenSetzen: function (wert) { stand.benachrichtigungen = wert; speichern(); },
 
-    /* --- Onboarding ------------------------------------------------ */
-    onboardingFertig: function () { return (stand || laden()).profil.onboardingFertig; },
-    onboardingSpeichern: function (hochschule, studiengang, semester) {
-      stand.profil.hochschule = hochschule;
-      stand.profil.studiengang = studiengang;
-      stand.profil.semester = semester;
+    /* --- Onboarding ---------------------------------------------------
+       Speichert die Angaben und setzt die Modulliste zurueck: sie wird
+       ab jetzt wieder aus dem Studiengang abgeleitet. Angepinntes, das
+       nicht mehr passt, faellt weg. */
+    onboardingFertig: function () { return s().profil.onboardingFertig; },
+    onboardingSpeichern: function (angaben) {
+      stand.profil.name = String(angaben.name || '').trim().slice(0, 40);
+      stand.profil.hochschule = angaben.hochschule;
+      stand.profil.studiengang = angaben.studiengang;
+      stand.profil.fach = angaben.fach || null;
+      stand.profil.semester = Number(angaben.semester);
       stand.profil.onboardingFertig = true;
+      stand.module = null;
+      var neue = moduleAusStudiengang(stand.profil);
+      stand.gepinnt = stand.gepinnt.filter(function (x) { return neue.indexOf(x) > -1; });
       speichern();
     },
     zuruecksetzen: function () {

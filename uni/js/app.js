@@ -65,12 +65,13 @@ Uni.app = (function () {
 
   /* ------------------------------------------------- Kopf */
 
+  /* Tageszeit plus Name aus dem Profil. Ist kein Name hinterlegt,
+     gruesst die App ohne Namen — es wird keiner erfunden. */
   function grussformel() {
     var h = new Date().getHours();
-    if (h < 5) return 'Gute Nacht';
-    if (h < 11) return 'Guten Morgen';
-    if (h < 18) return 'Hallo';
-    return 'Guten Abend';
+    var tageszeit = h < 5 ? 'Gute Nacht' : h < 11 ? 'Guten Morgen' : h < 18 ? 'Hallo' : 'Guten Abend';
+    var name = z.name();
+    return tageszeit + (name ? ', ' + name : '');
   }
 
   function kopfHtml(kopf) {
@@ -85,7 +86,7 @@ Uni.app = (function () {
       var d = new Date();
       return '<div class="u-kopf__reihe">' +
           '<div class="u-kopf__text">' +
-            '<p class="u-kopf__gruss">' + esc(grussformel() + ', ' + Uni.daten.nutzer.vorname) + '</p>' +
+            '<p class="u-kopf__gruss">' + esc(grussformel()) + '</p>' +
             '<p class="u-kopf__datum">' + esc(b.WOCHENTAG_KURZ[d.getDay()] + ', ' + d.getDate() + '. ' + b.MONAT[d.getMonth()]) + '</p>' +
           '</div>' + briefKnopf +
         '</div>' +
@@ -364,9 +365,20 @@ Uni.app = (function () {
     },
 
     'onboarding-fertig': function (el) {
-      var t = el.dataset.wert.split('|');
-      z.onboardingSpeichern(t[0], t[1], Number(t[2]));
+      z.onboardingSpeichern({
+        name: el.dataset.name,
+        hochschule: el.dataset.hochschule,
+        studiengang: el.dataset.studiengang,
+        fach: el.dataset.fach || null,
+        semester: Number(el.dataset.semester)
+      });
       gehe(ziel(''), true);
+    },
+
+    'module-zuruecksetzen': function () {
+      z.moduleAbleiten();
+      meldung('Module abgeleitet',
+        'Deine Modulliste ergibt sich jetzt wieder aus Studiengang, Fach und Semester.');
     }
   };
 
@@ -428,6 +440,12 @@ Uni.app = (function () {
       if (neu) neu.focus();
       var chat = document.querySelector('.u-chat');
       if (chat) chat.lastElementChild.scrollIntoView({ block: 'nearest' });
+      return;
+    }
+
+    if (tun === 'onboarding-name') {
+      var nf = f.querySelector('input[name="name"]');
+      gehe(f.dataset.weiter.replace(/([?&]name=)[^&]*/, '$1' + encodeURIComponent(nf.value.trim())));
       return;
     }
 

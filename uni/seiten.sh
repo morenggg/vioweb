@@ -14,22 +14,49 @@
 #  Dadurch funktioniert ein Direktaufruf oder ein geteilter Link genauso
 #  wie die Navigation in der App.
 #
-#  Wenn in js/daten.js ein Modul, ein Material, ein Service oder ein
-#  Flohmarkt-Artikel dazukommt, gehoert der Slug in die Liste unten und
-#  das Skript wird einmal ausgefuehrt.
+#  Die Slugs kommen direkt aus js/daten.js. Kommt dort ein Modul, ein
+#  Material, ein Service oder ein Flohmarkt-Artikel dazu, genuegt ein
+#  Aufruf dieses Skripts — es legt die fehlenden Ordner an und raeumt
+#  die weg, deren Slug es nicht mehr gibt.
 # =============================================================================
 set -e
 cd "$(dirname "$0")"
 
 FESTE="_ studium kalender entdecken flohmarkt profil inbox suche onboarding material service modul"
 
-MODULE="statistik-2 marketing wirtschaftsrecht investition-finanzierung wirtschaftsinformatik wirtschaftsenglisch statistik-1 buchfuehrung mikrooekonomik personalmanagement makrooekonomik controlling unternehmensfuehrung"
+# Die Slugs stehen nicht doppelt hier drin, sondern werden aus
+# js/daten.js gelesen. Dort markieren Kommentare den Anfang und das Ende
+# jeder Sammlung. So kann die Liste nie auseinanderlaufen.
+slugs() {
+  sed -n "/--- SLUGS $1 ---/,/--- ENDE $1 ---/p" js/daten.js \
+    | grep -o "slug: '[^']*'" | sed "s/slug: '//; s/'$//"
+}
 
-MATERIALIEN="formelsammlung-statistik-2 klausurzusammenfassung-statistik-2 marketing-lernzettel karteikarten-statistik-2 uebungsaufgaben-iuf excel-vorlage-investition zusammenfassung-wirtschaftsrecht hausarbeit-markenpositionierung praesentationsvorlage lernplan-vorlage"
+MODULE=$(slugs module)
+MATERIALIEN=$(slugs materialien)
+SERVICES=$(slugs services)
+ARTIKEL=$(slugs flohmarkt)
 
-SERVICES="nachhilfe-statistik korrekturlesen-hausarbeit excel-hilfe praesentationsfeedback bewerbungshilfe nachhilfe-buchfuehrung"
+for name in MODULE MATERIALIEN SERVICES ARTIKEL; do
+  eval "wert=\$$name"
+  [ -n "$wert" ] || { echo "FEHLER: keine Slugs fuer $name in js/daten.js gefunden." >&2; exit 1; }
+done
 
-ARTIKEL="taschenrechner-ti-30 bwl-grundlagen-buch monitor-24-zoll schreibtischlampe fahrrad-28-zoll kaffeemaschine aktenordner-set statistik-buch"
+# Ordner wegraeumen, deren Slug es nicht mehr gibt. Ohne die vorherige
+# Pruefung waere das gefaehrlich — deshalb steht sie oben.
+aufraeumen() {
+  ordner="$1"
+  liste="$2"
+  [ -d "$ordner" ] || return 0
+  for pfad in "$ordner"/*/; do
+    [ -d "$pfad" ] || continue
+    name=$(basename "$pfad")
+    if ! echo "$liste" | grep -qx "$name"; then
+      rm -rf "$pfad"
+      echo "  entfernt: $pfad"
+    fi
+  done
+}
 
 # $1 Zielordner (leer = /uni selbst), $2 Titel
 huelle() {
@@ -117,5 +144,11 @@ echo "Module:";      for s in $MODULE;       do huelle "modul/$s"     "Modul · 
 echo "Materialien:"; for s in $MATERIALIEN;  do huelle "material/$s"  "Material · Campus"; done
 echo "Services:";    for s in $SERVICES;     do huelle "service/$s"   "Service · Campus"; done
 echo "Flohmarkt:";   for s in $ARTIKEL;      do huelle "flohmarkt/$s" "Artikel · Campus"; done
+
+echo "Aufraeumen:"
+aufraeumen modul     "$MODULE"
+aufraeumen material  "$MATERIALIEN"
+aufraeumen service   "$SERVICES"
+aufraeumen flohmarkt "$ARTIKEL"
 
 echo "Fertig."

@@ -7,10 +7,17 @@
        html:  der Inhalt als Zeichenkette
        titel: der Titel fuers Browserfenster }
 
+   Zwei Regeln gelten durchgehend:
+
+   1. Kein Name, kein Studiengang und kein Semester steht im Markup.
+      Alles kommt aus Uni.zustand und Uni.abfrage.
+   2. Wo fuer den gewaehlten Studiengang nichts hinterlegt ist, steht ein
+      leerer Zustand mit einem Weg nach vorn — nie ersatzweise der Inhalt
+      eines anderen Studiengangs.
+
    Der gesamte Ansichtszustand steckt in der Adresse: gewaehlter Reiter,
-   Filter, Kalenderwoche, Suchtext. Dadurch ist jede Ansicht teilbar, der
-   Zurueck-Knopf des Browsers funktioniert, und es gibt keinen zweiten
-   Zustandsspeicher neben zustand.js.
+   Filter, Kalenderwoche, Suchtext, Onboarding-Schritt. Dadurch ist jede
+   Ansicht teilbar und der Zurueck-Knopf des Browsers funktioniert.
    ========================================================================= */
 window.Uni = window.Uni || {};
 
@@ -23,83 +30,122 @@ Uni.ansicht = (function () {
   var z = Uni.zustand;
   var esc = b.esc;
 
+  /* Studiengang, Fach und Semester als eine Zeile — an mehreren Stellen
+     gebraucht und deshalb nur einmal geschrieben. */
+  function studienzeile(mitSemester) {
+    var p = z.profil();
+    var sg = d.studiengang(p.studiengang);
+    var f = d.fach(p.studiengang, p.fach);
+    var teile = [];
+    if (mitSemester) teile.push(p.semester + '. Semester');
+    if (sg) teile.push(sg.kurz);
+    if (f) teile.push(f.name);
+    return teile.join(' · ');
+  }
+
+  function musterhinweis() {
+    return b.hinweis('<b>Musterdaten.</b> Beiträge, Termine und Meldungen in diesem Prototyp sind erfunden und stammen nicht von einer Hochschule.');
+  }
+
   /* --------------------------------------------------------- Home */
 
-  function home(ctx) {
+  function home() {
     var heute = q.heuteTermine();
     var module = q.moduleSortiert();
     var feed = q.feed();
-    var profil = z.profil();
-    var sg = d.studiengang(profil.studiengang);
+    var sg = d.studiengang(z.profil().studiengang);
 
-    var heuteHtml;
-    if (heute.length) {
-      heuteHtml = heute.map(b.heuteZeile).join('');
+    var html =
+      '<section class="u-heute" aria-labelledby="heute-titel">' +
+        '<div class="u-heute__kopf">' +
+          '<h2 class="u-kicker" id="heute-titel">Heute</h2>' +
+          '<a class="u-abschnitt__mehr" href="/uni/kalender/">Kalender</a>' +
+        '</div>' +
+        (heute.length
+          ? heute.map(b.heuteZeile).join('')
+          : '<p class="u-klein u-leise" style="padding:.2rem var(--rand) 1.1rem">' + naechsterHinweis() + '</p>') +
+      '</section>';
+
+    /* --- Deine Module --- */
+    html += '<section class="u-abschnitt" aria-labelledby="module-titel">' +
+      '<div class="u-abschnitt__kopf">' +
+        '<div>' +
+          '<p class="u-kicker">' + esc(studienzeile(true)) + '</p>' +
+          '<h2 class="u-titel u-h2" id="module-titel">Deine Module</h2>' +
+        '</div>' +
+        (module.length ? '<a class="u-abschnitt__mehr" href="/uni/studium/">Alle</a>' : '') +
+      '</div>';
+
+    if (module.length) {
+      html += '<div class="u-modulreihe">' +
+        module.map(b.modulkarte).join('') +
+        '<a class="u-modulkarte u-modulkarte--neu" href="/uni/studium/?hinzufuegen=1">' +
+          b.zeichen('plus', 20) + '<span>Modul hinzufügen</span></a>' +
+      '</div>';
     } else {
-      heuteHtml = '<div style="padding:.9rem var(--rand) 1.1rem">' +
-        '<p class="u-klein u-leise">Heute steht nichts an. Der nächste Termin ist ' +
-        naechsterHinweis() + '.</p></div>';
+      html += leerModul(sg);
+    }
+    html += '</section>';
+
+    /* --- Für dich --- */
+    html += '<section class="u-abschnitt u-abschnitt--linie" aria-labelledby="feed-titel">' +
+      '<div class="u-abschnitt__kopf">' +
+        '<div>' +
+          '<p class="u-kicker">Aus deinen Modulen und vom Campus</p>' +
+          '<h2 class="u-titel u-h2" id="feed-titel">Für dich</h2>' +
+        '</div>' +
+      '</div>' +
+      '<div class="u-feed">' + feed.slice(0, 4).map(function (e) { return b.feedEintrag(e); }).join('') + '</div>' +
+    '</section>';
+
+    html += entdeckenBlock();
+
+    if (feed.length > 4) {
+      html += '<section class="u-abschnitt">' +
+        '<div class="u-feed">' + feed.slice(4).map(function (e) { return b.feedEintrag(e); }).join('') + '</div>' +
+      '</section>';
     }
 
-    return {
-      titel: 'Campus',
-      kopf: { art: 'home' },
-      html:
-        '<section class="u-heute" aria-labelledby="heute-titel">' +
-          '<div class="u-heute__kopf">' +
-            '<h2 class="u-kicker" id="heute-titel">Heute</h2>' +
-            '<a class="u-abschnitt__mehr" href="/uni/kalender/">Kalender</a>' +
-          '</div>' + heuteHtml +
-        '</section>' +
+    html += '<div style="padding:var(--s-abschnitt) var(--rand) 0">' + musterhinweis() + '</div>';
 
-        '<section class="u-abschnitt" aria-labelledby="module-titel">' +
-          '<div class="u-abschnitt__kopf">' +
-            '<div>' +
-              '<p class="u-kicker">' + esc(profil.semester + '. Semester · ' + (sg ? sg.kurz : '')) + '</p>' +
-              '<h2 class="u-titel u-h2" id="module-titel">Deine Module</h2>' +
-            '</div>' +
-            '<a class="u-abschnitt__mehr" href="/uni/studium/">Alle</a>' +
-          '</div>' +
-          '<div class="u-modulreihe">' +
-            module.map(b.modulkarte).join('') +
-            '<a class="u-modulkarte u-modulkarte--neu" href="/uni/studium/?hinzufuegen=1">' +
-              b.zeichen('plus', 20) + '<span>Modul hinzufügen</span></a>' +
-          '</div>' +
-        '</section>' +
-
-        '<section class="u-abschnitt" aria-labelledby="feed-titel">' +
-          b.abschnitt('Für dich') +
-          '<div class="u-feed">' + feed.slice(0, 4).map(function (e) { return b.feedEintrag(e); }).join('') + '</div>' +
-        '</section>' +
-
-        entdeckenBlock() +
-
-        '<section class="u-abschnitt">' +
-          '<div class="u-feed">' + feed.slice(4).map(function (e) { return b.feedEintrag(e); }).join('') + '</div>' +
-        '</section>' +
-
-        '<p class="u-klein u-leise" style="padding:var(--s-xl) var(--rand) 0">' +
-          'Prototyp mit Musterdaten. Keine echten Personen, keine echten Preise.</p>'
-    };
+    return { titel: 'Campus', kopf: { art: 'home' }, html: html };
 
     function naechsterHinweis() {
       var alle = q.meineTermine().filter(function (t) { return t.datum > d.iso(d.heute()); })
         .sort(function (a, c) { return a.datum < c.datum ? -1 : 1; });
-      if (!alle.length) return 'noch nicht geplant';
-      return esc(b.relativ(alle[0].datum) + ', ' + alle[0].start + ' Uhr · ' + alle[0].titel);
+      if (!alle.length) return 'Heute steht nichts an, und weiter vorn ist auch noch nichts eingetragen.';
+      return 'Heute steht nichts an. Als Nächstes: ' +
+        esc(b.relativ(alle[0].datum) + ', ' + alle[0].start + ' Uhr · ' + alle[0].titel) + '.';
     }
   }
 
+  /* Leerer Zustand, wenn fuer Studiengang und Semester nichts hinterlegt
+     ist. Er weicht ausdruecklich NICHT auf einen anderen Studiengang
+     aus, sondern bietet die beiden Wege an, die weiterhelfen. */
+  function leerModul(sg) {
+    return '<div class="u-leer" style="padding-block:var(--s-lg)">' +
+      '<p class="u-leer__titel">Für deinen Studiengang sind noch keine Module hinterlegt</p>' +
+      '<p class="u-leer__text">' +
+        esc((sg ? sg.name : 'Dieser Studiengang') + ', ' + z.profil().semester + '. Semester: ' +
+        'In diesem Prototyp gibt es dafür noch keine Modulliste. Du kannst Module selbst hinzufügen oder vorschlagen.') + '</p>' +
+      '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:var(--s-md)">' +
+        '<button type="button" class="u-knopf" data-tun="modul-suchen">Modul hinzufügen</button>' +
+        '<button type="button" class="u-knopf u-knopf--still" data-tun="modul-vorschlagen">Modul vorschlagen</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   function entdeckenBlock() {
+    var floh = q.flohmarkt({}).length;
     return '<section class="u-entdecken">' +
       '<p class="u-kicker" style="color:inherit;opacity:.7">Entdecken</p>' +
       '<h2 class="u-entdecken__titel">Hier passiert was.</h2>' +
       '<p class="u-entdecken__text">Campus, Materialien, Services und der Flohmarkt deiner Hochschule.</p>' +
       '<div class="u-entdecken__gitter">' +
-        punkt('Campus', d.campus.length + ' Beiträge', '/uni/entdecken/?bereich=campus') +
+        punkt('Campus', q.campus().length + ' Beiträge', '/uni/entdecken/?bereich=campus') +
         punkt('Materialien', d.materialien.length + ' Angebote', '/uni/entdecken/?bereich=materialien') +
         punkt('Services', d.services.length + ' Anbieter', '/uni/entdecken/?bereich=services') +
-        punkt('Flohmarkt', d.flohmarkt.length + ' Artikel', '/uni/flohmarkt/') +
+        punkt('Flohmarkt', floh ? floh + ' Artikel' : 'noch leer', '/uni/flohmarkt/') +
       '</div>' +
     '</section>';
 
@@ -112,74 +158,97 @@ Uni.ansicht = (function () {
   /* ------------------------------------------------------ Studium */
 
   function studium(ctx) {
-    var profil = z.profil();
-    var sg = d.studiengang(profil.studiengang);
-    var hs = d.hochschule(profil.hochschule);
+    var p = z.profil();
+    var sg = d.studiengang(p.studiengang);
+    var hs = d.hochschule(p.hochschule);
     var module = q.moduleSortiert();
     var gepinnt = module.filter(function (m) { return z.gepinnt(m.slug); });
     var rest = module.filter(function (m) { return !z.gepinnt(m.slug); });
-    var alt = q.abgeschlosseneModule();
+    var frueher = q.frühereModule();
     var ects = module.reduce(function (s, m) { return s + m.ects; }, 0);
-    var pruefungen = q.naechstePruefungen(1);
+    var fristen = q.naechsteFristen(1);
 
     var html =
       '<section class="u-semesterkopf">' +
         '<p class="u-kicker">' + esc(hs ? hs.name : '') + '</p>' +
         '<h1 class="u-titel u-h1">' + esc(sg ? sg.name : 'Studium') + '</h1>' +
-        '<p class="u-leise">' + esc(profil.semester + '. Semester · ' + d.nutzer.semesterName) + '</p>' +
+        '<p class="u-leise">' + esc(unterzeile()) + '</p>' +
         '<div class="u-semesterkopf__zahlen">' +
           zahl(module.length, 'Module') +
-          zahl(ects, 'ECTS geplant') +
-          zahl(pruefungen.length ? b.relativ(pruefungen[0].datum) : '—', 'Nächste Frist') +
+          zahl(ects, 'ECTS') +
+          zahl(fristen.length ? b.relativ(fristen[0].datum) : '—', 'Nächste Frist') +
         '</div>' +
       '</section>';
 
-    if (gepinnt.length) {
-      html += '<section class="u-abschnitt">' +
-        b.abschnitt('Angepinnt') +
-        '<div class="u-modulreihe">' + gepinnt.map(b.modulkarte).join('') + '</div>' +
+    if (!module.length) {
+      html += '<section class="u-abschnitt">' + leerModul(sg) + '</section>';
+    } else {
+      if (gepinnt.length) {
+        html += '<section class="u-abschnitt">' +
+          b.abschnitt('Angepinnt') +
+          '<div class="u-modulreihe">' + gepinnt.map(b.modulkarte).join('') + '</div>' +
+        '</section>';
+      }
+      html += '<section class="u-abschnitt' + (gepinnt.length ? ' u-abschnitt--linie' : '') + '">' +
+        '<div class="u-abschnitt__kopf">' +
+          '<h2 class="u-titel u-h2">' + (gepinnt.length ? 'Weitere Module' : 'Deine Module') + '</h2>' +
+          '<button type="button" class="u-abschnitt__mehr" data-tun="modul-suchen">Hinzufügen</button>' +
+        '</div>' +
+        (rest.length
+          ? '<div class="u-liste">' + rest.map(b.modulzeile).join('') + '</div>'
+          : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Alle deine Module sind angepinnt.</p>') +
+        '<div style="padding:var(--s-md) var(--rand) 0">' +
+          '<button type="button" class="u-knopf u-knopf--still u-knopf--klein" data-tun="modul-suchen">' +
+            b.zeichen('plus', 16) + 'Modul hinzufügen</button>' +
+        '</div>' +
       '</section>';
     }
 
-    html += '<section class="u-abschnitt">' +
-      '<div class="u-abschnitt__kopf">' +
-        '<h2 class="u-titel u-h2">' + (gepinnt.length ? 'Weitere Module' : 'Deine Module') + '</h2>' +
-        '<button type="button" class="u-abschnitt__mehr" data-tun="modul-suchen">Hinzufügen</button>' +
-      '</div>' +
-      '<div class="u-liste">' + rest.map(b.modulzeile).join('') + '</div>' +
-      '<div style="padding:var(--s-md) var(--rand) 0">' +
-        '<button type="button" class="u-knopf u-knopf--still u-knopf--klein" data-tun="modul-suchen">' +
-          b.zeichen('plus', 16) + 'Modul hinzufügen</button>' +
-      '</div>' +
-    '</section>';
+    if (frueher.length) {
+      html += '<section class="u-abschnitt u-abschnitt--linie">' +
+        b.abschnitt('Frühere Semester') +
+        '<div class="u-liste">' + frueher.map(b.modulzeile).join('') + '</div>' +
+        '<p class="u-klein u-leise" style="padding:var(--s-sm) var(--rand) 0">' +
+          'Module aus früheren Semestern deines Studiengangs. Sie zählen nicht ins laufende Semester.</p>' +
+      '</section>';
+    }
 
-    html += '<section class="u-abschnitt">' +
-      b.abschnitt('Frühere Semester') +
-      '<div class="u-liste">' + alt.map(b.modulzeile).join('') + '</div>' +
-      '<p class="u-klein u-leise" style="padding:var(--s-sm) var(--rand) 0">' +
-        'Abgeschlossene Module bleiben erhalten, zählen aber nicht ins laufende Semester.</p>' +
-    '</section>';
-
-    return { titel: 'Studium', kopf: { titel: 'Studium' }, html: html, blatt: ctx.frage.get('hinzufuegen') ? modulBlatt() : null };
+    return {
+      titel: 'Studium', kopf: { titel: 'Studium' }, html: html,
+      blatt: ctx.frage.get('hinzufuegen') ? modulBlatt() : null
+    };
 
     function zahl(wert, text) {
       return '<div class="u-semesterkopf__zahl"><b>' + esc(wert) + '</b><span>' + esc(text) + '</span></div>';
     }
+
+    /* Semester, Fach und Semesterbezeichnung. Der Studiengang steht
+       schon als Ueberschrift darueber. */
+    function unterzeile() {
+      var teile = [p.semester + '. Semester'];
+      var fa = d.fach(p.studiengang, p.fach);
+      if (fa) teile.push(fa.name);
+      teile.push(d.semesterName);
+      return teile.join(' · ');
+    }
   }
 
-  /* Blatt zum Hinzufuegen: Vorschlaege aus Studiengang und Semester,
+  /* Blatt zum Hinzufuegen: Vorschlaege aus dem eigenen Studiengang,
      darunter der Weg fuer alles, was noch fehlt. */
   function modulBlatt() {
     var vorschlaege = q.modulvorschlaege();
+    var p = z.profil();
+
     return {
       titel: 'Modul hinzufügen',
       html: '<p class="u-klein u-leise" style="margin:-.3rem 0 .8rem">' +
-          'Vorschläge für ' + esc(d.studiengang(z.profil().studiengang).kurz) + ', ' +
-          esc(z.profil().semester) + '. Semester</p>' +
-        vorschlaege.map(function (m) {
+          (vorschlaege.length
+            ? 'Vorschläge für ' + esc(studienzeile(true))
+            : 'Für ' + esc(studienzeile(false)) + ' sind noch keine Module hinterlegt.') + '</p>' +
+        vorschlaege.slice(0, 8).map(function (m) {
           return '<button type="button" class="u-blatt__punkt" data-tun="modul-hinzufuegen" data-wert="' + esc(m.slug) + '">' +
             '<span class="u-blatt__kachel" data-farbe="' + esc(m.farbe) + '" style="background:var(--modul-zart);color:var(--modul)">' +
-              esc(m.kuerzel.slice(0, 2)) + '</span>' +
+              esc(m.kuerzel.slice(0, 3)) + '</span>' +
             '<span><b>' + esc(m.name) + '</b><span>' + esc(m.dozent + ' · ' + m.ects + ' ECTS · ' + m.semester + '. Semester') + '</span></span>' +
             '</button>';
         }).join('') +
@@ -199,11 +268,12 @@ Uni.ansicht = (function () {
     var reiter = ctx.frage.get('reiter') || 'feed';
     var t = q.naechsterTermin(m.slug);
     var belegt = z.belegt(m.slug);
+    var sg = d.studiengang(m.studiengang);
 
     var inhalt =
       reiter === 'lernen' ? modulLernen(m, ctx) :
       reiter === 'termine' ? modulTermine(m) :
-      reiter === 'dateien' ? modulDateien(m) : modulFeed(m);
+      reiter === 'dateien' ? modulDateien(m) : modulFeed(m, belegt);
 
     var html =
       '<header class="u-modulkopf" data-farbe="' + esc(m.farbe) + '">' +
@@ -219,10 +289,16 @@ Uni.ansicht = (function () {
         '</div>' +
         '<p class="u-modulkopf__kuerzel">' + esc(m.kuerzel) + (z.gepinnt(m.slug) ? ' · angepinnt' : '') + '</p>' +
         '<h1 class="u-modulkopf__name">' + esc(m.name) + '</h1>' +
-        '<p class="u-modulkopf__meta">' + esc(m.dozent + ' · ' + d.nutzer.semesterName + ' · ' + m.ects + ' ECTS') + '</p>' +
+        '<p class="u-modulkopf__meta">' + esc(m.dozent + ' · ' + d.semesterName + ' · ' + m.ects + ' ECTS') + '</p>' +
         (t ? '<p class="u-modulkopf__naechst">' + b.zeichen('uhr', 14) +
               esc(b.relativ(t.datum) + ' · ' + t.start + (t.ort ? ' · ' + t.ort : '')) + '</p>' : '') +
       '</header>' +
+
+      (belegt ? '' :
+        '<div style="padding:var(--s-md) var(--rand) 0">' +
+          b.hinweis('Du belegst dieses Modul nicht. Es gehört zu ' + esc(sg ? sg.name : 'einem anderen Studiengang') +
+            ', ' + m.semester + '. Semester.') +
+        '</div>') +
 
       '<div class="u-modulreiter" data-farbe="' + esc(m.farbe) + '">' +
         '<div class="u-reiter u-reiter--modul" role="tablist">' +
@@ -247,7 +323,7 @@ Uni.ansicht = (function () {
     var html = '';
 
     if (!eintraege.length) {
-      html += b.leer('Noch nichts los', 'In diesem Modul hat bisher niemand etwas gepostet. Eine Frage ist ein guter Anfang.', 'Beitrag schreiben', '/uni/modul/' + m.slug + '/?neu=beitrag');
+      html += b.leer('Noch nichts los', 'In diesem Modul hat bisher niemand etwas geschrieben. Eine Frage ist ein guter Anfang.', 'Beitrag schreiben', '/uni/modul/' + m.slug + '/?neu=beitrag');
     } else {
       html += '<div class="u-feed">' + eintraege.map(function (e) { return b.feedEintrag(e, true); }).join('') + '</div>';
     }
@@ -287,25 +363,26 @@ Uni.ansicht = (function () {
     var sortierung = ctx.frage.get('sortierung') || 'bewertung';
     var liste = q.materialien({ modul: m.slug, typ: typ || null, sortierung: sortierung });
     var services = q.servicesZuModul(m.slug);
+    var alle = q.materialienZuModul(m.slug);
 
     var typen = [{ wert: '', text: 'Alle' }];
     var gesehen = {};
-    q.materialienZuModul(m.slug).forEach(function (x) {
+    alle.forEach(function (x) {
       if (!gesehen[x.typ]) { gesehen[x.typ] = true; typen.push({ wert: x.typ, text: b.TYPNAME[x.typ] || x.typ }); }
     });
 
-    var html =
-      b.filterleiste(typen, typ, 'filter-typ') +
-      '<div class="u-filter" style="padding-top:0">' +
-        ['bewertung', 'neu', 'preis'].map(function (s) {
-          var text = { bewertung: 'Beste Bewertung', neu: 'Neu', preis: 'Preis' }[s];
-          return '<button type="button" class="u-filter__pille" data-tun="filter-sortierung" data-wert="' + s + '" ' +
-            'aria-pressed="' + (sortierung === s ? 'true' : 'false') + '">' + esc(text) + '</button>';
-        }).join('') +
-      '</div>';
+    var html = '';
+    if (alle.length) {
+      html += b.filterleiste(typen, typ, 'filter-typ') +
+        '<div class="u-filter" style="padding-top:0">' + sortierpillen(sortierung) + '</div>';
+    }
 
     if (!liste.length) {
-      html += b.leer('Noch keine Materialien', 'Für dieses Modul gibt es unter diesem Filter nichts. Du kannst der Erste sein, der etwas einstellt.', 'Material einstellen', '/uni/studium/?neu=material');
+      html += b.leer('Noch keine Materialien',
+        alle.length
+          ? 'Unter diesem Filter gibt es nichts. Nimm den Filter heraus oder stelle selbst etwas ein.'
+          : 'Für dieses Modul hat noch niemand etwas eingestellt. Du kannst der Erste sein.',
+        'Material einstellen', '/uni/studium/?neu=material');
     } else {
       html += '<div class="u-liste">' + liste.map(b.materialzeile).join('') + '</div>';
     }
@@ -317,11 +394,19 @@ Uni.ansicht = (function () {
       '</section>';
     }
 
-    html += '<div style="padding:var(--s-lg) var(--rand) 0">' +
+    html += '<div style="padding:var(--s-abschnitt) var(--rand) 0">' +
       b.hinweis('Preise legen die Studenten selbst fest. Einstellen kostet nichts. Im Prototyp ist kein Zahlungsanbieter angebunden.') +
     '</div>';
 
     return html;
+  }
+
+  function sortierpillen(aktiv) {
+    return ['bewertung', 'neu', 'preis'].map(function (s) {
+      var text = { bewertung: 'Beste Bewertung', neu: 'Neu', preis: 'Preis' }[s];
+      return '<button type="button" class="u-filter__pille" data-tun="filter-sortierung" data-wert="' + s + '" ' +
+        'aria-pressed="' + (aktiv === s ? 'true' : 'false') + '">' + esc(text) + '</button>';
+    }).join('');
   }
 
   function modulTermine(m) {
@@ -342,8 +427,8 @@ Uni.ansicht = (function () {
       html += b.terminzeile(t);
     });
     return '<div>' + html + '</div>' +
-      '<div style="padding:var(--s-lg) var(--rand) 0">' +
-        b.hinweis('Wiederkehrende Veranstaltungen kommen aus deinem Stundenplan. Offizielle Termine der Hochschule sind noch nicht angebunden.') +
+      '<div style="padding:var(--s-abschnitt) var(--rand) 0">' +
+        b.hinweis('Wiederkehrende Veranstaltungen kommen aus dem Stundenplan des Moduls. Offizielle Termine der Hochschule sind nicht angebunden.') +
       '</div>';
   }
 
@@ -351,28 +436,24 @@ Uni.ansicht = (function () {
     var gekauft = q.gekaufteMaterialien().filter(function (x) { return x.modul === m.slug; });
     var favoriten = q.favorisierteMaterialien().filter(function (x) { return x.modul === m.slug; });
 
-    var html = '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
-      b.abschnitt('Gekauft') +
-      (gekauft.length
-        ? '<div class="u-liste">' + gekauft.map(b.materialzeile).join('') + '</div>'
-        : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Du hast für dieses Modul noch nichts gekauft.</p>') +
-    '</section>';
-
-    html += '<section class="u-abschnitt">' +
-      b.abschnitt('Gemerkt') +
-      (favoriten.length
-        ? '<div class="u-liste">' + favoriten.map(b.materialzeile).join('') + '</div>'
-        : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Nichts gemerkt.</p>') +
-    '</section>';
-
-    html += '<section class="u-abschnitt">' +
-      b.abschnitt('Eigene Dateien') +
-      '<div style="padding:0 var(--rand)">' +
-        b.hinweis('<b>Noch kein Speicher angebunden.</b> Eigene Dateien landen später hier — hochgeladen wird im Prototyp nichts.') +
-      '</div>' +
-    '</section>';
-
-    return html;
+    return '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
+        b.abschnitt('Gekauft') +
+        (gekauft.length
+          ? '<div class="u-liste">' + gekauft.map(b.materialzeile).join('') + '</div>'
+          : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Du hast für dieses Modul noch nichts gekauft.</p>') +
+      '</section>' +
+      '<section class="u-abschnitt">' +
+        b.abschnitt('Gemerkt') +
+        (favoriten.length
+          ? '<div class="u-liste">' + favoriten.map(b.materialzeile).join('') + '</div>'
+          : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Nichts gemerkt.</p>') +
+      '</section>' +
+      '<section class="u-abschnitt">' +
+        b.abschnitt('Eigene Dateien') +
+        '<div style="padding:0 var(--rand)">' +
+          b.hinweis('<b>Noch kein Speicher angebunden.</b> Eigene Dateien landen später hier — hochgeladen wird im Prototyp nichts.') +
+        '</div>' +
+      '</section>';
   }
 
   function serviceZeile(s) {
@@ -401,16 +482,15 @@ Uni.ansicht = (function () {
     var tage = [];
     for (var i = 0; i < 7; i++) tage.push(d.iso(d.plus(montag, i)));
 
-    var spanne = spannenText(tage[0], tage[6]);
     var vorher = d.iso(d.plus(montag, -7));
     var nachher = d.iso(d.plus(montag, 7));
     var desTages = q.termineAm(gewaehlt);
-    var demnaechst = q.naechstePruefungen(3, gewaehlt);
+    var demnaechst = q.naechsteFristen(3, gewaehlt);
 
     var html =
       '<div class="u-kalkopf">' +
         '<div class="u-kalkopf__zeile">' +
-          '<span class="u-kalkopf__spanne">' + esc(spanne) + '</span>' +
+          '<span class="u-kalkopf__spanne">' + esc(spannenText(tage[0], tage[6])) + '</span>' +
           '<span class="u-kalkopf__knoepfe">' +
             '<a class="u-rundknopf" href="/uni/kalender/?tag=' + vorher + '" aria-label="Woche zurück">' + b.zeichen('zurueck', 20) + '</a>' +
             '<a class="u-rundknopf" href="/uni/kalender/?tag=' + heuteIso + '" aria-label="Zu heute">' + b.zeichen('kalender', 19) + '</a>' +
@@ -423,13 +503,11 @@ Uni.ansicht = (function () {
     html += '<p class="u-tagliste__kopf">' + esc(b.datumLang(gewaehlt)) +
       (gewaehlt === heuteIso ? ' <span class="u-leise" style="font-size:.8rem">· heute</span>' : '') + '</p>';
 
-    if (!desTages.length) {
-      html += '<p class="u-leise u-klein" style="padding:.2rem var(--rand) 0">An diesem Tag steht nichts an.</p>';
-    } else {
-      html += desTages.map(function (t) { return terminMitCheckliste(t); }).join('');
-    }
+    html += desTages.length
+      ? desTages.map(terminMitCheckliste).join('')
+      : '<p class="u-leise u-klein" style="padding:.2rem var(--rand) 0">An diesem Tag steht nichts an.</p>';
 
-    html += '<section class="u-abschnitt">' +
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
       b.abschnitt('Demnächst') +
       (demnaechst.length
         ? '<div class="u-liste">' + demnaechst.map(function (t) { return b.terminzeile(t, true); }).join('') + '</div>'
@@ -449,16 +527,14 @@ Uni.ansicht = (function () {
       html: html
     };
 
-    function tagKnopf(iso) {
-      var dt = b.ausIso(iso);
-      var termine = q.termineAm(iso);
-      var farben = [];
-      termine.slice(0, 4).forEach(function (t) {
+    function tagKnopf(isoTag) {
+      var dt = b.ausIso(isoTag);
+      var farben = q.termineAm(isoTag).slice(0, 4).map(function (t) {
         var m = t.modul ? d.modul(t.modul) : null;
-        farben.push('<i data-farbe="' + esc(m ? m.farbe : 'stein') + '"></i>');
+        return '<i data-farbe="' + esc(m ? m.farbe : 'stein') + '"></i>';
       });
-      return '<a class="u-tag" href="/uni/kalender/?tag=' + iso + '" ' +
-        'aria-pressed="' + (iso === gewaehlt ? 'true' : 'false') + '" data-heute="' + (iso === heuteIso ? 'ja' : 'nein') + '">' +
+      return '<a class="u-tag" href="/uni/kalender/?tag=' + isoTag + '" ' +
+        'aria-pressed="' + (isoTag === gewaehlt ? 'true' : 'false') + '" data-heute="' + (isoTag === heuteIso ? 'ja' : 'nein') + '">' +
         '<span>' + b.WOCHENTAG_KURZ[dt.getDay()] + '</span>' +
         '<b>' + dt.getDate() + '</b>' +
         '<span class="u-tag__punkte">' + farben.join('') + '</span>' +
@@ -478,18 +554,16 @@ Uni.ansicht = (function () {
     var html = b.terminzeile(t);
     if (!t.checkliste) return html;
 
-    /* Der Grundzustand steht in den Musterdaten, alles Weitere in
-       zustand.js. Beide Faelle sehen fuer die Ansicht gleich aus. */
     var grund = [];
     t.checkliste.forEach(function (p, i) { if (p.erledigt) grund.push(i); });
     var gesetzt = z.hakenVorhanden(t.id) ? z.hakenListe(t.id) : grund;
 
-    return html + '<div style="padding:0 var(--rand) .8rem calc(var(--rand) + 62px);display:grid;gap:.35rem">' +
+    return html + '<div style="padding:0 var(--rand) .9rem calc(var(--rand) + 62px);display:grid;gap:.4rem">' +
       t.checkliste.map(function (p, i) {
         var an = gesetzt.indexOf(i) > -1;
         return '<button type="button" data-tun="haken" data-wert="' + esc(t.id) + '" data-nr="' + i + '" ' +
           'data-grund="' + esc(grund.join(',')) + '" aria-pressed="' + (an ? 'true' : 'false') + '" ' +
-          'style="display:flex;gap:.5rem;align-items:center;text-align:left;min-height:32px;font-size:.88rem;' +
+          'style="display:flex;gap:.55rem;align-items:center;text-align:left;min-height:36px;font-size:.88rem;' +
           (an ? 'color:var(--text-leise);text-decoration:line-through' : '') + '">' +
           '<span style="flex:none;width:17px;height:17px;border-radius:4px;display:grid;place-items:center;border:1.5px solid ' +
             (an ? 'var(--marke);background:var(--marke);color:var(--marke-auf)' : 'var(--linie)') + '">' +
@@ -507,18 +581,7 @@ Uni.ansicht = (function () {
 
     if (campusSlug) {
       var c = d.campusEintrag(campusSlug);
-      if (c) {
-        return {
-          titel: c.titel,
-          kopf: { titel: 'Campus', zurueck: '/uni/entdecken/?bereich=campus' },
-          html: '<article style="padding:var(--s-lg) var(--rand)">' +
-            '<p class="u-kicker">' + esc({ hinweis: 'Hinweis', event: 'Veranstaltung', angebot: 'Angebot' }[c.art] || 'Campus') + ' · ' + esc(b.relativ(c.datum)) + '</p>' +
-            '<h1 class="u-titel u-h1" style="margin:.3rem 0 .6rem">' + esc(c.titel) + '</h1>' +
-            '<p style="font-size:1rem;line-height:1.65;max-width:46ch">' + esc(c.text) + '</p>' +
-            '<p class="u-klein u-leise" style="margin-top:var(--s-lg)">Quelle: ' + esc(c.quelle) + '</p>' +
-            '</article>'
-        };
-      }
+      if (c) return campusSeite(c);
     }
 
     var reiter = [
@@ -543,53 +606,75 @@ Uni.ansicht = (function () {
     return { titel: 'Entdecken', kopf: { titel: 'Entdecken', zurueck: '/uni/' }, html: html };
   }
 
-  function empfehlungen() {
-    var meine = z.module();
-    var material = d.materialien.filter(function (m) { return meine.indexOf(m.modul) > -1; }).slice(0, 3);
-    var neueste = q.flohmarkt({}).slice(0, 3);
-
-    return '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
-        '<div style="padding:0 var(--rand)">' +
-          '<h1 class="u-titel u-h1">Hier passiert was.</h1>' +
-          '<p class="u-leise" style="margin-top:.3rem;max-width:44ch">Empfehlungen für ' +
-            esc(d.studiengang(z.profil().studiengang).kurz + ', ' + z.profil().semester + '. Semester an der ' +
-            d.hochschule(z.profil().hochschule).kurz) + '.</p>' +
-        '</div>' +
-      '</section>' +
-
-      '<section class="u-abschnitt">' +
-        b.abschnitt('Vom Campus', 'Alle', '/uni/entdecken/?bereich=campus') +
-        '<div class="u-feed">' + d.campus.slice(0, 3).map(campusEintragHtml).join('') + '</div>' +
-      '</section>' +
-
-      '<section class="u-abschnitt">' +
-        b.abschnitt('Passend zu deinen Modulen', 'Alle', '/uni/entdecken/?bereich=materialien') +
-        '<div class="u-liste">' + material.map(b.materialzeile).join('') + '</div>' +
-      '</section>' +
-
-      '<section class="u-abschnitt">' +
-        b.abschnitt('Hilfe von Studenten', 'Alle', '/uni/entdecken/?bereich=services') +
-        '<div class="u-liste">' + d.services.slice(0, 3).map(serviceZeile).join('') + '</div>' +
-      '</section>' +
-
-      '<section class="u-abschnitt">' +
-        b.abschnitt('Neu auf dem Flohmarkt', 'Alle', '/uni/flohmarkt/') +
-        '<div class="u-floh">' + neueste.map(b.flohkarte).join('') + '</div>' +
-      '</section>';
-  }
-
-  function campusEintragHtml(c) {
-    return '<a class="u-feed__eintrag" href="/uni/entdecken/?campus=' + esc(c.slug) + '">' +
-      '<span class="u-feed__typ">' + esc({ hinweis: 'Hinweis', event: 'Event', angebot: 'Angebot' }[c.art] || 'Campus') +
-        ' <span>· ' + esc(c.quelle) + '</span></span>' +
-      '<span class="u-feed__titel">' + esc(c.titel) + '</span>' +
-      '<span class="u-feed__text">' + esc(c.text.slice(0, 130)) + (c.text.length > 130 ? ' …' : '') + '</span>' +
-      '<span class="u-feed__fuss">' + esc(b.relativ(c.datum)) + '</span>' +
-      '</a>';
+  function campusSeite(c) {
+    var art = { hinweis: 'Hinweis', event: 'Veranstaltung', angebot: 'Angebot', wegweiser: 'Wegweiser' }[c.art] || 'Campus';
+    return {
+      titel: c.titel,
+      kopf: { titel: 'Campus', zurueck: '/uni/entdecken/?bereich=campus' },
+      html: '<article style="padding:var(--s-lg) var(--rand)">' +
+        '<p class="u-kicker">' + esc(art) + ' · ' + esc(b.relativ(c.datum)) + '</p>' +
+        '<h1 class="u-titel u-h1" style="margin:.3rem 0 .7rem">' + esc(c.titel) + '</h1>' +
+        '<p style="font-size:1rem;line-height:1.65;max-width:46ch">' + esc(c.text) + '</p>' +
+        '<p style="margin-top:var(--s-lg)">' + b.quelleZeile(c.quelle, c.muster) + '</p>' +
+        (c.muster
+          ? '<div style="margin-top:var(--s-md)">' + musterhinweis() + '</div>'
+          : '') +
+        '</article>'
+    };
   }
 
   function campusListe() {
-    return '<div class="u-feed" style="margin-top:var(--s-sm)">' + d.campus.map(campusEintragHtml).join('') + '</div>';
+    var liste = q.campus();
+    return '<div style="padding:var(--s-md) var(--rand) 0">' + musterhinweis() + '</div>' +
+      '<div class="u-feed" style="margin-top:var(--s-xs)">' + liste.map(b.campusEintrag).join('') + '</div>';
+  }
+
+  function empfehlungen() {
+    var material = q.materialZuMeinenModulen().slice(0, 3);
+    var services = q.serviceZuMeinenModulen();
+    if (services.length < 3) {
+      services = services.concat(d.services.filter(function (s) {
+        return services.indexOf(s) === -1 && (!s.module || !s.module.length);
+      }));
+    }
+    services = services.slice(0, 3);
+    var neueste = q.flohmarkt({}).slice(0, 3);
+    var campus = q.campus().slice(0, 3);
+    var hs = d.hochschule(z.profil().hochschule);
+
+    var html = '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
+        '<div style="padding:0 var(--rand)">' +
+          '<h1 class="u-titel u-h1">Hier passiert was.</h1>' +
+          '<p class="u-leise" style="margin-top:.35rem;max-width:44ch">' +
+            esc('Empfehlungen für ' + studienzeile(true) + (hs ? ' an der ' + hs.kurz : '') + '.') + '</p>' +
+        '</div>' +
+      '</section>';
+
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
+      b.abschnitt('Vom Campus', 'Alle', '/uni/entdecken/?bereich=campus') +
+      '<div class="u-feed">' + campus.map(b.campusEintrag).join('') + '</div>' +
+    '</section>';
+
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
+      b.abschnitt('Passend zu deinen Modulen', 'Alle', '/uni/entdecken/?bereich=materialien') +
+      (material.length
+        ? '<div class="u-liste">' + material.map(b.materialzeile).join('') + '</div>'
+        : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Zu deinen Modulen gibt es noch kein Material. Unter „Materialien“ findest du alles, was andere eingestellt haben.</p>') +
+    '</section>';
+
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
+      b.abschnitt('Hilfe von Studenten', 'Alle', '/uni/entdecken/?bereich=services') +
+      '<div class="u-liste">' + services.map(serviceZeile).join('') + '</div>' +
+    '</section>';
+
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
+      b.abschnitt('Neu auf dem Flohmarkt', 'Alle', '/uni/flohmarkt/') +
+      (neueste.length
+        ? '<div class="u-floh">' + neueste.map(b.flohkarte).join('') + '</div>'
+        : '<p class="u-klein u-leise" style="padding:0 var(--rand)">An deiner Hochschule steht gerade nichts zum Verkauf.</p>') +
+    '</section>';
+
+    return html;
   }
 
   function materialBereich(ctx) {
@@ -603,46 +688,39 @@ Uni.ansicht = (function () {
     });
 
     return b.filterleiste(typen, typ, 'filter-typ') +
-      '<div class="u-filter" style="padding-top:0">' +
-        ['bewertung', 'neu', 'preis'].map(function (s) {
-          var text = { bewertung: 'Beste Bewertung', neu: 'Neu', preis: 'Preis' }[s];
-          return '<button type="button" class="u-filter__pille" data-tun="filter-sortierung" data-wert="' + s + '" ' +
-            'aria-pressed="' + (sortierung === s ? 'true' : 'false') + '">' + esc(text) + '</button>';
-        }).join('') +
-      '</div>' +
+      '<div class="u-filter" style="padding-top:0">' + sortierpillen(sortierung) + '</div>' +
       (liste.length
         ? '<div class="u-liste">' + liste.map(b.materialzeile).join('') + '</div>'
         : b.leer('Nichts gefunden', 'Unter diesem Filter gibt es kein Material.', 'Filter zurücksetzen', '/uni/entdecken/?bereich=materialien'));
   }
 
   function serviceBereich(modulFilter) {
-    var liste = modulFilter ? q.servicesZuModul(modulFilter) : d.services;
+    var liste = modulFilter ? q.servicesZuModul(modulFilter) : q.alleServices();
     var m = modulFilter ? d.modul(modulFilter) : null;
     return (m ? '<p class="u-klein u-leise" style="padding:var(--s-md) var(--rand) 0">Gefiltert nach ' + esc(m.name) +
         ' · <a href="/uni/entdecken/?bereich=services" style="color:var(--marke);font-weight:600">Filter entfernen</a></p>' : '') +
       (liste.length
         ? '<div class="u-liste" style="margin-top:var(--s-sm)">' + liste.map(serviceZeile).join('') + '</div>'
         : b.leer('Noch keine Services', 'Für dieses Modul bietet bisher niemand Unterstützung an.', 'Alle Services', '/uni/entdecken/?bereich=services')) +
-      '<div style="padding:var(--s-lg) var(--rand) 0">' +
+      '<div style="padding:var(--s-abschnitt) var(--rand) 0">' +
         b.hinweis('Services werden nicht sofort gebucht. Du schreibst dem Anbieter, ihr klärt Termin und Umfang im Chat.') +
       '</div>';
   }
 
   function flohmarktBereich() {
-    return '<div class="u-floh">' + q.flohmarkt({}).slice(0, 6).map(b.flohkarte).join('') + '</div>' +
+    var liste = q.flohmarkt({}).slice(0, 6);
+    return (liste.length
+      ? '<div class="u-floh">' + liste.map(b.flohkarte).join('') + '</div>'
+      : b.leer('Noch nichts eingestellt', 'An deiner Hochschule steht gerade nichts zum Verkauf.', 'Etwas einstellen', '/uni/flohmarkt/')) +
       '<div style="padding:0 var(--rand)">' +
-        '<a class="u-knopf u-knopf--still u-knopf--breit" href="/uni/flohmarkt/">Ganzen Flohmarkt ansehen</a>' +
+        '<a class="u-knopf u-knopf--still u-knopf--breit" href="/uni/flohmarkt/">Zum Flohmarkt</a>' +
       '</div>';
   }
 
   /* ------------------------------------------- Material: Liste */
 
   function materialListe(ctx) {
-    return {
-      titel: 'Materialien',
-      kopf: { titel: 'Materialien', zurueck: '/uni/entdecken/' },
-      html: materialBereich(ctx)
-    };
+    return { titel: 'Materialien', kopf: { titel: 'Materialien', zurueck: '/uni/entdecken/' }, html: materialBereich(ctx) };
   }
 
   /* ------------------------------------------ Material: Detail */
@@ -707,8 +785,7 @@ Uni.ansicht = (function () {
     if (mat.vorschau && mat.vorschauText) {
       html += '<section class="u-abschnitt">' +
         b.abschnitt('Vorschau') +
-        '<div class="u-vorschau"><h4>Auszug</h4>' +
-          esc(mat.vorschauText).replace(/\n/g, '<br>') + '</div>' +
+        '<div class="u-vorschau"><h4>Auszug</h4>' + esc(mat.vorschauText).replace(/\n/g, '<br>') + '</div>' +
         '<p class="u-klein u-leise" style="padding:.5rem var(--rand) 0">Die Vorschau ist kostenlos. Wie viel sichtbar ist, entscheidet der Ersteller.</p>' +
       '</section>';
     } else {
@@ -716,7 +793,7 @@ Uni.ansicht = (function () {
         b.hinweis('Für dieses Material hat der Ersteller keine Vorschau freigegeben.') + '</div></section>';
     }
 
-    html += '<section class="u-abschnitt">' +
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
       b.abschnitt('Bewertungen') +
       '<div style="padding:0 var(--rand) .3rem">' + b.sterne(mat.bewertung, mat.anzahlBewertungen) + '</div>' +
       '<div class="u-liste">' + (mat.rezensionen || []).map(function (r) {
@@ -727,7 +804,7 @@ Uni.ansicht = (function () {
       }).join('') + '</div>' +
     '</section>';
 
-    html += '<section class="u-abschnitt">' +
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
       b.abschnitt('Ersteller') +
       '<div style="padding:0 var(--rand)">' +
         '<div class="u-karte">' +
@@ -746,11 +823,12 @@ Uni.ansicht = (function () {
           '<a class="u-knopf u-knopf--still u-knopf--breit u-knopf--klein" style="margin-top:.8rem" href="/uni/profil/?person=' + esc(v.id) + '">Profil ansehen</a>' +
         '</div>' +
       '</div>' +
-    '</section>';
+    '</section></div>';
 
-    html += '</div>';
-
-    return { titel: mat.titel, kopf: { titel: '', zurueck: m ? '/uni/modul/' + m.slug + '/?reiter=lernen' : '/uni/entdecken/?bereich=materialien' }, html: html };
+    return {
+      titel: mat.titel, kopf: { titel: '', zurueck: m ? '/uni/modul/' + m.slug + '/?reiter=lernen' : '/uni/entdecken/?bereich=materialien' },
+      html: html
+    };
 
     function wert(gross, klein) {
       return '<div><b>' + esc(gross) + '</b><span>' + esc(klein) + '</span></div>';
@@ -760,23 +838,19 @@ Uni.ansicht = (function () {
   /* ------------------------------------------------- Services */
 
   function serviceListe(ctx) {
-    return {
-      titel: 'Services',
-      kopf: { titel: 'Services', zurueck: '/uni/entdecken/' },
-      html: serviceBereich(ctx.frage.get('modul'))
-    };
+    return { titel: 'Services', kopf: { titel: 'Services', zurueck: '/uni/entdecken/' }, html: serviceBereich(ctx.frage.get('modul')) };
   }
 
   function service(ctx) {
     var s = d.service(ctx.teile[1]);
     if (!s) return nichtGefunden();
     var p = d.person(s.anbieter);
-    var m = s.modul ? d.modul(s.modul) : null;
     var hs = d.hochschule(p.hochschule);
+    var module = (s.module || []).map(function (x) { return d.modul(x); }).filter(Boolean);
 
     var html = '<div data-farbe="tanne">' +
       '<div class="u-produkt__kopf">' +
-        '<p class="u-kicker">' + esc(s.kategorie) + (m ? ' · ' + esc(m.name) : '') + '</p>' +
+        '<p class="u-kicker">' + esc(s.kategorie) + '</p>' +
         '<h1 class="u-produkt__titel" style="margin-top:.2rem">' + esc(s.titel) + '</h1>' +
         '<p class="u-produkt__ersteller">' +
           '<a href="/uni/profil/?person=' + esc(p.id) + '" style="font-weight:700;color:var(--text)">' + esc(p.name) + '</a>' +
@@ -801,12 +875,20 @@ Uni.ansicht = (function () {
       '<section class="u-abschnitt">' +
         b.abschnitt('Worum es geht') +
         '<p style="padding:0 var(--rand);font-size:.97rem;line-height:1.6;max-width:46ch">' + esc(s.beschreibung) + '</p>' +
-      '</section>' +
+      '</section>';
 
-      '<section class="u-abschnitt"><div style="padding:0 var(--rand)">' +
+    if (module.length) {
+      html += '<section class="u-abschnitt">' +
+        b.abschnitt('Passt zu diesen Modulen') +
+        '<div class="u-filter">' + module.map(function (m) {
+          return '<a class="u-filter__pille" href="/uni/modul/' + esc(m.slug) + '/">' + esc(m.name) + '</a>';
+        }).join('') + '</div>' +
+      '</section>';
+    }
+
+    html += '<section class="u-abschnitt"><div style="padding:0 var(--rand)">' +
         b.hinweis('Es gibt keine feste Buchung. Du schreibst eine Anfrage, ihr klärt Termin und Preis im Chat.') +
-      '</div></section>' +
-      '</div>';
+      '</div></section></div>';
 
     return { titel: s.titel, kopf: { titel: '', zurueck: '/uni/entdecken/?bereich=services' }, html: html };
   }
@@ -816,34 +898,45 @@ Uni.ansicht = (function () {
   function flohmarkt(ctx) {
     var kategorie = ctx.frage.get('kategorie') || '';
     var sortierung = ctx.frage.get('sortierung') || 'neu';
+    var alle = q.flohmarkt({});
     var liste = q.flohmarkt({ kategorie: kategorie || null, sortierung: sortierung });
     var hs = d.hochschule(z.profil().hochschule);
 
     var kategorien = [{ wert: '', text: 'Alles' }];
     var gesehen = {};
-    d.flohmarkt.forEach(function (a) {
+    alle.forEach(function (a) {
       if (!gesehen[a.kategorie]) { gesehen[a.kategorie] = true; kategorien.push({ wert: a.kategorie, text: a.kategorie }); }
     });
 
     var html =
       '<div style="padding:var(--s-md) var(--rand) 0">' +
         '<h1 class="u-titel u-h1">Flohmarkt</h1>' +
-        '<p class="u-leise u-klein" style="margin-top:.25rem">Nur Studenten der ' + esc(hs ? hs.name : 'Hochschule') + '. Abholung vor Ort, Bezahlung untereinander.</p>' +
-      '</div>' +
-      b.filterleiste(kategorien, kategorie, 'filter-kategorie') +
-      '<div class="u-filter" style="padding-top:0">' +
-        ['neu', 'preis'].map(function (s) {
-          return '<button type="button" class="u-filter__pille" data-tun="filter-sortierung" data-wert="' + s + '" ' +
-            'aria-pressed="' + (sortierung === s ? 'true' : 'false') + '">' +
-            (s === 'neu' ? 'Neu eingestellt' : 'Preis') + '</button>';
-        }).join('') +
-      '</div>' +
-      (liste.length
-        ? '<div class="u-floh">' + liste.map(b.flohkarte).join('') + '</div>'
-        : b.leer('Nichts gefunden', 'In dieser Kategorie steht gerade nichts zum Verkauf.', 'Alles anzeigen', '/uni/flohmarkt/')) +
-      '<div style="padding:var(--s-md) var(--rand) 0">' +
-        b.hinweis('Der Flohmarkt läuft ohne Zahlung über die Plattform. Du schreibst dem Verkäufer, ihr macht einen Treffpunkt aus, bezahlt wird vor Ort.') +
+        '<p class="u-leise u-klein" style="margin-top:.3rem">' +
+          esc('Nur Studenten der ' + (hs ? hs.name : 'eigenen Hochschule') + '. Abholung vor Ort, Bezahlung untereinander.') + '</p>' +
       '</div>';
+
+    if (!alle.length) {
+      html += b.leer('Noch nichts eingestellt',
+        'An deiner Hochschule steht gerade nichts zum Verkauf. Der Flohmarkt gilt bewusst nur für die eigene Hochschule — Artikel anderer Hochschulen tauchen hier nicht auf.',
+        'Etwas einstellen', '/uni/flohmarkt/');
+      html = html.replace('href="/uni/flohmarkt/">Etwas einstellen</a>', 'href="/uni/flohmarkt/" data-tun="artikel-einstellen">Etwas einstellen</a>');
+    } else {
+      html += b.filterleiste(kategorien, kategorie, 'filter-kategorie') +
+        '<div class="u-filter" style="padding-top:0">' +
+          ['neu', 'preis'].map(function (s) {
+            return '<button type="button" class="u-filter__pille" data-tun="filter-sortierung" data-wert="' + s + '" ' +
+              'aria-pressed="' + (sortierung === s ? 'true' : 'false') + '">' +
+              (s === 'neu' ? 'Neu eingestellt' : 'Preis') + '</button>';
+          }).join('') +
+        '</div>' +
+        (liste.length
+          ? '<div class="u-floh">' + liste.map(b.flohkarte).join('') + '</div>'
+          : b.leer('Nichts gefunden', 'In dieser Kategorie steht gerade nichts zum Verkauf.', 'Alles anzeigen', '/uni/flohmarkt/'));
+    }
+
+    html += '<div style="padding:var(--s-md) var(--rand) 0">' +
+      b.hinweis('Der Flohmarkt läuft ohne Zahlung über die Plattform. Du schreibst dem Verkäufer, ihr macht einen Treffpunkt aus, bezahlt wird vor Ort.') +
+    '</div>';
 
     return {
       titel: 'Flohmarkt',
@@ -856,10 +949,10 @@ Uni.ansicht = (function () {
     var a = d.artikel(ctx.teile[1]);
     if (!a) return nichtGefunden();
     var v = d.person(a.verkaeufer);
-    var hs = d.hochschule(v.hochschule);
+    var hs = d.hochschule(a.hochschule);
 
     var html = '<div data-farbe="' + esc(a.farbe) + '">' +
-      '<div class="u-flohkarte__flaeche" style="aspect-ratio:16/9;border-radius:0;font-size:2rem">' + esc(a.kategorie) + '</div>' +
+      '<div class="u-flohkarte__flaeche" style="aspect-ratio:16/9;border-radius:0;font-size:.85rem">' + esc(a.kategorie) + '</div>' +
       '<div class="u-produkt__kopf">' +
         '<p class="u-kicker">' + esc(a.kategorie + ' · ' + a.zustand) + '</p>' +
         '<h1 class="u-produkt__titel" style="margin-top:.2rem">' + esc(a.titel) + '</h1>' +
@@ -874,7 +967,7 @@ Uni.ansicht = (function () {
         b.abschnitt('Beschreibung') +
         '<p style="padding:0 var(--rand);font-size:.97rem;line-height:1.6;max-width:46ch">' + esc(a.beschreibung) + '</p>' +
       '</section>' +
-      '<section class="u-abschnitt">' +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
         b.abschnitt('Verkäufer') +
         '<div style="padding:0 var(--rand)"><div class="u-karte">' +
           '<div style="display:flex;gap:.7rem;align-items:center">' +
@@ -889,8 +982,7 @@ Uni.ansicht = (function () {
       '</section>' +
       '<section class="u-abschnitt"><div style="padding:0 var(--rand)">' +
         b.hinweis('<b>Kein Versand, keine Zahlung über die App.</b> Trefft euch auf dem Campus oder in der Nähe. Bezahlt wird bar oder privat.') +
-      '</div></section>' +
-      '</div>';
+      '</div></section></div>';
 
     return { titel: a.titel, kopf: { titel: '', zurueck: '/uni/flohmarkt/' }, html: html };
   }
@@ -904,24 +996,27 @@ Uni.ansicht = (function () {
     var bereich = ctx.frage.get('bereich') || 'uebersicht';
     var p = z.profil();
     var hs = d.hochschule(p.hochschule);
-    var sg = d.studiengang(p.studiengang);
-    var n = d.nutzer;
+    var name = z.name();
 
     var html =
       '<header class="u-profilkopf">' +
         '<div class="u-profilkopf__reihe">' +
-          '<span class="u-profilkopf__bild">' + esc(n.kuerzel) + '</span>' +
+          '<span class="u-profilkopf__bild">' + (z.kuerzel() ? esc(z.kuerzel()) : b.zeichen('person', 28)) + '</span>' +
           '<div style="min-width:0">' +
-            '<h1 class="u-profilkopf__name">' + esc(n.anzeigename) + (n.verifiziert ? b.verifiziert() : '') + '</h1>' +
-            '<p class="u-profilkopf__meta">' + esc((sg ? sg.kurz : '') + ' · ' + p.semester + '. Semester') + '</p>' +
+            '<h1 class="u-profilkopf__name">' + esc(name || 'Dein Profil') +
+              (d.demoKonto.verifiziert ? b.verifiziert() : '') + '</h1>' +
+            '<p class="u-profilkopf__meta">' + esc(studienzeile(true)) + '</p>' +
             '<p class="u-profilkopf__meta">' + esc(hs ? hs.name : '') + '</p>' +
           '</div>' +
         '</div>' +
         '<div class="u-profilzahlen">' +
-          '<div><b>' + n.verkaeufe + '</b><span>Verkäufe</span></div>' +
-          '<div><b>' + n.kaeufe + '</b><span>Käufe</span></div>' +
-          '<div><b>' + String(n.bewertung).replace('.', ',') + '</b><span>Bewertung</span></div>' +
+          '<div><b>' + q.meineModule().length + '</b><span>Module</span></div>' +
+          '<div><b>' + z.kaeufe().length + '</b><span>Käufe</span></div>' +
+          '<div><b>' + z.favoriten().length + '</b><span>Gemerkt</span></div>' +
         '</div>' +
+        (name ? '' :
+          '<p class="u-klein u-leise" style="margin-top:var(--s-md)">Du hast keinen Namen angegeben. ' +
+          '<a href="/uni/onboarding/" style="color:var(--marke);font-weight:600">Namen ergänzen</a></p>') +
       '</header>' +
 
       '<div class="u-reiter" role="tablist">' +
@@ -937,25 +1032,25 @@ Uni.ansicht = (function () {
     else if (bereich === 'einstellungen') html += profilEinstellungen();
     else html += profilUebersicht();
 
-    return { titel: 'Profil', kopf: { titel: 'Profil' }, html: html };
+    return { titel: name ? name : 'Profil', kopf: { titel: 'Profil' }, html: html };
   }
 
   function profilUebersicht() {
     var gekauft = q.gekaufteMaterialien();
-    return '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
+    return '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
         '<div style="padding:0 var(--rand)">' +
           b.hinweis('<b>Verifiziert über die Hochschul-Adresse.</b> Damit kannst du verkaufen, posten und in der Community mitschreiben. Im Prototyp wird keine E-Mail verschickt.') +
         '</div>' +
       '</section>' +
-      '<section class="u-abschnitt">' +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
         b.abschnitt('Zuletzt gekauft', 'Alle', '/uni/profil/?bereich=dateien') +
         (gekauft.length
           ? '<div class="u-liste">' + gekauft.slice(0, 3).map(b.materialzeile).join('') + '</div>'
           : '<p class="u-klein u-leise" style="padding:0 var(--rand)">Noch nichts gekauft.</p>') +
       '</section>' +
-      '<section class="u-abschnitt">' +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
         b.abschnitt('Verkaufen') +
-        '<div style="padding:0 var(--rand);display:grid;gap:.5rem">' +
+        '<div style="padding:0 var(--rand);display:grid;gap:.6rem">' +
           '<button type="button" class="u-knopf u-knopf--still u-knopf--breit" data-tun="schnellmenue">Etwas einstellen</button>' +
           b.hinweis('Einstellen kostet nichts. Beim Verkauf digitaler Materialien fällt später eine Gebühr an; die Höhe steht noch nicht fest und wird vor der Veröffentlichung angezeigt.') +
         '</div>' +
@@ -964,13 +1059,13 @@ Uni.ansicht = (function () {
 
   function profilDateien() {
     var gekauft = q.gekaufteMaterialien();
-    return '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
+    return '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
         b.abschnitt('Gekaufte Materialien') +
         (gekauft.length
           ? '<div class="u-liste">' + gekauft.map(b.materialzeile).join('') + '</div>'
           : b.leer('Noch keine Dateien', 'Was du kaufst oder speicherst, liegt hier — sortiert nach Modul.', 'Materialien ansehen', '/uni/entdecken/?bereich=materialien')) +
       '</section>' +
-      '<section class="u-abschnitt">' +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
         b.abschnitt('Eigene Uploads') +
         '<div style="padding:0 var(--rand)">' +
           b.hinweis('<b>Noch kein Speicher angebunden.</b> Im Prototyp lässt sich nichts hochladen.') +
@@ -980,7 +1075,7 @@ Uni.ansicht = (function () {
 
   function profilFavoriten() {
     var f = q.favorisierteMaterialien();
-    return '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
+    return '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
       (f.length
         ? '<div class="u-liste">' + f.map(b.materialzeile).join('') + '</div>'
         : b.leer('Nichts gemerkt', 'Tippe bei einem Material auf das Herz, dann findest du es hier wieder.', 'Materialien ansehen', '/uni/entdecken/?bereich=materialien')) +
@@ -991,19 +1086,17 @@ Uni.ansicht = (function () {
     var thema = z.thema();
     var ben = z.benachrichtigungen();
 
-    return '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
+    return '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
         b.abschnitt('Darstellung') +
-        '<div style="padding:0 var(--rand)">' +
-          '<div class="u-filter" style="padding-inline:0">' +
-            [['system', 'Wie das Gerät'], ['hell', 'Hell'], ['dunkel', 'Dunkel']].map(function (t) {
-              return '<button type="button" class="u-filter__pille" data-tun="thema" data-wert="' + t[0] + '" ' +
-                'aria-pressed="' + (thema === t[0] ? 'true' : 'false') + '">' + esc(t[1]) + '</button>';
-            }).join('') +
-          '</div>' +
-        '</div>' +
+        '<div style="padding:0 var(--rand)"><div class="u-filter" style="padding-inline:0">' +
+          [['system', 'Wie das Gerät'], ['hell', 'Hell'], ['dunkel', 'Dunkel']].map(function (t) {
+            return '<button type="button" class="u-filter__pille" data-tun="thema" data-wert="' + t[0] + '" ' +
+              'aria-pressed="' + (thema === t[0] ? 'true' : 'false') + '">' + esc(t[1]) + '</button>';
+          }).join('') +
+        '</div></div>' +
       '</section>' +
 
-      '<section class="u-abschnitt">' +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
         b.abschnitt('Benachrichtigungen') +
         '<div style="padding:0 var(--rand)">' +
           '<div class="u-filter" style="padding-inline:0">' +
@@ -1012,26 +1105,32 @@ Uni.ansicht = (function () {
                 'aria-pressed="' + (ben === t[0] ? 'true' : 'false') + '">' + esc(t[1]) + '</button>';
             }).join('') +
           '</div>' +
-          '<p class="u-klein u-leise" style="margin-top:.6rem;line-height:1.55">' +
+          '<p class="u-klein u-leise" style="margin-top:.7rem;line-height:1.55">' +
             'Bei „Wichtiges“ erinnert dich die App an Prüfungen und Abgaben und meldet unbeantwortete Verkaufsanfragen. ' +
             'Modul-Updates kommen gesammelt, nicht einzeln.</p>' +
-          '<div style="margin-top:.8rem">' +
+          '<div style="margin-top:.9rem">' +
             b.hinweis('Push-Benachrichtigungen und Ruhezeiten sind vorbereitet, im Prototyp aber nicht aktiv.') +
           '</div>' +
         '</div>' +
       '</section>' +
 
-      '<section class="u-abschnitt">' +
-        b.abschnitt('Studium') +
+      '<section class="u-abschnitt u-abschnitt--linie">' +
+        b.abschnitt('Dein Studium') +
         '<div style="padding:0 var(--rand)">' +
           '<a class="u-schalter" href="/uni/onboarding/">' +
-            '<span><b style="font-weight:700">Hochschule, Studiengang, Semester</b>' +
+            '<span><b style="font-weight:700">Name, Hochschule, Studiengang, Semester</b>' +
               '<span class="u-klein u-leise" style="display:block">' +
-                esc(d.hochschule(z.profil().hochschule).kurz + ' · ' + d.studiengang(z.profil().studiengang).kurz + ' · ' + z.profil().semester + '. Semester') +
+                esc((z.name() ? z.name() + ' · ' : '') + d.hochschule(z.profil().hochschule).kurz + ' · ' + studienzeile(true)) +
               '</span></span>' + b.zeichen('weiter', 18) + '</a>' +
+          (z.eigeneModulliste()
+            ? '<button type="button" class="u-schalter" data-tun="module-zuruecksetzen">' +
+                '<span><b style="font-weight:700">Module wieder aus dem Studiengang ableiten</b>' +
+                  '<span class="u-klein u-leise" style="display:block">Deine eigene Modulauswahl wird verworfen</span></span>' +
+                b.zeichen('weiter', 18) + '</button>'
+            : '') +
           '<button type="button" class="u-schalter" data-tun="zuruecksetzen">' +
             '<span><b style="font-weight:700">Prototyp zurücksetzen</b>' +
-              '<span class="u-klein u-leise" style="display:block">Alle lokalen Änderungen verwerfen</span></span>' +
+              '<span class="u-klein u-leise" style="display:block">Alle lokalen Angaben verwerfen und neu beginnen</span></span>' +
             b.zeichen('weiter', 18) + '</button>' +
         '</div>' +
       '</section>' +
@@ -1072,16 +1171,16 @@ Uni.ansicht = (function () {
           '<button type="button" class="u-knopf u-knopf--still u-knopf--klein" data-tun="anfragen" data-wert="' + esc(v.id) + '">Nachricht</button>' +
         '</div>' +
       '</header>' +
-      '<section class="u-abschnitt" style="margin-top:var(--s-md)">' +
+      '<section class="u-abschnitt" style="margin-top:var(--s-lg)">' +
         '<p style="padding:0 var(--rand);font-size:.95rem;line-height:1.6;max-width:46ch">' + esc(v.ueber) + '</p>' +
       '</section>';
 
     if (eigene.length) {
-      html += '<section class="u-abschnitt">' + b.abschnitt('Materialien') +
+      html += '<section class="u-abschnitt u-abschnitt--linie">' + b.abschnitt('Materialien') +
         '<div class="u-liste">' + eigene.map(b.materialzeile).join('') + '</div></section>';
     }
     if (services.length) {
-      html += '<section class="u-abschnitt">' + b.abschnitt('Services') +
+      html += '<section class="u-abschnitt u-abschnitt--linie">' + b.abschnitt('Services') +
         '<div class="u-liste">' + services.map(serviceZeile).join('') + '</div></section>';
     }
 
@@ -1101,7 +1200,7 @@ Uni.ansicht = (function () {
       html: (liste.length
         ? '<div class="u-liste" style="margin-top:var(--s-xs)">' + liste.map(b.inboxzeile).join('') + '</div>'
         : b.leer('Keine Nachrichten', 'Anfragen zu Materialien, Services und Flohmarkt landen hier.', 'Zum Entdecken', '/uni/entdecken/')) +
-        '<div style="padding:var(--s-lg) var(--rand) 0">' +
+        '<div style="padding:var(--s-abschnitt) var(--rand) 0">' +
           b.hinweis('Chats, Verkäufe und Mitteilungen liegen an einem Ort. Eine eigene Benachrichtigungsseite gibt es bewusst nicht.') +
         '</div>'
     };
@@ -1151,17 +1250,24 @@ Uni.ansicht = (function () {
       '</form>';
 
     if (!text) {
-      html += '<section class="u-abschnitt" style="margin-top:var(--s-sm)">' +
+      var module = q.moduleSortiert();
+      var letzte = z.letzteSuchen();
+      if (module.length) {
+        html += '<section class="u-abschnitt" style="margin-top:var(--s-sm)">' +
           b.abschnitt('Deine Module') +
-          '<div class="u-modulreihe">' + q.moduleSortiert().map(b.modulkarte).join('') + '</div>' +
-        '</section>' +
-        '<section class="u-abschnitt">' +
-          b.abschnitt('Zuletzt gesucht') +
-          '<div class="u-liste">' + z.letzteSuchen().map(function (s) {
-            return '<a class="u-treffer" href="/uni/suche/?q=' + encodeURIComponent(s) + '">' +
-              '<span class="u-treffer__titel">' + b.zeichen('lupe', 15) + ' ' + esc(s) + '</span></a>';
-          }).join('') + '</div>' +
+          '<div class="u-modulreihe">' + module.map(b.modulkarte).join('') + '</div>' +
         '</section>';
+      }
+      html += '<section class="u-abschnitt' + (module.length ? ' u-abschnitt--linie' : '') + '">' +
+        b.abschnitt(letzte.length ? 'Zuletzt gesucht' : 'Wonach du suchen kannst') +
+        (letzte.length
+          ? '<div class="u-liste">' + letzte.map(function (s) {
+              return '<a class="u-treffer" href="/uni/suche/?q=' + encodeURIComponent(s) + '">' +
+                '<span class="u-treffer__titel">' + b.zeichen('lupe', 15) + ' ' + esc(s) + '</span></a>';
+            }).join('') + '</div>'
+          : '<p class="u-klein u-leise" style="padding:0 var(--rand);max-width:44ch">' +
+            'Module, Dozenten, Lernmaterialien, Services, Flohmarkt-Artikel und Leute. Andere Studiengänge sind durchsuchbar, stehen aber weiter hinten.</p>') +
+      '</section>';
       return { titel: 'Suche', kopf: false, html: html };
     }
 
@@ -1184,60 +1290,118 @@ Uni.ansicht = (function () {
             '<span class="u-treffer__titel">' + esc(t.titel) + '</span>' +
             '<span class="u-treffer__meta">' + t.meta + '</span></a>';
         }).join('') + '</div>'
-      : b.leer('Nichts gefunden', 'Zu „' + text + '“ gibt es keinen Treffer. Andere Studiengänge sind durchsuchbar, stehen aber weiter hinten.', 'Suche leeren', '/uni/suche/');
+      : b.leer('Nichts gefunden', 'Zu „' + text + '“ gibt es keinen Treffer.', 'Suche leeren', '/uni/suche/');
 
     return { titel: 'Suche: ' + text, kopf: false, html: html };
   }
 
-  /* ----------------------------------------------- Onboarding */
+  /* ----------------------------------------------- Onboarding
+
+     Die Schrittfolge haengt vom gewaehlten Studiengang ab: nur wo es
+     Faecher gibt, wird danach gefragt. Alle Angaben stehen in der
+     Adresse, deshalb funktionieren Zurueck-Knopf und Neuladen. */
 
   function onboarding(ctx) {
-    var schritt = Number(ctx.frage.get('schritt') || 1);
-    var gewaehlt = {
-      hochschule: ctx.frage.get('hochschule') || z.profil().hochschule,
-      studiengang: ctx.frage.get('studiengang') || z.profil().studiengang,
-      semester: Number(ctx.frage.get('semester') || z.profil().semester)
+    var f = ctx.frage;
+    var p = z.profil();
+    var a = {
+      name: f.has('name') ? f.get('name') : p.name,
+      hochschule: f.get('hochschule') || p.hochschule,
+      studiengang: f.get('studiengang') || p.studiengang,
+      fach: f.has('fach') ? (f.get('fach') || null) : p.fach,
+      semester: Number(f.get('semester') || p.semester)
     };
+    var sg = d.studiengang(a.studiengang);
+
+    var schritte = ['name', 'hochschule', 'studiengang'];
+    if (sg && sg.faecher) schritte.push('fach');
+    schritte.push('semester');
+
+    var nr = Number(f.get('schritt') || 1);
+    if (!(nr >= 1)) nr = 1;
+    if (nr > schritte.length) nr = schritte.length;
+    var aktuell = schritte[nr - 1];
 
     var html = '<div class="u-onboarding">' +
-      '<div class="u-fortschritt">' + [1, 2, 3].map(function (i) {
-        return '<i data-aktiv="' + (i <= schritt ? 'ja' : 'nein') + '"></i>';
+      '<div class="u-fortschritt">' + schritte.map(function (x, i) {
+        return '<i data-aktiv="' + (i < nr ? 'ja' : 'nein') + '"></i>';
       }).join('') + '</div>' +
-      '<p class="u-onboarding__schritt">Schritt ' + schritt + ' von 3</p>';
+      '<p class="u-onboarding__schritt">Schritt ' + nr + ' von ' + schritte.length + '</p>';
 
-    if (schritt === 1) {
-      html += '<h1 class="u-onboarding__frage">An welcher Hochschule bist du?</h1>' +
+    if (aktuell === 'name') {
+      html += '<h1 class="u-onboarding__frage">Wie sollen wir dich nennen?</h1>' +
         '<p class="u-leise" style="margin:-1rem 0 var(--s-lg);max-width:42ch;font-size:.95rem;line-height:1.55">' +
-          'Drei Fragen, dann ist die Startseite auf dich eingestellt. Module ergänzt du danach.</p>' +
+          'Vorname, Spitzname oder gar nichts. Du entscheidest, was andere sehen, und kannst es später ändern.</p>' +
+        '<form data-tun="onboarding-name" data-weiter="' + esc(adresse(2, {})) + '">' +
+          '<div class="u-feld">' +
+            '<label for="onb-name">Dein Name</label>' +
+            '<input type="text" id="onb-name" name="name" value="' + esc(a.name) + '" ' +
+              'placeholder="Zum Beispiel Anna" autocomplete="given-name" maxlength="40">' +
+            '<span class="u-feld__hinweis">Kein Pflichtfeld. Ohne Namen grüßt dich die App einfach ohne Namen.</span>' +
+          '</div>' +
+          '<button type="submit" class="u-knopf u-knopf--breit">Weiter</button>' +
+        '</form>';
+    } else if (aktuell === 'hochschule') {
+      html += '<h1 class="u-onboarding__frage">An welcher Hochschule bist du?</h1>' +
         d.hochschulen.map(function (h) {
-          return wahl(h.name, h.ort, 'hochschule', h.id, gewaehlt.hochschule === h.id);
+          return wahl(h.name, h.ort, adresse(nr + 1, { hochschule: h.id }), a.hochschule === h.id);
         }).join('');
-    } else if (schritt === 2) {
+    } else if (aktuell === 'studiengang') {
       html += '<h1 class="u-onboarding__frage">Was studierst du?</h1>' +
         d.studiengaenge.map(function (s) {
-          return wahl(s.name, s.abschluss, 'studiengang', s.id, gewaehlt.studiengang === s.id);
+          var zahl = d.module.filter(function (m) { return m.studiengang === s.id; }).length;
+          return wahl(s.name, s.abschluss + (zahl ? ' · ' + zahl + ' Module hinterlegt' : ' · noch keine Module hinterlegt'),
+            adresse(nr + 1, { studiengang: s.id, fach: '' }), a.studiengang === s.id);
         }).join('');
+    } else if (aktuell === 'fach') {
+      html += '<h1 class="u-onboarding__frage">Welches Fach?</h1>' +
+        '<p class="u-leise" style="margin:-1rem 0 var(--s-lg);max-width:42ch;font-size:.95rem;line-height:1.55">' +
+          'Damit kommen die Fachmodule dazu. Die bildungswissenschaftlichen Module bekommst du in jedem Fall.</p>' +
+        sg.faecher.map(function (x) {
+          var zahl = d.module.filter(function (m) { return m.fach === x.id; }).length;
+          return wahl(x.name, zahl + ' Fachmodule hinterlegt', adresse(nr + 1, { fach: x.id }), a.fach === x.id);
+        }).join('') +
+        wahl('Noch offen', 'Nur die fachübergreifenden Module', adresse(nr + 1, { fach: '' }), !a.fach);
     } else {
       html += '<h1 class="u-onboarding__frage">In welchem Semester?</h1>' +
         [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) {
-          return wahl(n + '. Semester', '', 'semester', String(n), gewaehlt.semester === n);
+          return wahl(n + '. Semester', '', adresse(nr, { semester: n }), a.semester === n);
         }).join('') +
         '<button type="button" class="u-knopf u-knopf--breit" style="margin-top:var(--s-lg)" ' +
-          'data-tun="onboarding-fertig" data-wert="' + esc(gewaehlt.hochschule + '|' + gewaehlt.studiengang + '|' + gewaehlt.semester) + '">' +
+          'data-tun="onboarding-fertig" data-name="' + esc(a.name) + '" data-hochschule="' + esc(a.hochschule) + '" ' +
+          'data-studiengang="' + esc(a.studiengang) + '" data-fach="' + esc(a.fach || '') + '" data-semester="' + a.semester + '">' +
           'Fertig, los geht’s</button>' +
         '<p class="u-klein u-leise" style="margin-top:var(--s-md);line-height:1.55">' +
-          'Deine Module ergänzt du danach im Bereich Studium. Nichts davon verlässt diesen Browser.</p>';
+          'Deine Module ergeben sich daraus und lassen sich danach jederzeit ergänzen. Nichts davon verlässt diesen Browser.</p>';
+    }
+
+    if (nr > 1) {
+      html += '<p style="margin-top:var(--s-lg)"><a href="' + esc(adresse(nr - 1, {})) +
+        '" class="u-klein" style="color:var(--text-leise);font-weight:600">Zurück</a></p>';
     }
 
     html += '</div>';
 
     return { titel: 'Willkommen', kopf: false, leiste: false, html: html };
 
-    function wahl(titel, unter, feld, wert, aktiv) {
-      var ziel = '/uni/onboarding/?schritt=' + (schritt < 3 ? schritt + 1 : 3) +
-        '&hochschule=' + (feld === 'hochschule' ? wert : gewaehlt.hochschule) +
-        '&studiengang=' + (feld === 'studiengang' ? wert : gewaehlt.studiengang) +
-        '&semester=' + (feld === 'semester' ? wert : gewaehlt.semester);
+    /* Adresse des naechsten Schritts, mit allen bisherigen Angaben. */
+    function adresse(schritt, neu) {
+      var w = {
+        name: neu.name !== undefined ? neu.name : a.name,
+        hochschule: neu.hochschule !== undefined ? neu.hochschule : a.hochschule,
+        studiengang: neu.studiengang !== undefined ? neu.studiengang : a.studiengang,
+        fach: neu.fach !== undefined ? neu.fach : (a.fach || ''),
+        semester: neu.semester !== undefined ? neu.semester : a.semester
+      };
+      return '/uni/onboarding/?schritt=' + schritt +
+        '&name=' + encodeURIComponent(w.name || '') +
+        '&hochschule=' + encodeURIComponent(w.hochschule) +
+        '&studiengang=' + encodeURIComponent(w.studiengang) +
+        '&fach=' + encodeURIComponent(w.fach || '') +
+        '&semester=' + encodeURIComponent(w.semester);
+    }
+
+    function wahl(titel, unter, ziel, aktiv) {
       return '<a class="u-wahl" href="' + esc(ziel) + '" aria-pressed="' + (aktiv ? 'true' : 'false') + '">' +
         '<span><b>' + esc(titel) + '</b>' + (unter ? '<span>' + esc(unter) + '</span>' : '') + '</span>' +
         (aktiv ? '<span style="color:var(--marke)">' + b.zeichen('haken', 18) + '</span>' : b.zeichen('weiter', 18)) +
@@ -1261,6 +1425,6 @@ Uni.ansicht = (function () {
     serviceListe: serviceListe, service: service,
     flohmarkt: flohmarkt, artikel: artikel, profil: profil, inbox: inbox,
     suche: suche, onboarding: onboarding, nichtGefunden: nichtGefunden,
-    modulBlatt: modulBlatt
+    modulBlatt: modulBlatt, studienzeile: studienzeile
   };
 })();

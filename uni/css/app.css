@@ -75,6 +75,9 @@
 
   --s-2xs: .25rem; --s-xs: .5rem;  --s-sm: .75rem; --s-md: 1rem;
   --s-lg: 1.5rem;  --s-xl: 2rem;   --s-2xl: 3rem;
+  /* Abstand zwischen zwei Abschnitten. Kompakt wie in einer News-App,
+     aber so, dass die Bloecke nicht aneinanderkleben. */
+  --s-abschnitt: 2.6rem;
 
   /* Karten kantiger, Knoepfe runder. Genau diese vier Werte, keine
      Zwischengroessen. */
@@ -327,15 +330,25 @@ a { color: inherit; text-decoration: none; }
 .u-spalte { padding-inline: var(--rand); }
 
 /* Abschnittskopf: Titel links, optionaler Verweis rechts. */
-.u-abschnitt { margin-top: var(--s-xl); }
+.u-abschnitt { margin-top: var(--s-abschnitt); }
+
+/* Eine Haarlinie dort, wo ein neuer Gedanke anfaengt — nicht vor jedem
+   Abschnitt, sonst zerfaellt die Seite in gleich aussehende Kaesten. */
+.u-abschnitt--linie {
+  border-top: 1px solid var(--linie);
+  padding-top: var(--s-xl);
+}
+
 .u-abschnitt__kopf {
   display: flex; align-items: baseline; justify-content: space-between;
   gap: var(--s-md); padding-inline: var(--rand);
-  margin-bottom: var(--s-sm);
+  margin-bottom: var(--s-md);
 }
 .u-abschnitt__mehr {
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: .35rem 0;
   font-size: .84rem; font-weight: 600; color: var(--marke);
-  flex: none; padding: .35rem 0;
+  flex: none;
 }
 .u-abschnitt__mehr:hover { text-decoration: underline; }
 
@@ -524,18 +537,18 @@ a { color: inherit; text-decoration: none; }
 /* --- Heute-Streifen --------------------------------------------------- */
 /* Kompakt und ohne Karte: eine Zeitspalte, eine Haarlinie, fertig. */
 .u-heute {
-  margin-top: var(--s-md);
+  margin-top: var(--s-lg);
   background: var(--flaeche);
   border-block: 1px solid var(--linie);
 }
 .u-heute__kopf {
   display: flex; align-items: baseline; justify-content: space-between;
-  padding: .7rem var(--rand) .1rem;
+  padding: .85rem var(--rand) .35rem;
 }
 .u-heute__zeile {
   display: grid; grid-template-columns: 52px 1fr auto;
   align-items: start; gap: .7rem;
-  width: 100%; padding: .7rem var(--rand);
+  width: 100%; padding: .85rem var(--rand);
   text-align: left;
   border-top: 1px solid var(--linie-zart);
 }
@@ -564,9 +577,9 @@ a { color: inherit; text-decoration: none; }
 
 /* --- Modulkarten (waagerecht rollend) --------------------------------- */
 .u-modulreihe {
-  display: flex; gap: .7rem;
+  display: flex; gap: .8rem;
   overflow-x: auto; scroll-snap-type: x mandatory;
-  padding: 2px var(--rand) var(--s-xs);
+  padding: 2px var(--rand) var(--s-sm);
   scroll-padding-left: var(--rand);
   scrollbar-width: none;
 }
@@ -574,7 +587,7 @@ a { color: inherit; text-decoration: none; }
 
 .u-modulkarte {
   flex: none; scroll-snap-align: start;
-  width: 208px; min-height: 132px;
+  width: 214px; min-height: 138px;
   display: flex; flex-direction: column; justify-content: space-between;
   padding: .85rem .9rem;
   border-radius: var(--rund);
@@ -587,10 +600,14 @@ a { color: inherit; text-decoration: none; }
   font-size: .68rem; font-weight: 800; letter-spacing: .12em;
   text-transform: uppercase; opacity: .75;
 }
+/* Lange Modulnamen wie „Entwicklungspsychologie“ passen nicht in eine
+   Zeile. Sie duerfen umbrechen und im Notfall trennen — abgeschnitten
+   werden sie nie. */
 .u-modulkarte__name {
   font-family: var(--schrift-titel);
-  font-size: 1.2rem; font-weight: 600; line-height: 1.15;
+  font-size: 1.16rem; font-weight: 600; line-height: 1.15;
   letter-spacing: -.01em; margin-top: .2rem;
+  overflow-wrap: break-word; hyphens: auto;
 }
 .u-modulkarte__dozent { font-size: .82rem; opacity: .8; margin-top: .15rem; }
 .u-modulkarte__fuss {
@@ -613,13 +630,21 @@ a { color: inherit; text-decoration: none; }
 /* Redaktionell: Typzeile, Ueberschrift, kurzer Text, Fusszeile. Keine
    Karten — Haarlinien halten die Dichte hoch. */
 .u-feed { margin-top: var(--s-xs); }
+/* Der Eintrag ist ein <article>. Anklickbar ist er trotzdem ganz: der
+   Verweis in der Ueberschrift legt sich per ::after darueber. Quelle
+   und Anhang liegen mit z-index darauf und bleiben eigene Ziele. */
 .u-feed__eintrag {
+  position: relative;
   display: block; width: 100%; text-align: left;
-  padding: var(--s-md) var(--rand);
+  padding: 1.2rem var(--rand) 1.3rem;
   border-top: 1px solid var(--linie-zart);
 }
 .u-feed__eintrag:first-child { border-top: 0; }
-.u-feed__eintrag:hover { background: var(--flaeche); }
+.u-feed__eintrag:has(a:hover) { background: var(--flaeche); }
+.u-feed__titel a { color: inherit; }
+.u-feed__titel a::after { content: ""; position: absolute; inset: 0; }
+.u-feed__titel a:focus-visible { outline: none; }
+.u-feed__titel a:focus-visible::after { outline: 2px solid var(--marke); outline-offset: -3px; border-radius: var(--rund-klein); }
 .u-feed__typ {
   display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
   font-size: .69rem; font-weight: 800; letter-spacing: .1em;
@@ -637,17 +662,32 @@ a { color: inherit; text-decoration: none; }
   margin-top: .25rem; max-width: 46ch;
 }
 .u-feed__fuss {
-  margin-top: .5rem; font-size: .79rem; line-height: 1.5; color: var(--text-leise);
+  margin-top: .6rem; font-size: .79rem; line-height: 1.6; color: var(--text-leise);
 }
+
+/* Quellenangabe. Als Verweis nur dort, wo eine echte Adresse hinterlegt
+   ist; sonst schlichter Text mit dem Zusatz „Musterdaten“. */
+.u-quelle {
+  position: relative; z-index: 1;
+  display: inline-flex; align-items: center; gap: .25rem;
+  min-height: 28px;
+  font-size: .79rem; font-weight: 600; color: var(--marke);
+}
+.u-quelle:hover { text-decoration: underline; }
+.u-quelle svg { opacity: .8; }
+.u-quelle--muster { color: var(--text-leise); font-weight: 500; }
+.u-quelle--muster:hover { text-decoration: none; }
 .u-feed__fuss b { font-weight: 700; color: var(--text); }
 
 /* Ein Feedeintrag darf ein Material anhaengen. Kleine Zeile, kein Banner. */
 .u-anhang {
+  position: relative; z-index: 1;
   display: flex; align-items: center; gap: .6rem;
-  margin-top: .6rem; padding: .55rem .65rem;
+  margin-top: .75rem; padding: .55rem .65rem;
   border: 1px solid var(--linie); border-radius: var(--rund-klein);
   background: var(--flaeche);
 }
+.u-anhang:hover { border-color: var(--text-leise); }
 .u-anhang__kachel {
   flex: none; width: 34px; height: 34px;
   display: grid; place-items: center;
@@ -664,7 +704,7 @@ a { color: inherit; text-decoration: none; }
 
 /* --- Entdecken-Block auf Home ----------------------------------------- */
 .u-entdecken {
-  margin: var(--s-xl) var(--rand) 0;
+  margin: var(--s-abschnitt) var(--rand) 0;
   padding: var(--s-lg) var(--s-md) var(--s-md);
   border-radius: var(--rund-gross);
   background: var(--entdecken); color: var(--entdecken-auf);
@@ -695,7 +735,7 @@ a { color: inherit; text-decoration: none; }
 .u-material {
   display: grid; grid-template-columns: 46px 1fr auto;
   gap: .8rem; align-items: start;
-  width: 100%; padding: var(--s-md) var(--rand);
+  width: 100%; padding: 1.05rem var(--rand);
   text-align: left;
 }
 .u-material:hover { background: var(--flaeche); }
@@ -730,7 +770,7 @@ a { color: inherit; text-decoration: none; }
 .u-termin {
   display: grid; grid-template-columns: 54px 1fr;
   gap: .8rem; align-items: start;
-  width: 100%; padding: .75rem var(--rand);
+  width: 100%; padding: .85rem var(--rand);
   text-align: left;
 }
 .u-termin:hover { background: var(--flaeche); }
@@ -747,7 +787,7 @@ a { color: inherit; text-decoration: none; }
 .u-inbox {
   display: grid; grid-template-columns: 42px 1fr auto;
   gap: .75rem; align-items: start;
-  width: 100%; padding: var(--s-md) var(--rand);
+  width: 100%; padding: 1.05rem var(--rand);
   text-align: left;
 }
 .u-inbox:hover { background: var(--flaeche); }
@@ -831,6 +871,7 @@ a { color: inherit; text-decoration: none; }
   font-size: clamp(1.8rem, 1.4rem + 1.8vw, 2.3rem);
   font-weight: 600; line-height: 1.1; letter-spacing: -.02em;
   margin-top: .15rem;
+  overflow-wrap: break-word; hyphens: auto;
 }
 .u-modulkopf__meta { font-size: .9rem; opacity: .82; margin-top: .3rem; }
 .u-modulkopf__naechst {
@@ -868,7 +909,7 @@ a { color: inherit; text-decoration: none; }
   border-left: 4px solid var(--modul);
 }
 .u-modulzeile:hover { background: var(--flaeche); }
-.u-modulzeile__name { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; }
+.u-modulzeile__name { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; overflow-wrap: break-word; }
 .u-modulzeile__meta { font-size: .82rem; color: var(--text-leise); margin-top: .12rem; }
 .u-modulzeile__naechst {
   font-size: .8rem; font-weight: 700; color: var(--text-leise);

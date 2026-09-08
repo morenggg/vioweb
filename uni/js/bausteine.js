@@ -109,6 +109,7 @@ Uni.baustein = (function () {
     kreuz:    '<path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/>',
     pfeilRaus:'<path d="M14 4h6v6M20 4l-8.5 8.5"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
     ordner:   '<path d="M3.5 6.5a1 1 0 0 1 1-1h4.2l2 2.4h8.8a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1z"/>',
+    aussen:   '<path d="M7.5 16.5 16.5 7.5M9.5 7.5h7v7"/>',
     sprech:   '<path d="M20.5 12.4c0 3.9-3.8 7-8.5 7-1 0-2-.1-2.9-.4L4 20.5l1.5-3.7A6.7 6.7 0 0 1 3.5 12.4c0-3.9 3.8-7 8.5-7s8.5 3.1 8.5 7z"/>'
   };
 
@@ -164,6 +165,20 @@ Uni.baustein = (function () {
         'data-wert="' + esc(p.wert) + '" aria-pressed="' + (p.wert === aktiv ? 'true' : 'false') + '">' +
         esc(p.text) + '</button>';
     }).join('') + '</div>';
+  }
+
+  /* Quellenangabe. Nur wo eine echte Adresse hinterlegt ist, entsteht
+     ein Verweis — sonst steht die Quelle als Text da und wird als
+     Musterdaten gekennzeichnet. Es gibt keinen erfundenen Link. */
+  function quelleZeile(quelle, muster) {
+    if (!quelle || !quelle.name) return '';
+    if (quelle.url) {
+      return '<a class="u-quelle" href="' + esc(quelle.url) + '" target="_blank" rel="noopener noreferrer">' +
+        'Quelle: ' + esc(quelle.name) + zeichen('aussen', 12) +
+        '<span class="u-nurlesen">(öffnet in einem neuen Tab)</span></a>';
+    }
+    return '<span class="u-quelle u-quelle--muster">Quelle: ' + esc(quelle.name) +
+      (muster ? ' · Musterdaten' : '') + '</span>';
   }
 
   /* ------------------------------------------------- Heute */
@@ -223,43 +238,66 @@ Uni.baustein = (function () {
 
   /* ------------------------------------------------- Feed */
 
-  /* ohneModul: im Modul-Hub steht der Name schon im Kopf. */
+  /* Redaktionell: Typzeile, Ueberschrift, kurzer Text, Fusszeile.
+
+     Der Eintrag ist ein <article>, kein <a>: in der Fusszeile kann eine
+     Quelle stehen, und ein Verweis im Verweis ist nicht erlaubt. Die
+     ganze Flaeche bleibt trotzdem anklickbar — der Titelverweis legt
+     sich per ::after darueber, Quelle und Anhang liegen darauf.
+
+     ohneModul: im Modul-Hub steht der Name schon im Kopf. */
   function feedEintrag(e, ohneModul) {
-    var m = e.modul && !ohneModul ? Uni.daten.modul(e.modul) : null;
-    var farbe = e.modul ? Uni.daten.modul(e.modul) : null;
+    var bezug = e.modul ? Uni.daten.modul(e.modul) : null;
+    var m = ohneModul ? null : bezug;
     var typ = { termin: 'Termin', material: 'Material', frage: 'Frage', event: 'Event', campus: 'Campus', hinweis: 'Hinweis' }[e.typ] || e.typ;
+    var c = e.campus ? Uni.daten.campusEintrag(e.campus) : null;
+
     var ziel = e.material ? '/uni/material/' + e.material + '/'
-      : e.typ === 'campus' || e.typ === 'event' ? '/uni/entdecken/?campus=' + (e.campus || '')
-      : farbe ? '/uni/modul/' + farbe.slug + '/' : '/uni/';
+      : c ? '/uni/entdecken/?campus=' + c.slug
+      : bezug ? '/uni/modul/' + bezug.slug + '/' : '/uni/';
 
     var anhang = '';
     if (e.material) {
       var mat = Uni.daten.material(e.material);
       if (mat) {
-        anhang = '<span class="u-anhang">' +
+        anhang = '<a class="u-anhang" href="/uni/material/' + esc(mat.slug) + '/">' +
           '<span class="u-anhang__kachel">' + esc(mat.dateityp.split(' ')[0]) + '</span>' +
           '<span class="u-anhang__text">' +
             '<span class="u-anhang__titel">' + esc(mat.titel) + '</span>' +
             '<span class="u-anhang__meta">' + esc(mat.umfang) + ' · ' + preis(mat.preis) + '</span>' +
-          '</span>' + zeichen('weiter', 16) + '</span>';
+          '</span>' + zeichen('weiter', 16) + '</a>';
       }
     }
 
     var fuss = [];
     if (e.von) fuss.push(esc(e.von));
     if (e.zeit) fuss.push(esc(e.zeit));
+    if (e.antworten) fuss.push('<b>' + e.antworten + ' Antworten</b>');
+    if (e.hilfreich) fuss.push(e.hilfreich + '× hilfreich');
 
-    return '<a class="u-feed__eintrag" href="' + esc(ziel) + '"' + (farbe ? ' data-farbe="' + esc(farbe.farbe) + '"' : '') + '>' +
-      '<span class="u-feed__typ">' + esc(typ) + (m ? ' <span>· ' + esc(m.name) + '</span>' : '') +
-        (e.amtlich ? ' <span>· amtlich</span>' : '') + '</span>' +
-      '<span class="u-feed__titel">' + esc(e.titel) + '</span>' +
-      (e.text ? '<span class="u-feed__text">' + esc(e.text) + '</span>' : '') +
+    var quelle = c ? quelleZeile(c.quelle, c.muster) : '';
+
+    return '<article class="u-feed__eintrag"' + (bezug ? ' data-farbe="' + esc(bezug.farbe) + '"' : '') + '>' +
+      '<p class="u-feed__typ">' + esc(typ) + (m ? ' <span>· ' + esc(m.name) + '</span>' : '') +
+        (e.amtlich ? ' <span>· amtlich</span>' : '') + '</p>' +
+      '<h3 class="u-feed__titel"><a href="' + esc(ziel) + '">' + esc(e.titel) + '</a></h3>' +
+      (e.text ? '<p class="u-feed__text">' + esc(e.text) + '</p>' : '') +
       anhang +
-      '<span class="u-feed__fuss">' + fuss.join(' · ') +
-        (e.antworten ? ' · <b>' + e.antworten + ' Antworten</b>' : '') +
-        (e.hilfreich ? ' · ' + e.hilfreich + '× hilfreich' : '') +
-      '</span>' +
-      '</a>';
+      '<p class="u-feed__fuss">' + fuss.join(' · ') + (quelle ? (fuss.length ? '<br>' : '') + quelle : '') + '</p>' +
+      '</article>';
+  }
+
+  /* Ein Campus-Beitrag in derselben Form. Die Quelle steht hier immer
+     dabei, weil genau das der Unterschied zu einem Modulbeitrag ist. */
+  function campusEintrag(c) {
+    var art = { hinweis: 'Hinweis', event: 'Event', angebot: 'Angebot', wegweiser: 'Wegweiser' }[c.art] || 'Campus';
+    return '<article class="u-feed__eintrag">' +
+      '<p class="u-feed__typ">' + esc(art) +
+        (c.quelle ? ' <span>· ' + esc(c.quelle.name) + '</span>' : '') + '</p>' +
+      '<h3 class="u-feed__titel"><a href="/uni/entdecken/?campus=' + esc(c.slug) + '">' + esc(c.titel) + '</a></h3>' +
+      '<p class="u-feed__text">' + esc(c.text.length > 140 ? c.text.slice(0, 140) + ' …' : c.text) + '</p>' +
+      '<p class="u-feed__fuss">' + esc(relativ(c.datum)) + '<br>' + quelleZeile(c.quelle, c.muster) + '</p>' +
+      '</article>';
   }
 
   /* ------------------------------------------------- Material */
@@ -352,7 +390,8 @@ Uni.baustein = (function () {
     sterne: sterne, verifiziert: verifiziert, marke: marke, abschnitt: abschnitt,
     hinweis: hinweis, leer: leer, filterleiste: filterleiste,
     heuteZeile: heuteZeile, modulkarte: modulkarte, modulzeile: modulzeile,
-    feedEintrag: feedEintrag, materialzeile: materialzeile, terminzeile: terminzeile,
+    feedEintrag: feedEintrag, campusEintrag: campusEintrag, quelleZeile: quelleZeile,
+    materialzeile: materialzeile, terminzeile: terminzeile,
     inboxzeile: inboxzeile, flohkarte: flohkarte, bezugText: bezugText
   };
 })();
