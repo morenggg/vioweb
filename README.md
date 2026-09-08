@@ -25,6 +25,7 @@ css/seite.css         alles unterhalb der Falz
 js/seite.js           Formular, Menü, Kopfzeile, Einblenden, Fortschrittsbalken
 fonts/                Manrope, lokal (SIL OFL 1.1)
 img/                  Firmenzeichen, Favicons, Vorschaubild
+uni/                  Prototyp der Campus-App — eigener Bereich, siehe uni/LIESMICH.md
 SEO.md                alle SEO-Maßnahmen mit Begründung
 LAUNCH_CHECKLIST.md   Prüfliste für den Livegang
 ```
@@ -209,6 +210,24 @@ Dateien unnötig nach.
 - Beide Warnkästen aus Impressum und Datenschutz entfernen
 
 ---
+
+## Prototyp unter /uni
+
+Im Ordner `uni/` liegt ein klickbarer Prototyp einer Studentenplattform.
+Er ist von der Website vollständig getrennt: eigenes Stylesheet, eigene
+Klassennamen mit Präfix `u-`, eigenes JavaScript. Er kann die Seiten der
+Website weder verändern noch beeinflussen.
+
+- Jede Seite trägt `noindex,nofollow`. Es gibt **keinen** Eintrag in
+  `sitemap.xml` und bewusst **kein** `Disallow` in `robots.txt`: was
+  nicht gecrawlt werden darf, liest das noindex nie.
+- `wartung.sh` fasst `/uni` nicht an. Der Prototyp bleibt erreichbar,
+  während die Website im Wartungsmodus steht.
+- Alle Inhalte sind Musterdaten. Es gibt keinen Server, kein Konto und
+  keine Zahlung.
+
+Was funktioniert, was Attrappe ist und was noch fehlt, steht in
+`uni/LIESMICH.md`.
 
 ## Schriften
 

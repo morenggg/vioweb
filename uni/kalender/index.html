@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>Kalender · Campus</title>
+<meta name="description" content="Prototyp einer Campus-App für Studenten. Musterdaten, kein Konto, keine Zahlung.">
+
+<!-- Prototyp: gehoert nicht in den Index. Gecrawlt werden darf die Seite,
+     sonst liest niemand das noindex. Begruendungen in uni/LIESMICH.md. -->
+<meta name="robots" content="noindex,nofollow">
+
+<meta name="theme-color" content="#F3EFE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15140F" media="(prefers-color-scheme: dark)">
+
+<link rel="icon" href="/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/img/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
+<link rel="preload" href="/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/uni/css/app.css">
+
+<!-- Ein gewaehltes Thema noch vor dem ersten Bild setzen, sonst blitzt
+     die helle Fassung auf. -->
+<script>
+try {
+  var g = JSON.parse(localStorage.getItem('uni.zustand.v1') || 'null');
+  if (g && g.thema && g.thema !== 'system') document.documentElement.setAttribute('data-thema', g.thema);
+} catch (e) {}
+</script>
+
+<script defer src="/uni/js/daten.js"></script>
+<script defer src="/uni/js/zustand.js"></script>
+<script defer src="/uni/js/bausteine.js"></script>
+<script defer src="/uni/js/abfragen.js"></script>
+<script defer src="/uni/js/ansichten.js"></script>
+<script defer src="/uni/js/app.js"></script>
+</head>
+<body>
+
+<div class="u-app" id="app"></div>
+
+<noscript>
+  <div class="u-ohnejs">
+    <h1 class="u-titel u-h1">Campus</h1>
+    <p>Dieser Prototyp wird im Browser aufgebaut und braucht dafür JavaScript.
+       Die Website von Vioweb funktioniert ohne.</p>
+    <p><a href="/">Zur Website von Vioweb</a></p>
+  </div>
+</noscript>
+
+</body>
+</html>

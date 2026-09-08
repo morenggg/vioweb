@@ -23,6 +23,8 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
+Disallow: /uni/LIESMICH.md
+Disallow: /uni/seiten.sh
 # Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
 # soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
 Disallow: /normalbetrieb/
@@ -56,6 +58,8 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
+Disallow: /uni/LIESMICH.md
+Disallow: /uni/seiten.sh
 # Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
 # soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
 Disallow: /normalbetrieb/
@@ -78,6 +82,8 @@ Disallow: /kurzcheck-vorlage.md
 Disallow: /august-angebot.md
 Disallow: /WARTUNGSMODUS.md
 Disallow: /wartung.sh
+Disallow: /uni/LIESMICH.md
+Disallow: /uni/seiten.sh
 # Waehrend der Wartung liegt die normale Website in normalbetrieb/. Sie
 # soll dort nicht als zweite Fassung derselben Seiten gecrawlt werden.
 Disallow: /normalbetrieb/
