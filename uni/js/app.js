@@ -368,11 +368,27 @@ Uni.app = (function () {
       z.onboardingSpeichern({
         name: el.dataset.name,
         hochschule: el.dataset.hochschule,
-        studiengang: el.dataset.studiengang,
-        fach: el.dataset.fach || null,
+        studiengang: el.dataset.studiengang || null,
+        lehramtstyp: el.dataset.lehramtstyp || null,
+        faecher: (el.dataset.faecher || '').split(',').filter(Boolean),
         semester: Number(el.dataset.semester)
       });
+      z.onboardingAbschliessen();
       gehe(ziel(''), true);
+    },
+
+    /* Letzter Schritt des Onboardings: die bestaetigte Modulliste
+       steht bereits im Zustand, hier wird nur abgeschlossen. */
+    'onboarding-abschliessen': function () {
+      z.onboardingAbschliessen();
+      gehe(ziel(''), true);
+    },
+
+    /* Modul im Bestaetigungsschritt an- oder abwaehlen. */
+    'modul-umschalten': function (el) {
+      var slug = el.dataset.wert;
+      if (z.belegt(slug)) z.modulEntfernen(slug); else z.modulHinzufuegen(slug);
+      zeichnen();
     },
 
     'module-zuruecksetzen': function () {

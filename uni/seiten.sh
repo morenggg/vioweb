@@ -14,10 +14,10 @@
 #  Dadurch funktioniert ein Direktaufruf oder ein geteilter Link genauso
 #  wie die Navigation in der App.
 #
-#  Die Slugs kommen direkt aus js/daten.js. Kommt dort ein Modul, ein
-#  Material, ein Service oder ein Flohmarkt-Artikel dazu, genuegt ein
-#  Aufruf dieses Skripts — es legt die fehlenden Ordner an und raeumt
-#  die weg, deren Slug es nicht mehr gibt.
+#  Die Slugs kommen direkt aus js/musterdaten.js und js/hochschuldaten.js.
+#  Kommt dort ein Modul, ein Fach, ein Material, ein Service oder ein
+#  Flohmarkt-Artikel dazu, genuegt ein Aufruf dieses Skripts — es legt die
+#  fehlenden Ordner an und raeumt die weg, deren Slug es nicht mehr gibt.
 # =============================================================================
 set -e
 cd "$(dirname "$0")"
@@ -28,16 +28,34 @@ FESTE="_ studium kalender entdecken flohmarkt profil inbox suche onboarding mate
 # js/daten.js gelesen. Dort markieren Kommentare den Anfang und das Ende
 # jeder Sammlung. So kann die Liste nie auseinanderlaufen.
 slugs() {
-  sed -n "/--- SLUGS $1 ---/,/--- ENDE $1 ---/p" js/daten.js \
+  datei="${2:-js/musterdaten.js}"
+  sed -n "/--- SLUGS $1 ---/,/--- ENDE $1 ---/p" "$datei" \
     | grep -o "slug: '[^']*'" | sed "s/slug: '//; s/'$//"
+}
+
+kennungen() {
+  sed -n "/--- SLUGS $1 ---/,/--- ENDE $1 ---/p" js/hochschuldaten.js \
+    | grep -o "id: '[^']*'" | sed "s/id: '//; s/'$//"
 }
 
 MODULE=$(slugs module)
 MATERIALIEN=$(slugs materialien)
 SERVICES=$(slugs services)
 ARTIKEL=$(slugs flohmarkt)
+FAECHER=$(kennungen faecher)
 
-for name in MODULE MATERIALIEN SERVICES ARTIKEL; do
+# Die Fach- und Lernbereichsmodule des Lehramts entstehen in
+# musterdaten.js aus der Faecherliste. Dieselbe Regel gilt hier, damit
+# jede erzeugte Adresse auch eine Datei bekommt.
+for f in $FAECHER; do
+  case "$f" in
+    grundschuldidaktik) ;;
+    gsd-*)  MODULE="$MODULE la-lb-$f" ;;
+    *)      MODULE="$MODULE la-fw-$f la-fd-$f" ;;
+  esac
+done
+
+for name in MODULE MATERIALIEN SERVICES ARTIKEL FAECHER; do
   eval "wert=\$$name"
   [ -n "$wert" ] || { echo "FEHLER: keine Slugs fuer $name in js/daten.js gefunden." >&2; exit 1; }
 done
@@ -51,7 +69,9 @@ aufraeumen() {
   for pfad in "$ordner"/*/; do
     [ -d "$pfad" ] || continue
     name=$(basename "$pfad")
-    if ! echo "$liste" | grep -qx "$name"; then
+    # Die Liste kommt teils zeilen-, teils leerzeichengetrennt an.
+    # tr macht daraus eine Zeile je Slug, sonst greift grep -x nicht.
+    if ! echo "$liste" | tr ' ' '\n' | grep -qx "$name"; then
       rm -rf "$pfad"
       echo "  entfernt: $pfad"
     fi
@@ -96,7 +116,11 @@ try {
 } catch (e) {}
 </script>
 
+<!-- Reihenfolge: Datumshilfen, dann die Hochschulstruktur aus
+     oeffentlichen Quellen, dann die Musterinhalte, dann die App. -->
 <script defer src="/uni/js/daten.js"></script>
+<script defer src="/uni/js/hochschuldaten.js"></script>
+<script defer src="/uni/js/musterdaten.js"></script>
 <script defer src="/uni/js/zustand.js"></script>
 <script defer src="/uni/js/bausteine.js"></script>
 <script defer src="/uni/js/abfragen.js"></script>

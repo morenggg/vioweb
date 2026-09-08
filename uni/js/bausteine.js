@@ -197,7 +197,7 @@ Uni.baustein = (function () {
         (t.ende ? '<small>bis ' + esc(t.ende) + '</small>' : '') + '</span>' +
       '<span class="u-heute__was">' +
         '<span class="u-heute__titel">' + esc(t.titel) + '</span>' +
-        '<span class="u-heute__ort">' + esc([ARTNAME[t.art] || '', t.ort].filter(Boolean).join(' · ')) + '</span>' +
+        '<span class="u-heute__ort">' + esc([ARTNAME[t.art] || '', t.ort || 'Raum nicht hinterlegt'].filter(Boolean).join(' · ')) + '</span>' +
       '</span>' +
       (laeuft ? '<span class="u-heute__jetzt">Jetzt</span>' : '') +
       '</a>';
@@ -209,6 +209,16 @@ Uni.baustein = (function () {
 
   /* ------------------------------------------------- Modul */
 
+  /* Ohne bekannten Dozenten wird keiner erfunden — stattdessen sagt
+     die Zeile, worum es sich handelt. */
+  function untertitelOhneDozent(m) {
+    return {
+      fachwissenschaft: 'Fachwissenschaft', fachdidaktik: 'Fachdidaktik',
+      bildungswissenschaften: 'Bildungswissenschaften', schulart: 'Grundschuldidaktik',
+      praktikum: 'Schulpraktische Studien'
+    }[m.gruppe] || (m.ects ? m.ects + ' ECTS' : 'Modul');
+  }
+
   function modulkarte(m) {
     var t = Uni.abfrage.naechsterTermin(m.slug);
     return '<a class="u-modulkarte" href="/uni/modul/' + esc(m.slug) + '/" data-farbe="' + esc(m.farbe) + '">' +
@@ -216,7 +226,7 @@ Uni.baustein = (function () {
         '<span class="u-modulkarte__kuerzel">' + esc(m.kuerzel) +
           (Uni.zustand.gepinnt(m.slug) ? ' · angepinnt' : '') + '</span>' +
         '<span class="u-modulkarte__name">' + esc(m.name) + '</span>' +
-        '<span class="u-modulkarte__dozent">' + esc(m.dozent) + '</span>' +
+        '<span class="u-modulkarte__dozent">' + esc(m.dozent || untertitelOhneDozent(m)) + '</span>' +
       '</span>' +
       '<span class="u-modulkarte__fuss">' + zeichen('uhr', 13) +
         (t ? esc(relativ(t.datum) + ' · ' + t.start) : 'Kein Termin geplant') + '</span>' +
@@ -230,7 +240,8 @@ Uni.baustein = (function () {
         '<span class="u-modulzeile__name">' +
           (Uni.zustand.gepinnt(m.slug) ? '<span class="u-nadel">' + zeichen('nadel', 13) + '</span> ' : '') +
           esc(m.name) + '</span>' +
-        '<span class="u-modulzeile__meta">' + esc(m.dozent + ' · ' + m.ects + ' ECTS' + (m.note ? ' · Note ' + m.note : '')) + '</span>' +
+        '<span class="u-modulzeile__meta">' + esc([m.dozent, m.ects ? m.ects + ' ECTS' : null]
+          .filter(Boolean).join(' · ') || untertitelOhneDozent(m)) + '</span>' +
       '</span>' +
       '<span class="u-modulzeile__naechst">' + (t ? esc(relativ(t.datum)) + '<br>' + esc(t.start) : '—') + '</span>' +
       '</a>';
@@ -333,8 +344,8 @@ Uni.baustein = (function () {
       '<span class="u-termin__balken">' +
         '<span class="u-termin__titel">' + esc(t.titel) + '</span>' +
         '<span class="u-termin__meta">' +
-          (besonders ? '<b>' + esc(ARTNAME[t.art]) + '</b> · ' : esc(ARTNAME[t.art] || '') + (t.ort ? ' · ' : '')) +
-          esc(t.ort || '') + '</span>' +
+          (besonders ? '<b>' + esc(ARTNAME[t.art]) + '</b> · ' : esc(ARTNAME[t.art] || '') + ' · ') +
+          esc(t.ort || 'Raum nicht hinterlegt') + '</span>' +
       '</span>' +
       '</a>';
   }

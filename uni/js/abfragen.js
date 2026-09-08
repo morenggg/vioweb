@@ -41,27 +41,47 @@ Uni.abfrage = (function () {
       .concat(m.filter(function (x) { return !Uni.zustand.gepinnt(x.slug); }));
   }
 
-  /* Module desselben Studiengangs aus frueheren Semestern. Sie sind
-     nicht belegt, bleiben aber sichtbar. */
+  /* Passt ein Modul zur Studienstruktur des Nutzers? Semester bleibt
+     dabei aussen vor — das entscheidet der jeweilige Aufrufer. */
+  function passtZurStruktur(m, p) {
+    if (m.studiengang !== p.studiengang) return false;
+    if (m.lehramtstyp && m.lehramtstyp !== p.lehramtstyp) return false;
+    if (m.fach && (p.faecher || []).indexOf(m.fach) === -1) return false;
+    return true;
+  }
+
+  /* Empfehlung fuer das aktuelle Semester, unabhaengig davon, was der
+     Nutzer bestaetigt hat. */
+  function empfohleneModule() {
+    return Uni.zustand.empfohleneModule();
+  }
+
+  /* Module derselben Studienstruktur aus frueheren Semestern. */
   function frühereModule() {
     var p = profil();
     return d.module.filter(function (m) {
-      return m.studiengang === p.studiengang
-        && (!m.fach || m.fach === p.fach)
-        && m.semester < p.semester;
+      return passtZurStruktur(m, p) && m.semester < p.semester;
     }).sort(function (a, b) { return b.semester - a.semester; });
   }
 
-  /* Vorschlaege beim Hinzufuegen: eigener Studiengang, noch nicht
-     belegt, nach Naehe zum aktuellen Semester. */
+  /* Vorschlaege beim Hinzufuegen: passende Struktur, noch nicht belegt,
+     nach Naehe zum aktuellen Semester. */
   function modulvorschlaege() {
     var p = profil();
     return d.module.filter(function (m) {
-      return m.studiengang === p.studiengang
-        && (!m.fach || m.fach === p.fach)
-        && !Uni.zustand.belegt(m.slug);
+      return passtZurStruktur(m, p) && !Uni.zustand.belegt(m.slug);
     }).sort(function (a, b) {
       return Math.abs(a.semester - p.semester) - Math.abs(b.semester - p.semester);
+    });
+  }
+
+  /* Module des Studiengangs, die nicht zur eigenen Struktur passen —
+     etwa die Faecher, die man nicht gewaehlt hat. Sie sind ueber die
+     Suche erreichbar, werden aber nicht empfohlen. */
+  function weitereModuleImStudiengang() {
+    var p = profil();
+    return d.module.filter(function (m) {
+      return m.studiengang === p.studiengang && !passtZurStruktur(m, p);
     });
   }
 
@@ -110,6 +130,8 @@ Uni.abfrage = (function () {
     var gepinnt = Uni.zustand.stand().gepinnt;
 
     return d.feed.filter(function (e) {
+      /* fachbezogen: nur wenn das Fach gewaehlt ist */
+      if (e.fach && (p.faecher || []).indexOf(e.fach) === -1) return false;
       if (e.modul) return meine.indexOf(e.modul) > -1;
       if (e.studiengang) return e.studiengang === p.studiengang;
       return true;                       /* hochschulweit */
@@ -245,10 +267,15 @@ Uni.abfrage = (function () {
       if (!passt(m.name, m.kuerzel, m.dozent, m.beschreibung)) return;
       var eigen = m.studiengang === p.studiengang;
       var sg = d.studiengang(m.studiengang);
+      var teile = [];
+      if (Uni.zustand.belegt(m.slug)) teile.push('belegt');
+      else if (sg) teile.push(sg.kurz);
+      if (m.dozent) teile.push(m.dozent);
+      teile.push(m.semester + '. Semester');
       treffer.push({
-        art: 'modul', titel: m.name, farbe: m.farbe, rang: Uni.zustand.belegt(m.slug) ? 0 : eigen ? 1 : 3,
-        meta: m.dozent + ' · ' + (Uni.zustand.belegt(m.slug) ? 'belegt' : (sg ? sg.kurz + ' · ' : '') + m.semester + '. Semester'),
-        ziel: '/uni/modul/' + m.slug + '/'
+        art: 'modul', titel: m.name, farbe: m.farbe,
+        rang: Uni.zustand.belegt(m.slug) ? 0 : eigen ? 1 : 3,
+        meta: teile.join(' · '), ziel: '/uni/modul/' + m.slug + '/'
       });
     });
     d.materialien.forEach(function (m) {
@@ -277,12 +304,22 @@ Uni.abfrage = (function () {
         ziel: '/uni/flohmarkt/' + a.slug + '/'
       });
     });
+    d.studiengaenge.forEach(function (sg) {
+      if (!passt(sg.name, sg.kurz, sg.abschluss)) return;
+      var h = d.hochschule(sg.hochschule);
+      treffer.push({
+        art: 'studiengang', titel: sg.name, farbe: 'stein',
+        rang: sg.id === p.studiengang ? 0 : 2,
+        meta: sg.abschluss + (h ? ' · ' + h.kurz : ''),
+        ziel: '/uni/studium/', quelle: sg.quelle
+      });
+    });
     d.verkaeufer.forEach(function (v) {
       if (!passt(v.name, v.ueber)) return;
-      var sg = d.studiengang(v.studiengang);
+      var sgv = d.studiengang(v.studiengang);
       treffer.push({
         art: 'leute', titel: v.name, farbe: 'stein', rang: v.studiengang === p.studiengang ? 1 : 3,
-        meta: (sg ? sg.kurz + ' · ' : '') + v.semester + '. Semester',
+        meta: (sgv ? sgv.kurz + ' · ' : '') + v.semester + '. Semester',
         ziel: '/uni/profil/?person=' + v.id
       });
     });
@@ -299,7 +336,8 @@ Uni.abfrage = (function () {
 
   return {
     meineModule: meineModule, moduleSortiert: moduleSortiert, frühereModule: frühereModule,
-    modulvorschlaege: modulvorschlaege,
+    modulvorschlaege: modulvorschlaege, empfohleneModule: empfohleneModule,
+    weitereModuleImStudiengang: weitereModuleImStudiengang, passtZurStruktur: passtZurStruktur,
     meineTermine: meineTermine, termineAm: termineAm, heuteTermine: heuteTermine,
     naechsterTermin: naechsterTermin, naechsteFristen: naechsteFristen,
     feed: feed, feedZuModul: feedZuModul, campus: campus,

@@ -30,17 +30,26 @@ Uni.ansicht = (function () {
   var z = Uni.zustand;
   var esc = b.esc;
 
-  /* Studiengang, Fach und Semester als eine Zeile — an mehreren Stellen
-     gebraucht und deshalb nur einmal geschrieben. */
+  /* Studiengang, Schulart, Faecher und Semester als eine Zeile — an
+     vielen Stellen gebraucht und deshalb nur einmal geschrieben. */
   function studienzeile(mitSemester) {
     var p = z.profil();
     var sg = d.studiengang(p.studiengang);
-    var f = d.fach(p.studiengang, p.fach);
+    var typ = d.lehramtstyp(p.lehramtstyp);
     var teile = [];
     if (mitSemester) teile.push(p.semester + '. Semester');
-    if (sg) teile.push(sg.kurz);
-    if (f) teile.push(f.name);
+    if (typ) teile.push(typ.kurz);
+    else if (sg) teile.push(sg.kurz);
+    var f = faecherNamen();
+    if (f) teile.push(f);
     return teile.join(' · ');
+  }
+
+  function faecherNamen() {
+    return (z.profil().faecher || []).map(function (id) {
+      var f = d.fach(id);
+      return f ? f.name : id;
+    }).join(', ');
   }
 
   function musterhinweis() {
@@ -123,15 +132,33 @@ Uni.ansicht = (function () {
      ist. Er weicht ausdruecklich NICHT auf einen anderen Studiengang
      aus, sondern bietet die beiden Wege an, die weiterhelfen. */
   function leerModul(sg) {
+    var p = z.profil();
+    var hs = d.hochschule(p.hochschule);
+    var titel, text;
+
+    if (!sg) {
+      titel = 'Noch kein Studiengang gewählt';
+      text = hs && !hs.angebotErfasst
+        ? 'Für ' + hs.name + ' ist das Studienangebot in diesem Prototyp noch nicht erfasst. Du kannst deine Module trotzdem selbst hinzufügen.'
+        : 'Wähle im Onboarding deinen Studiengang, dann schlagen wir dir passende Module vor.';
+    } else if (!sg.moduleErfasst) {
+      titel = 'Für deinen Studiengang sind noch keine Module hinterlegt';
+      text = sg.name + ' ist im Studienangebot erfasst, die Modulstruktur aber noch nicht. Wir zeigen dir deshalb keine Module eines anderen Studiengangs, sondern gar keine.';
+    } else {
+      titel = 'Für diese Kombination haben wir noch keine Module';
+      text = 'Zu ' + studienzeile(true) + ' ist hier noch nichts hinterlegt. Du kannst Module selbst hinzufügen oder vorschlagen.';
+    }
+
     return '<div class="u-leer" style="padding-block:var(--s-lg)">' +
-      '<p class="u-leer__titel">Für deinen Studiengang sind noch keine Module hinterlegt</p>' +
-      '<p class="u-leer__text">' +
-        esc((sg ? sg.name : 'Dieser Studiengang') + ', ' + z.profil().semester + '. Semester: ' +
-        'In diesem Prototyp gibt es dafür noch keine Modulliste. Du kannst Module selbst hinzufügen oder vorschlagen.') + '</p>' +
+      '<p class="u-leer__titel">' + esc(titel) + '</p>' +
+      '<p class="u-leer__text">' + esc(text) + '</p>' +
       '<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:var(--s-md)">' +
         '<button type="button" class="u-knopf" data-tun="modul-suchen">Modul hinzufügen</button>' +
         '<button type="button" class="u-knopf u-knopf--still" data-tun="modul-vorschlagen">Modul vorschlagen</button>' +
       '</div>' +
+      (sg && sg.quelle
+        ? '<p style="margin-top:var(--s-md)">' + b.quelleZeile(sg.quelle, false) + '</p>'
+        : hs && hs.web ? '<p style="margin-top:var(--s-md)">' + b.quelleZeile({ name: hs.name, url: hs.web }, false) + '</p>' : '') +
     '</div>';
   }
 
@@ -172,6 +199,7 @@ Uni.ansicht = (function () {
       '<section class="u-semesterkopf">' +
         '<p class="u-kicker">' + esc(hs ? hs.name : '') + '</p>' +
         '<h1 class="u-titel u-h1">' + esc(sg ? sg.name : 'Studium') + '</h1>' +
+        (sg && sg.abschluss ? '<p class="u-klein u-leise">' + esc(sg.abschluss) + '</p>' : '') +
         '<p class="u-leise">' + esc(unterzeile()) + '</p>' +
         '<div class="u-semesterkopf__zahlen">' +
           zahl(module.length, 'Module') +
@@ -213,6 +241,19 @@ Uni.ansicht = (function () {
       '</section>';
     }
 
+    if (sg) {
+      html += '<section class="u-abschnitt u-abschnitt--linie">' +
+        '<div style="padding:0 var(--rand)">' +
+          (sg.hinweis ? b.hinweis(esc(sg.hinweis)) + '<div style="height:.6rem"></div>' : '') +
+          '<p class="u-klein u-leise" style="line-height:1.6;max-width:44ch">' +
+            'Studiengang und Struktur sind aus dem öffentlichen Studienangebot übernommen. ' +
+            'Modulnamen, Dozenten, Räume und Zeiten in diesem Prototyp sind dagegen Musterdaten.</p>' +
+          (sg.quelle ? '<p style="margin-top:.5rem">' + b.quelleZeile(sg.quelle, false) + '</p>' : '') +
+          (sg.dokumente ? '<p>' + b.quelleZeile(sg.dokumente, false) + '</p>' : '') +
+        '</div>' +
+      '</section>';
+    }
+
     return {
       titel: 'Studium', kopf: { titel: 'Studium' }, html: html,
       blatt: ctx.frage.get('hinzufuegen') ? modulBlatt() : null
@@ -222,12 +263,15 @@ Uni.ansicht = (function () {
       return '<div class="u-semesterkopf__zahl"><b>' + esc(wert) + '</b><span>' + esc(text) + '</span></div>';
     }
 
-    /* Semester, Fach und Semesterbezeichnung. Der Studiengang steht
-       schon als Ueberschrift darueber. */
+    /* Schulart, Faecher, Semester und Semesterbezeichnung. Der
+       Studiengang steht schon als Ueberschrift darueber. */
     function unterzeile() {
-      var teile = [p.semester + '. Semester'];
-      var fa = d.fach(p.studiengang, p.fach);
-      if (fa) teile.push(fa.name);
+      var teile = [];
+      var typ = d.lehramtstyp(p.lehramtstyp);
+      if (typ) teile.push(typ.name);
+      var f = faecherNamen();
+      if (f) teile.push(f);
+      teile.push(p.semester + '. Semester');
       teile.push(d.semesterName);
       return teile.join(' · ');
     }
@@ -249,7 +293,7 @@ Uni.ansicht = (function () {
           return '<button type="button" class="u-blatt__punkt" data-tun="modul-hinzufuegen" data-wert="' + esc(m.slug) + '">' +
             '<span class="u-blatt__kachel" data-farbe="' + esc(m.farbe) + '" style="background:var(--modul-zart);color:var(--modul)">' +
               esc(m.kuerzel.slice(0, 3)) + '</span>' +
-            '<span><b>' + esc(m.name) + '</b><span>' + esc(m.dozent + ' · ' + m.ects + ' ECTS · ' + m.semester + '. Semester') + '</span></span>' +
+            '<span><b>' + esc(m.name) + '</b><span>' + esc(modulUnterzeile(m)) + '</span></span>' +
             '</button>';
         }).join('') +
         '<div style="padding-top:var(--s-md)">' +
@@ -289,7 +333,7 @@ Uni.ansicht = (function () {
         '</div>' +
         '<p class="u-modulkopf__kuerzel">' + esc(m.kuerzel) + (z.gepinnt(m.slug) ? ' · angepinnt' : '') + '</p>' +
         '<h1 class="u-modulkopf__name">' + esc(m.name) + '</h1>' +
-        '<p class="u-modulkopf__meta">' + esc(m.dozent + ' · ' + d.semesterName + ' · ' + m.ects + ' ECTS') + '</p>' +
+        '<p class="u-modulkopf__meta">' + esc(kopfzeile()) + '</p>' +
         (t ? '<p class="u-modulkopf__naechst">' + b.zeichen('uhr', 14) +
               esc(b.relativ(t.datum) + ' · ' + t.start + (t.ort ? ' · ' + t.ort : '')) + '</p>' : '') +
       '</header>' +
@@ -310,6 +354,16 @@ Uni.ansicht = (function () {
       '<div data-farbe="' + esc(m.farbe) + '">' + inhalt + '</div>';
 
     return { titel: m.name, kopf: false, html: html };
+
+    /* Nur nennen, was bekannt ist. Ein erfundener Dozent waere
+       schlimmer als eine fehlende Angabe. */
+    function kopfzeile() {
+      var teile = [];
+      if (m.dozent) teile.push(m.dozent);
+      teile.push(d.semesterName);
+      if (m.ects) teile.push(m.ects + ' ECTS');
+      return teile.join(' · ');
+    }
 
     function reiterPunkt(text, wert) {
       return '<a class="u-reiter__punkt" role="tab" aria-selected="' + (reiter === wert ? 'true' : 'false') + '" ' +
@@ -346,12 +400,33 @@ Uni.ansicht = (function () {
       '</div>' +
     '</section>';
 
-    html += '<section class="u-abschnitt">' +
+    var fehlt = [];
+    if (!m.dozent) fehlt.push('Dozent');
+    if (!m.pruefung) fehlt.push('Prüfungsform');
+    if ((m.plan || []).some(function (x) { return !x.ort; })) fehlt.push('Raum');
+
+    var angaben = [];
+    if (m.pruefung) angaben.push('Prüfung: ' + m.pruefung);
+    if (m.teilnehmer) angaben.push(m.teilnehmer + ' Studenten folgen diesem Modul');
+    var sgm = d.studiengang(m.studiengang);
+    var dok = d.studiendokumente(m.studiengang);
+
+    html += '<section class="u-abschnitt u-abschnitt--linie">' +
       b.abschnitt('Über das Modul') +
       '<div style="padding:0 var(--rand)">' +
         '<p style="font-size:.95rem;line-height:1.6;max-width:46ch">' + esc(m.beschreibung) + '</p>' +
-        '<p class="u-klein u-leise" style="margin-top:.6rem">' +
-          esc('Prüfung: ' + m.pruefung + ' · ' + m.teilnehmer + ' Studenten folgen diesem Modul') + '</p>' +
+        (angaben.length ? '<p class="u-klein u-leise" style="margin-top:.6rem">' + esc(angaben.join(' · ')) + '</p>' : '') +
+        (sgm ? '<p class="u-klein u-leise" style="margin-top:.3rem">' + esc(sgm.name +
+          (m.gruppe ? ' · ' + gruppenName(m.gruppe) : '')) + '</p>' : '') +
+        '<div style="margin-top:var(--s-md);display:grid;gap:.6rem">' +
+          b.hinweis('<b>Musterdaten.</b> Modulname, Zeiten und Beiträge in diesem Prototyp sind erfunden. ' +
+            'Die verbindlichen Angaben stehen im Modulhandbuch deiner Hochschule.') +
+          (fehlt.length
+            ? b.hinweis('Nicht hinterlegt: ' + esc(fehlt.join(', ')) +
+              '. Wir tragen hier nichts ein, wofür uns keine Quelle vorliegt.')
+            : '') +
+        '</div>' +
+        (dok ? '<p style="margin-top:.7rem">' + b.quelleZeile(dok, false) + '</p>' : '') +
       '</div>' +
     '</section>';
 
@@ -399,6 +474,13 @@ Uni.ansicht = (function () {
     '</div>';
 
     return html;
+  }
+
+  function gruppenName(g) {
+    return {
+      bildungswissenschaften: 'Bildungswissenschaften', schulart: 'Schulartspezifisch',
+      fachwissenschaft: 'Fachwissenschaft', fachdidaktik: 'Fachdidaktik', praktikum: 'Schulpraktische Studien'
+    }[g] || g;
   }
 
   function sortierpillen(aktiv) {
@@ -1004,7 +1086,7 @@ Uni.ansicht = (function () {
           '<span class="u-profilkopf__bild">' + (z.kuerzel() ? esc(z.kuerzel()) : b.zeichen('person', 28)) + '</span>' +
           '<div style="min-width:0">' +
             '<h1 class="u-profilkopf__name">' + esc(name || 'Dein Profil') +
-              (d.demoKonto.verifiziert ? b.verifiziert() : '') + '</h1>' +
+              (z.profil().verifizierung === 'bestaetigt' ? b.verifiziert() : '') + '</h1>' +
             '<p class="u-profilkopf__meta">' + esc(studienzeile(true)) + '</p>' +
             '<p class="u-profilkopf__meta">' + esc(hs ? hs.name : '') + '</p>' +
           '</div>' +
@@ -1286,7 +1368,8 @@ Uni.ansicht = (function () {
       ? '<div>' + gefiltert.map(function (t) {
           return '<a class="u-treffer" href="' + esc(t.ziel) + '" data-farbe="' + esc(t.farbe || 'stein') + '">' +
             '<span class="u-treffer__typ" style="color:var(--modul)">' +
-              esc({ modul: 'Modul', material: 'Material', service: 'Service', flohmarkt: 'Flohmarkt', leute: 'Person', campus: 'Campus' }[t.art] || t.art) + '</span>' +
+              esc({ modul: 'Modul', material: 'Material', service: 'Service', flohmarkt: 'Flohmarkt',
+                    leute: 'Person', campus: 'Campus', studiengang: 'Studiengang' }[t.art] || t.art) + '</span>' +
             '<span class="u-treffer__titel">' + esc(t.titel) + '</span>' +
             '<span class="u-treffer__meta">' + t.meta + '</span></a>';
         }).join('') + '</div>'
@@ -1297,25 +1380,47 @@ Uni.ansicht = (function () {
 
   /* ----------------------------------------------- Onboarding
 
-     Die Schrittfolge haengt vom gewaehlten Studiengang ab: nur wo es
-     Faecher gibt, wird danach gefragt. Alle Angaben stehen in der
-     Adresse, deshalb funktionieren Zurueck-Knopf und Neuladen. */
+     Die Schrittfolge steht nirgends fest, sie ergibt sich aus den
+     Daten: was ein Studiengang braucht, steht an ihm selbst
+     (braucht.lehramtstyp, braucht.faecher, braucht.vertiefung), und wie
+     die Faecher gewaehlt werden, steht am Faechermodell der Schulart.
+     Ein BWL-Student sieht deshalb keinen Lehramtsschritt, und die
+     Fortschrittsanzeige zaehlt die tatsaechlichen Schritte.
+
+     Alle Angaben stehen in der Adresse, damit Zurueck und Neuladen
+     funktionieren. Erst der letzte Schritt schreibt sie fest. */
 
   function onboarding(ctx) {
     var f = ctx.frage;
     var p = z.profil();
+
     var a = {
       name: f.has('name') ? f.get('name') : p.name,
       hochschule: f.get('hochschule') || p.hochschule,
-      studiengang: f.get('studiengang') || p.studiengang,
-      fach: f.has('fach') ? (f.get('fach') || null) : p.fach,
+      studiengang: f.has('studiengang') ? (f.get('studiengang') || null) : p.studiengang,
+      lehramtstyp: f.has('lehramtstyp') ? (f.get('lehramtstyp') || null) : p.lehramtstyp,
+      faecher: f.has('faecher') ? f.get('faecher').split(',').filter(Boolean) : (p.faecher || []).slice(),
       semester: Number(f.get('semester') || p.semester)
     };
-    var sg = d.studiengang(a.studiengang);
 
-    var schritte = ['name', 'hochschule', 'studiengang'];
-    if (sg && sg.faecher) schritte.push('fach');
-    schritte.push('semester');
+    var hs = d.hochschule(a.hochschule);
+    var sg = d.studiengang(a.studiengang);
+    var typ = d.lehramtstyp(a.lehramtstyp);
+    var modell = typ ? d.faechermodell(typ.faechermodell) : null;
+
+    var schritte = ['name', 'hochschule'];
+    if (hs && !hs.angebotErfasst) {
+      schritte.push('kein-angebot');
+    } else {
+      schritte.push('studiengang');
+      if (sg) {
+        if (sg.braucht.lehramtstyp) schritte.push('lehramtstyp');
+        if (sg.braucht.vertiefung) schritte.push('vertiefung');
+        if (sg.braucht.faecher && typ && modell) schritte.push('faecher');
+        schritte.push('semester');
+        if (sg.moduleErfasst) schritte.push('module');
+      }
+    }
 
     var nr = Number(f.get('schritt') || 1);
     if (!(nr >= 1)) nr = 1;
@@ -1328,10 +1433,28 @@ Uni.ansicht = (function () {
       }).join('') + '</div>' +
       '<p class="u-onboarding__schritt">Schritt ' + nr + ' von ' + schritte.length + '</p>';
 
-    if (aktuell === 'name') {
-      html += '<h1 class="u-onboarding__frage">Wie sollen wir dich nennen?</h1>' +
-        '<p class="u-leise" style="margin:-1rem 0 var(--s-lg);max-width:42ch;font-size:.95rem;line-height:1.55">' +
-          'Vorname, Spitzname oder gar nichts. Du entscheidest, was andere sehen, und kannst es später ändern.</p>' +
+    if (aktuell === 'name') html += schrittName();
+    else if (aktuell === 'hochschule') html += schrittHochschule();
+    else if (aktuell === 'kein-angebot') html += schrittKeinAngebot();
+    else if (aktuell === 'studiengang') html += schrittStudiengang();
+    else if (aktuell === 'lehramtstyp') html += schrittLehramtstyp();
+    else if (aktuell === 'faecher') html += schrittFaecher();
+    else if (aktuell === 'semester') html += schrittSemester();
+    else html += schrittModule();
+
+    if (nr > 1) {
+      html += '<p style="margin-top:var(--s-xl)"><a href="' + esc(adresse(nr - 1, {})) +
+        '" class="u-klein" style="color:var(--text-leise);font-weight:600">Zurück</a></p>';
+    }
+    html += '</div>';
+
+    return { titel: 'Willkommen', kopf: false, leiste: false, html: html };
+
+    /* --------------------------------------------- einzelne Schritte */
+
+    function schrittName() {
+      return '<h1 class="u-onboarding__frage">Wie sollen wir dich nennen?</h1>' +
+        untertitel('Vorname, Spitzname oder gar nichts. Du entscheidest, was andere sehen, und kannst es später ändern.') +
         '<form data-tun="onboarding-name" data-weiter="' + esc(adresse(2, {})) + '">' +
           '<div class="u-feld">' +
             '<label for="onb-name">Dein Name</label>' +
@@ -1341,63 +1464,241 @@ Uni.ansicht = (function () {
           '</div>' +
           '<button type="submit" class="u-knopf u-knopf--breit">Weiter</button>' +
         '</form>';
-    } else if (aktuell === 'hochschule') {
-      html += '<h1 class="u-onboarding__frage">An welcher Hochschule bist du?</h1>' +
+    }
+
+    function schrittHochschule() {
+      return '<h1 class="u-onboarding__frage">An welcher Hochschule bist du?</h1>' +
         d.hochschulen.map(function (h) {
-          return wahl(h.name, h.ort, adresse(nr + 1, { hochschule: h.id }), a.hochschule === h.id);
+          var zahl = d.studiengaengeVon(h.id).length;
+          return wahl(h.name, h.ort + (h.angebotErfasst ? ' · ' + zahl + ' Studiengänge erfasst' : ' · Studienangebot noch nicht erfasst'),
+            adresse(3, { hochschule: h.id, studiengang: '', lehramtstyp: '', faecher: '' }), a.hochschule === h.id);
         }).join('');
-    } else if (aktuell === 'studiengang') {
-      html += '<h1 class="u-onboarding__frage">Was studierst du?</h1>' +
-        d.studiengaenge.map(function (s) {
-          var zahl = d.module.filter(function (m) { return m.studiengang === s.id; }).length;
-          return wahl(s.name, s.abschluss + (zahl ? ' · ' + zahl + ' Module hinterlegt' : ' · noch keine Module hinterlegt'),
-            adresse(nr + 1, { studiengang: s.id, fach: '' }), a.studiengang === s.id);
-        }).join('');
-    } else if (aktuell === 'fach') {
-      html += '<h1 class="u-onboarding__frage">Welches Fach?</h1>' +
-        '<p class="u-leise" style="margin:-1rem 0 var(--s-lg);max-width:42ch;font-size:.95rem;line-height:1.55">' +
-          'Damit kommen die Fachmodule dazu. Die bildungswissenschaftlichen Module bekommst du in jedem Fall.</p>' +
-        sg.faecher.map(function (x) {
-          var zahl = d.module.filter(function (m) { return m.fach === x.id; }).length;
-          return wahl(x.name, zahl + ' Fachmodule hinterlegt', adresse(nr + 1, { fach: x.id }), a.fach === x.id);
+    }
+
+    /* Fuer Hochschulen ohne erfasstes Angebot wird nichts erfunden. */
+    function schrittKeinAngebot() {
+      return '<h1 class="u-onboarding__frage">Für diese Hochschule ist noch kein Studienangebot erfasst</h1>' +
+        untertitel('Der Prototyp hat bisher nur das Studienangebot der ' +
+          esc(d.hochschule('uni-leipzig').name) + ' erfasst. Für ' + esc(hs.name) +
+          ' zeigen wir dir deshalb keine Studiengänge — statt welche zu erfinden.') +
+        (hs.web ? '<p style="margin-bottom:var(--s-lg)">' +
+          b.quelleZeile({ name: hs.name, url: hs.web }, false) + '</p>' : '') +
+        '<button type="button" class="u-knopf u-knopf--breit" data-tun="onboarding-fertig" ' +
+          datenAttribute() + '>Trotzdem loslegen</button>' +
+        '<p class="u-klein u-leise" style="margin-top:var(--s-md);line-height:1.55">' +
+          'Du kannst deine Module danach von Hand hinzufügen oder vorschlagen.</p>';
+    }
+
+    function schrittStudiengang() {
+      var liste = d.studiengaengeVon(a.hochschule);
+      if (!liste.length) return schrittKeinAngebot();
+      return '<h1 class="u-onboarding__frage">Was studierst du?</h1>' +
+        untertitel('Studiengänge der ' + esc(hs.name) + ', erfasst aus dem öffentlichen Studienangebot.') +
+        liste.map(function (x) {
+          var unter = x.abschluss + (x.moduleErfasst ? '' : ' · noch keine Module erfasst');
+          return wahl(x.name, unter, adresse(4, { studiengang: x.id, lehramtstyp: '', faecher: '' }), a.studiengang === x.id);
         }).join('') +
-        wahl('Noch offen', 'Nur die fachübergreifenden Module', adresse(nr + 1, { fach: '' }), !a.fach);
-    } else {
-      html += '<h1 class="u-onboarding__frage">In welchem Semester?</h1>' +
-        [1, 2, 3, 4, 5, 6, 7, 8].map(function (n) {
+        (liste[0] && liste[0].quelle ? '<p style="margin-top:var(--s-md)">' +
+          b.quelleZeile(liste[0].quelle, false) + '</p>' : '');
+    }
+
+    /* Der neue Schritt: erst die Schulart, dann die Faecher. Welche
+       Schularten es gibt, haengt an der Hochschule. */
+    function schrittLehramtstyp() {
+      var typen = d.lehramtstypenVon(a.hochschule).filter(function (t) { return t.studiengang === a.studiengang; });
+      if (!typen.length) {
+        return '<h1 class="u-onboarding__frage">Welches Lehramt?</h1>' +
+          untertitel('Für diese Hochschule sind die Lehramtsrichtungen noch nicht erfasst.') +
+          '<button type="button" class="u-knopf u-knopf--breit" data-tun="onboarding-fertig" ' + datenAttribute() + '>Trotzdem loslegen</button>';
+      }
+      return '<h1 class="u-onboarding__frage">Welches Lehramt?</h1>' +
+        untertitel('Wähle die Schulart, für die du studierst. Sie entscheidet über deine Module und darüber, wie die Fächer gewählt werden.') +
+        typen.map(function (t) {
+          var unter = t.klassen + (t.strukturErfasst === false ? ' · Struktur noch nicht erfasst' : '');
+          return wahl(t.name, unter, adresse(nr + 1, { lehramtstyp: t.id, faecher: '' }), a.lehramtstyp === t.id);
+        }).join('') +
+        (typen[0].quelle ? '<p style="margin-top:var(--s-md)">' + b.quelleZeile(typen[0].quelle, false) + '</p>' : '');
+    }
+
+    /* Die Faecherauswahl richtet sich nach dem Modell der Schulart.
+       Grundschule ist ausdruecklich kein Zwei-Faecher-Studium. */
+    function schrittFaecher() {
+      if (!modell) {
+        return '<h1 class="u-onboarding__frage">Fächer</h1>' +
+          untertitel('Für ' + esc(typ.name) + ' ist die Fächerstruktur hier noch nicht erfasst. Wir fragen sie deshalb nicht ab.') +
+          '<a class="u-knopf u-knopf--breit" href="' + esc(adresse(nr + 1, {})) + '">Weiter</a>';
+      }
+
+      var kopf, auswahl, gewaehlt = a.faecher;
+      if (modell.art === 'kernfach') {
+        kopf = '<h1 class="u-onboarding__frage">Welches Kernfach?</h1>' + untertitel(modell.erklaerung);
+        auswahl = fachliste(modell.kernfach, 1);
+        auswahl += '<div style="margin-top:var(--s-lg)">' +
+          b.hinweis('<b>Dazu kommen fest:</b> ' + esc(modell.lernbereiche.map(function (id) {
+            var x = d.fach(id); return x ? x.name : id;
+          }).join(', ')) + '. ' + esc(modell.wahlfachHinweis)) + '</div>';
+      } else if (modell.art === 'gemischt') {
+        kopf = '<h1 class="u-onboarding__frage">Welches Fach?</h1>' + untertitel(modell.erklaerung);
+        auswahl = fachliste(modell.faecher, 1);
+        if (modell.nichtErfasst) {
+          auswahl += '<div style="margin-top:var(--s-lg)">' +
+            b.hinweis('<b>Nicht erfasst:</b> ' + esc(modell.nichtErfasst.join(', ')) +
+              '. Sie werden hier nicht abgefragt, weil uns dazu keine belastbare öffentliche Quelle vorliegt.') + '</div>';
+        }
+      } else {
+        kopf = '<h1 class="u-onboarding__frage">Welche Fächer?</h1>' + untertitel(modell.erklaerung);
+        auswahl = modell.gruppen.map(function (g) {
+          return '<p class="u-kicker" style="margin:var(--s-lg) 0 .6rem">' + esc(g.name) + '</p>' +
+            (g.hinweis ? '<p class="u-klein u-leise" style="margin-bottom:.6rem;max-width:42ch">' + esc(g.hinweis) + '</p>' : '') +
+            fachliste(g.faecher, modell.anzahl);
+        }).join('');
+      }
+
+      var fertig = auswahlVollstaendig();
+      return kopf + auswahl +
+        '<div style="margin-top:var(--s-xl)">' +
+          (fertig
+            ? '<a class="u-knopf u-knopf--breit" href="' + esc(adresse(nr + 1, {})) + '">Weiter</a>'
+            : '<button type="button" class="u-knopf u-knopf--breit" disabled ' +
+              'style="opacity:.45;cursor:not-allowed">' + esc(auswahlHinweis()) + '</button>') +
+        '</div>' +
+        (modell.quelle ? '<p style="margin-top:var(--s-md)">' + b.quelleZeile(modell.quelle, false) + '</p>' : '');
+
+      function fachliste(ids, hoechstens) {
+        return ids.map(function (id) {
+          var x = d.fach(id);
+          if (!x) return '';
+          var an = gewaehlt.indexOf(id) > -1;
+          var neu = an
+            ? gewaehlt.filter(function (y) { return y !== id; })
+            : gewaehlt.concat([id]);
+          if (!an && gewaehlt.length >= hoechstens) {
+            /* Ist die Auswahl voll, ersetzt ein Tippen das zuletzt
+               gewaehlte Fach — sonst kommt man nicht mehr weiter. */
+            neu = gewaehlt.slice(0, hoechstens - 1).concat([id]);
+          }
+          return '<a class="u-wahl" href="' + esc(adresse(nr, { faecher: neu.join(',') })) + '" ' +
+            'aria-pressed="' + (an ? 'true' : 'false') + '">' +
+            '<span><b>' + esc(x.name) + '</b></span>' +
+            (an ? '<span style="color:var(--marke)">' + b.zeichen('haken', 18) + '</span>' : b.zeichen('plus', 18)) +
+            '</a>';
+        }).join('');
+      }
+
+      function auswahlVollstaendig() {
+        if (gewaehlt.length !== modell.anzahl) return false;
+        if (modell.art !== 'gruppen') return true;
+        var g1 = modell.gruppen[0].faecher;
+        var ausG1 = gewaehlt.filter(function (x) { return g1.indexOf(x) > -1; }).length;
+        if (ausG1 >= 1) return true;
+        /* Sonderfall Musik: laut Hochschule auch mit Ethik/Philosophie
+           oder Evangelischer Religion kombinierbar. */
+        if (gewaehlt.indexOf('musik') > -1) {
+          var rest = gewaehlt.filter(function (x) { return x !== 'musik'; })[0];
+          return rest === 'ethik-philosophie' || rest === 'ev-religion';
+        }
+        return false;
+      }
+
+      function auswahlHinweis() {
+        if (gewaehlt.length < modell.anzahl) {
+          var fehlt = modell.anzahl - gewaehlt.length;
+          return fehlt === 1 ? 'Noch ein Fach wählen' : 'Noch ' + fehlt + ' Fächer wählen';
+        }
+        return 'Diese Kombination ist nicht möglich';
+      }
+    }
+
+    function schrittSemester() {
+      /* Gibt es fuer den Studiengang keine Modulstruktur, entfaellt der
+         Bestaetigungsschritt — dann endet das Onboarding hier. */
+      var letzter = nr === schritte.length;
+      return '<h1 class="u-onboarding__frage">In welchem Semester?</h1>' +
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) {
           return wahl(n + '. Semester', '', adresse(nr, { semester: n }), a.semester === n);
         }).join('') +
-        '<button type="button" class="u-knopf u-knopf--breit" style="margin-top:var(--s-lg)" ' +
-          'data-tun="onboarding-fertig" data-name="' + esc(a.name) + '" data-hochschule="' + esc(a.hochschule) + '" ' +
-          'data-studiengang="' + esc(a.studiengang) + '" data-fach="' + esc(a.fach || '') + '" data-semester="' + a.semester + '">' +
-          'Fertig, los geht’s</button>' +
-        '<p class="u-klein u-leise" style="margin-top:var(--s-md);line-height:1.55">' +
-          'Deine Module ergeben sich daraus und lassen sich danach jederzeit ergänzen. Nichts davon verlässt diesen Browser.</p>';
+        '<div style="margin-top:var(--s-lg)">' +
+          (letzter
+            ? '<button type="button" class="u-knopf u-knopf--breit" data-tun="onboarding-fertig" ' +
+              datenAttribute() + '>Los geht’s</button>'
+            : '<a class="u-knopf u-knopf--breit" href="' + esc(adresse(nr + 1, {})) + '">Weiter</a>') +
+        '</div>' +
+        (letzter && sg && !sg.moduleErfasst
+          ? '<div style="margin-top:var(--s-md)">' +
+            b.hinweis('Für ' + esc(sg.name) + ' ist hier noch keine Modulstruktur erfasst. ' +
+              'Du kannst deine Module danach selbst hinzufügen oder vorschlagen.') + '</div>'
+          : '');
     }
 
-    if (nr > 1) {
-      html += '<p style="margin-top:var(--s-lg)"><a href="' + esc(adresse(nr - 1, {})) +
-        '" class="u-klein" style="color:var(--text-leise);font-weight:600">Zurück</a></p>';
+    /* Letzter Schritt: der Nutzer bestaetigt, was er wirklich belegt.
+       Der Studienverlaufsplan schlaegt nur vor. */
+    function schrittModule() {
+      profilSichern();
+      var empfohlen = z.empfohleneModule();
+      var belegt = z.module();
+
+      if (!empfohlen.length) {
+        return '<h1 class="u-onboarding__frage">Für diese Kombination haben wir noch keine Module</h1>' +
+          untertitel('Das heißt nicht, dass es keine gibt — sie sind hier nur noch nicht erfasst. Du kannst deine Module selbst hinzufügen oder vorschlagen.') +
+          '<button type="button" class="u-knopf u-knopf--breit" data-tun="onboarding-abschliessen">Weiter zur App</button>';
+      }
+
+      return '<h1 class="u-onboarding__frage">Deine Module</h1>' +
+        untertitel('Das passt laut Studienstruktur zu deinem ' + a.semester + '. Semester. Nimm heraus, was du nicht belegst.') +
+        empfohlen.map(function (m) {
+          var an = belegt.indexOf(m.slug) > -1;
+          return '<button type="button" class="u-wahl" data-tun="modul-umschalten" data-wert="' + esc(m.slug) + '" ' +
+            'aria-pressed="' + (an ? 'true' : 'false') + '">' +
+            '<span><b>' + esc(m.name) + '</b><span>' + esc(modulUnterzeile(m)) + '</span></span>' +
+            '<span style="color:' + (an ? 'var(--marke)' : 'var(--text-leise)') + '">' +
+              b.zeichen(an ? 'haken' : 'plus', 18) + '</span>' +
+            '</button>';
+        }).join('') +
+        '<div style="margin-top:var(--s-xl);display:grid;gap:.6rem">' +
+          '<button type="button" class="u-knopf u-knopf--breit" data-tun="onboarding-abschliessen">' +
+            (belegt.length ? 'Los geht’s mit ' + belegt.length + ' Modulen' : 'Ohne Module starten') + '</button>' +
+          '<button type="button" class="u-knopf u-knopf--still u-knopf--breit" data-tun="modul-suchen">Weiteres Modul suchen</button>' +
+          '<button type="button" class="u-knopf u-knopf--still u-knopf--breit" data-tun="modul-vorschlagen">Fehlendes Modul vorschlagen</button>' +
+        '</div>' +
+        '<div style="margin-top:var(--s-lg)">' + musterhinweis() + '</div>';
     }
 
-    html += '</div>';
+    /* --------------------------------------------- Hilfsteile */
 
-    return { titel: 'Willkommen', kopf: false, leiste: false, html: html };
+    function profilSichern() {
+      var p2 = z.profil();
+      var gleich = p2.name === a.name && p2.hochschule === a.hochschule &&
+        p2.studiengang === a.studiengang && p2.lehramtstyp === a.lehramtstyp &&
+        p2.semester === a.semester && (p2.faecher || []).join(',') === a.faecher.join(',');
+      if (!gleich) z.onboardingSpeichern(a);
+    }
 
-    /* Adresse des naechsten Schritts, mit allen bisherigen Angaben. */
+    function datenAttribute() {
+      return 'data-name="' + esc(a.name) + '" data-hochschule="' + esc(a.hochschule) + '" ' +
+        'data-studiengang="' + esc(a.studiengang || '') + '" data-lehramtstyp="' + esc(a.lehramtstyp || '') + '" ' +
+        'data-faecher="' + esc(a.faecher.join(',')) + '" data-semester="' + a.semester + '"';
+    }
+
+    function untertitel(text) {
+      return '<p class="u-leise" style="margin:-1rem 0 var(--s-lg);max-width:44ch;font-size:.95rem;line-height:1.55">' +
+        esc(text) + '</p>';
+    }
+
     function adresse(schritt, neu) {
       var w = {
         name: neu.name !== undefined ? neu.name : a.name,
         hochschule: neu.hochschule !== undefined ? neu.hochschule : a.hochschule,
-        studiengang: neu.studiengang !== undefined ? neu.studiengang : a.studiengang,
-        fach: neu.fach !== undefined ? neu.fach : (a.fach || ''),
+        studiengang: neu.studiengang !== undefined ? neu.studiengang : (a.studiengang || ''),
+        lehramtstyp: neu.lehramtstyp !== undefined ? neu.lehramtstyp : (a.lehramtstyp || ''),
+        faecher: neu.faecher !== undefined ? neu.faecher : a.faecher.join(','),
         semester: neu.semester !== undefined ? neu.semester : a.semester
       };
       return '/uni/onboarding/?schritt=' + schritt +
         '&name=' + encodeURIComponent(w.name || '') +
         '&hochschule=' + encodeURIComponent(w.hochschule) +
         '&studiengang=' + encodeURIComponent(w.studiengang) +
-        '&fach=' + encodeURIComponent(w.fach || '') +
+        '&lehramtstyp=' + encodeURIComponent(w.lehramtstyp) +
+        '&faecher=' + encodeURIComponent(w.faecher) +
         '&semester=' + encodeURIComponent(w.semester);
     }
 
@@ -1407,6 +1708,15 @@ Uni.ansicht = (function () {
         (aktiv ? '<span style="color:var(--marke)">' + b.zeichen('haken', 18) + '</span>' : b.zeichen('weiter', 18)) +
         '</a>';
     }
+  }
+
+  /* Zweite Zeile einer Modulzeile: nur was wirklich bekannt ist. */
+  function modulUnterzeile(m) {
+    var teile = [];
+    if (m.dozent) teile.push(m.dozent);
+    if (m.ects) teile.push(m.ects + ' ECTS');
+    teile.push(m.semester + '. Semester');
+    return teile.join(' · ');
   }
 
   /* -------------------------------------------- Nicht gefunden */
@@ -1425,6 +1735,6 @@ Uni.ansicht = (function () {
     serviceListe: serviceListe, service: service,
     flohmarkt: flohmarkt, artikel: artikel, profil: profil, inbox: inbox,
     suche: suche, onboarding: onboarding, nichtGefunden: nichtGefunden,
-    modulBlatt: modulBlatt, studienzeile: studienzeile
+    modulBlatt: modulBlatt, studienzeile: studienzeile, modulUnterzeile: modulUnterzeile
   };
 })();

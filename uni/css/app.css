@@ -218,7 +218,7 @@ a { color: inherit; text-decoration: none; }
   padding: .6rem 1rem; border-radius: var(--rund);
   transition: top var(--schnell) ease;
 }
-.u-sprung:focus { top: 10px; }
+.u-sprung:focus-visible { top: 10px; }
 
 /* Ohne JavaScript baut sich die App nicht auf. Statt einer leeren Seite
    steht dann dieser Hinweis da — und ein Weg zurueck zur Website. */
@@ -401,7 +401,7 @@ a { color: inherit; text-decoration: none; }
 /* Knoepfe sind rund, Karten sind kantig. Der Gegensatz ist Absicht. */
 .u-knopf {
   display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
-  min-height: 44px; padding: .6rem 1.15rem;
+  min-height: 48px; padding: .7rem 1.25rem;
   border-radius: var(--rund-pille);
   background: var(--marke); color: var(--marke-auf);
   font-size: .95rem; font-weight: 700; letter-spacing: -.005em;
@@ -418,7 +418,7 @@ a { color: inherit; text-decoration: none; }
 .u-knopf--still:hover { background: var(--flaeche-tief); }
 .u-knopf--modul { background: var(--modul); color: var(--modul-auf); }
 .u-knopf--modul:hover { background: var(--modul); filter: brightness(.92); }
-.u-knopf--klein { min-height: 38px; padding: .4rem .9rem; font-size: .86rem; }
+.u-knopf--klein { min-height: 40px; padding: .45rem .95rem; font-size: .86rem; }
 
 /* Marken und Abzeichen */
 .u-marke {
@@ -462,14 +462,15 @@ a { color: inherit; text-decoration: none; }
 
 /* Filterzeile: waagerecht rollende Pillen. */
 .u-filter {
-  display: flex; gap: .45rem;
+  display: flex; gap: .5rem;
   overflow-x: auto; scrollbar-width: none;
-  padding: var(--s-sm) var(--rand);
+  padding: var(--s-md) var(--rand);
   scroll-padding-inline: var(--rand);
 }
 .u-filter::-webkit-scrollbar { display: none; }
 .u-filter__pille {
-  flex: none; min-height: 36px; padding: .35rem .8rem;
+  flex: none; min-height: 40px; padding: .45rem .9rem;
+  display: inline-flex; align-items: center;
   border: 1px solid var(--linie); border-radius: var(--rund-pille);
   background: var(--flaeche);
   font-size: .85rem; font-weight: 600; color: var(--text-leise);
@@ -848,7 +849,7 @@ a { color: inherit; text-decoration: none; }
 /* --- Modul-Hub: farbiger Kopf ----------------------------------------- */
 .u-modulkopf {
   background: var(--modul); color: var(--modul-auf);
-  padding: var(--s-md) var(--rand) var(--s-lg);
+  padding: var(--s-md) var(--rand) var(--s-xl);
 }
 .u-modulkopf__zeile {
   display: flex; align-items: center; justify-content: space-between;
@@ -888,12 +889,12 @@ a { color: inherit; text-decoration: none; }
 
 /* --- Studium ----------------------------------------------------------- */
 .u-semesterkopf {
-  padding: var(--s-md) var(--rand) var(--s-lg);
+  padding: var(--s-lg) var(--rand) var(--s-xl);
   border-bottom: 1px solid var(--linie);
   background: var(--flaeche);
 }
 .u-semesterkopf__zahlen {
-  display: flex; gap: var(--s-lg); margin-top: var(--s-md);
+  display: flex; gap: var(--s-xl); margin-top: var(--s-lg);
 }
 .u-semesterkopf__zahl b {
   display: block; font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em;
@@ -935,13 +936,14 @@ a { color: inherit; text-decoration: none; }
   padding: 0 calc(var(--rand) - 4px) .5rem;
 }
 .u-tag {
-  display: grid; justify-items: center; gap: 3px;
-  padding: .35rem 0 .45rem; border-radius: var(--rund-klein);
+  display: grid; justify-items: center; gap: 4px;
+  padding: .5rem 0 .55rem; border-radius: var(--rund-klein);
+  min-height: 62px; align-content: center;
   font-size: .7rem; font-weight: 600; color: var(--text-leise);
 }
 .u-tag b {
   display: grid; place-items: center;
-  width: 30px; height: 30px; border-radius: 50%;
+  width: 33px; height: 33px; border-radius: 50%;
   font-size: .93rem; font-weight: 700; font-variant-numeric: tabular-nums;
   color: var(--text);
 }
@@ -972,8 +974,8 @@ a { color: inherit; text-decoration: none; }
 }
 .u-produkt__ersteller { font-size: .88rem; color: var(--text-leise); margin-top: .25rem; display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
 .u-produkt__kauf {
-  display: flex; align-items: center; gap: var(--s-sm);
-  padding: var(--s-md) var(--rand);
+  display: flex; align-items: center; gap: var(--s-md);
+  padding: var(--s-lg) var(--rand);
   border-block: 1px solid var(--linie); background: var(--flaeche);
   margin-top: var(--s-md);
 }
@@ -1096,8 +1098,8 @@ a { color: inherit; text-decoration: none; }
 }
 .u-blatt__titel { font-family: var(--schrift-titel); font-size: 1.15rem; font-weight: 600; }
 .u-blatt__punkt {
-  display: flex; align-items: center; gap: .8rem;
-  width: 100%; padding: .85rem 0; min-height: 56px;
+  display: flex; align-items: center; gap: .85rem;
+  width: 100%; padding: .95rem 0; min-height: 62px;
   border-bottom: 1px solid var(--linie-zart);
   text-align: left;
 }
@@ -1154,26 +1156,26 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* --- Onboarding --------------------------------------------------------- */
-.u-onboarding { padding: var(--s-xl) var(--rand) var(--s-2xl); max-width: 520px; margin-inline: auto; }
+.u-onboarding { padding: var(--s-2xl) var(--rand) var(--s-2xl); max-width: 520px; margin-inline: auto; }
 .u-onboarding__schritt { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-leise); }
 .u-onboarding__frage {
   font-family: var(--schrift-titel);
   font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2rem);
   font-weight: 600; line-height: 1.15; letter-spacing: -.02em;
-  margin: .4rem 0 var(--s-lg); text-wrap: pretty;
+  margin: .5rem 0 var(--s-xl); text-wrap: pretty;
 }
 .u-wahl {
-  display: flex; align-items: center; justify-content: space-between; gap: .6rem;
-  width: 100%; min-height: 56px; padding: .7rem .9rem;
-  margin-bottom: .5rem;
+  display: flex; align-items: center; justify-content: space-between; gap: .7rem;
+  width: 100%; min-height: 62px; padding: .85rem 1rem;
+  margin-bottom: .6rem;
   border: 1px solid var(--linie); border-radius: var(--rund);
   background: var(--flaeche); text-align: left;
 }
 .u-wahl:hover { border-color: var(--text-leise); }
 .u-wahl[aria-pressed="true"] { border-color: var(--marke); background: var(--marke-zart); }
 .u-wahl b { font-size: .97rem; font-weight: 700; }
-.u-wahl span { display: block; font-size: .8rem; color: var(--text-leise); }
-.u-fortschritt { display: flex; gap: 4px; margin-bottom: var(--s-lg); }
+.u-wahl span { display: block; font-size: .81rem; line-height: 1.4; color: var(--text-leise); margin-top: .1rem; }
+.u-fortschritt { display: flex; gap: 5px; margin-bottom: var(--s-xl); }
 .u-fortschritt i { flex: 1; height: 3px; border-radius: 2px; background: var(--linie); }
 .u-fortschritt i[data-aktiv="ja"] { background: var(--marke); }
 

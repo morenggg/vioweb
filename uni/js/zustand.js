@@ -2,19 +2,20 @@
    Campus — Zustand.
 
    Die einzige Quelle fuer alles, was den Nutzer betrifft: Name,
-   Hochschule, Studiengang, Fach, Semester, belegte Module, angepinnte
-   Module, Favoriten, gekaufte Materialien, Haken auf Checklisten,
-   Thema, gelesene Chats, letzte Suchen.
+   Hochschule, Studiengang, Lehramtstyp, Faecher, Semester, belegte
+   Module, angepinnte Module, Favoriten, Kaeufe, Haken, Thema.
 
-   Kopf, Home, Studium, Feed, Entdecken und Profil lesen ausschliesslich
-   hier — es gibt keinen zweiten Nutzerzustand daneben und keinen Namen
-   im Markup.
+   Kopf, Home, Studium, Feed, Entdecken, Suche und Profil lesen
+   ausschliesslich hier — es gibt keinen zweiten Nutzerzustand daneben
+   und keinen Namen im Markup.
 
-   Die Modulliste ist normalerweise NICHT gespeichert: sie ergibt sich
-   aus Studiengang, Fach und Semester. Erst wenn der Nutzer selbst ein
-   Modul hinzufuegt oder entfernt, wird die Liste festgeschrieben. So
-   folgt ein Wechsel des Studiengangs sofort, ohne dass alte Module
-   haengen bleiben.
+   Wichtig ist die Unterscheidung:
+
+     empfohleneModule()  was laut Studienstruktur zum Semester passt
+     module()            was der Nutzer tatsaechlich bestaetigt hat
+
+   Der Studienverlaufsplan sagt nur, was ueblich ist. Ob jemand ein
+   Modul wirklich belegt, entscheidet er im Onboarding selbst.
 
    Gespeichert wird in localStorage, nur in diesem Browser. Faellt der
    Speicher aus (privates Fenster), laeuft die App weiter und merkt sich
@@ -26,18 +27,21 @@ window.Uni = window.Uni || {};
 Uni.zustand = (function () {
   'use strict';
 
-  var SCHLUESSEL = 'uni.zustand.v2';
+  var SCHLUESSEL = 'uni.zustand.v3';
 
   var grundstand = {
     profil: {
       name: '',              /* leer erlaubt: dann gruesst die App ohne Namen */
       hochschule: 'uni-leipzig',
-      studiengang: 'bwl',
-      fach: null,            /* nur bei Studiengaengen mit Faechern */
+      studiengang: null,
+      lehramtstyp: null,     /* nur wo der Studiengang es verlangt */
+      vertiefung: null,      /* vorbereitet, noch von keinem Studiengang benutzt */
+      faecher: [],           /* ein oder mehrere, je nach Faechermodell */
       semester: 3,
+      verifizierung: 'bestaetigt',   /* offen | bestaetigt — im Prototyp gesetzt */
       onboardingFertig: false
     },
-    module: null,            /* null = automatisch aus dem Studiengang */
+    module: null,            /* null = noch nichts bestaetigt */
     gepinnt: [],
     favoriten: [],
     gekauft: [],
@@ -92,22 +96,36 @@ Uni.zustand = (function () {
     return i === -1;
   }
 
-  /* Die Module, die sich aus Studiengang, Fach und Semester ergeben.
-     Gibt es fuer diese Kombination nichts, ist die Liste leer — es wird
+  /* Was laut Studienstruktur zum aktuellen Semester passt.
+
+     Bei Lehramt zaehlen drei Schluessel mit: die Schulart, die
+     gewaehlten Faecher und die Gruppe des Moduls. Ein Modul ohne
+     lehramtstyp gilt fuer jede Schulart, ein Modul ohne fach fuer jede
+     Faecherwahl.
+
+     Gibt es fuer die Kombination nichts, ist die Liste leer — es wird
      NIE auf einen anderen Studiengang ausgewichen. */
-  function moduleAusStudiengang(profil) {
+  function empfohleneModule(profil) {
     profil = profil || s().profil;
+    if (!profil.studiengang) return [];
+    var faecher = profil.faecher || [];
     return Uni.daten.module.filter(function (m) {
-      return m.studiengang === profil.studiengang
-        && (!m.fach || m.fach === profil.fach)
-        && m.semester === profil.semester;
-    }).map(function (m) { return m.slug; });
+      if (m.studiengang !== profil.studiengang) return false;
+      if (m.semester !== profil.semester) return false;
+      if (m.lehramtstyp && m.lehramtstyp !== profil.lehramtstyp) return false;
+      if (m.fach && faecher.indexOf(m.fach) === -1) return false;
+      return true;
+    });
   }
 
-  /* Aus der abgeleiteten Liste eine eigene machen, sobald der Nutzer
+  function empfohleneSlugs(profil) {
+    return empfohleneModule(profil).map(function (m) { return m.slug; });
+  }
+
+  /* Aus der Empfehlung eine eigene Liste machen, sobald der Nutzer
      selbst eingreift. */
   function festschreiben() {
-    if (stand.module === null) stand.module = moduleAusStudiengang();
+    if (stand.module === null) stand.module = empfohleneSlugs();
   }
 
   return {
@@ -128,11 +146,20 @@ Uni.zustand = (function () {
       speichern();
     },
 
-    /* --- Module ---------------------------------------------------- */
-    moduleAusStudiengang: moduleAusStudiengang,
+    /* --- Module ----------------------------------------------------
+       module() sind die bestaetigten Module. Solange nichts bestaetigt
+       ist, gilt die Empfehlung — das passiert nur, wenn jemand das
+       Onboarding abbricht. */
+    empfohleneModule: empfohleneModule,
+    empfohleneSlugs: empfohleneSlugs,
     module: function () {
       var st = s();
-      return st.module === null ? moduleAusStudiengang(st.profil) : st.module.slice();
+      return st.module === null ? empfohleneSlugs(st.profil) : st.module.slice();
+    },
+    moduleBestaetigt: function (slugs) {
+      stand.module = (slugs || []).slice();
+      stand.gepinnt = stand.gepinnt.filter(function (x) { return stand.module.indexOf(x) > -1; });
+      speichern();
     },
     eigeneModulliste: function () { return s().module !== null; },
     belegt: function (slug) { return this.module().indexOf(slug) > -1; },
@@ -148,11 +175,10 @@ Uni.zustand = (function () {
       if (j > -1) stand.gepinnt.splice(j, 1);
       speichern();
     },
-    /* Eigene Auswahl verwerfen: die Liste kommt wieder aus dem
-       Studiengang. */
+    /* Eigene Auswahl verwerfen: es gilt wieder die Empfehlung. */
     moduleAbleiten: function () {
       stand.module = null;
-      var neue = moduleAusStudiengang();
+      var neue = empfohleneSlugs();
       stand.gepinnt = stand.gepinnt.filter(function (x) { return neue.indexOf(x) > -1; });
       speichern();
     },
@@ -221,18 +247,28 @@ Uni.zustand = (function () {
        ab jetzt wieder aus dem Studiengang abgeleitet. Angepinntes, das
        nicht mehr passt, faellt weg. */
     onboardingFertig: function () { return s().profil.onboardingFertig; },
+
+    /* Die Angaben aus dem Onboarding. Die Modulliste bleibt zunaechst
+       offen: sie wird im Schritt „Deine Module“ bestaetigt. */
     onboardingSpeichern: function (angaben) {
-      stand.profil.name = String(angaben.name || '').trim().slice(0, 40);
-      stand.profil.hochschule = angaben.hochschule;
-      stand.profil.studiengang = angaben.studiengang;
-      stand.profil.fach = angaben.fach || null;
-      stand.profil.semester = Number(angaben.semester);
-      stand.profil.onboardingFertig = true;
+      var p = stand.profil;
+      p.name = String(angaben.name || '').trim().slice(0, 40);
+      p.hochschule = angaben.hochschule || p.hochschule;
+      p.studiengang = angaben.studiengang || null;
+      p.lehramtstyp = angaben.lehramtstyp || null;
+      p.vertiefung = angaben.vertiefung || null;
+      p.faecher = (angaben.faecher || []).slice();
+      p.semester = Number(angaben.semester) || p.semester;
       stand.module = null;
-      var neue = moduleAusStudiengang(stand.profil);
-      stand.gepinnt = stand.gepinnt.filter(function (x) { return neue.indexOf(x) > -1; });
+      stand.gepinnt = [];
       speichern();
     },
+    onboardingAbschliessen: function () {
+      stand.profil.onboardingFertig = true;
+      if (stand.module === null) stand.module = empfohleneSlugs();
+      speichern();
+    },
+
     zuruecksetzen: function () {
       stand = tiefeKopie(grundstand);
       speichern();

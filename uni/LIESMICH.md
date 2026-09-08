@@ -3,8 +3,12 @@
 Ein klickbarer Frontend-Prototyp einer Studentenplattform. Er liegt in
 diesem Ordner und ist vollständig von der Website vioweb.de getrennt.
 
-> **Alles hier ist Muster.** Keine echten Studenten, keine echten
-> Dozenten, keine echten Preise, keine Zahlung, kein Konto, kein Server.
+> **Zwei Sorten Daten, streng getrennt.** Die Studienstruktur
+> (Hochschulen, Studiengänge, Lehramtsrichtungen, Fächer) ist aus
+> öffentlichen Hochschulquellen recherchiert und trägt ihre Adresse.
+> Alles andere — Modulnamen, Dozenten, Räume, Zeiten, Beiträge, Preise —
+> ist erfunden und in der Oberfläche als Musterdaten gekennzeichnet.
+> Kein Konto, kein Server, keine Zahlung.
 
 ---
 
@@ -17,7 +21,7 @@ lauffähig und würde das Versprechen der Website brechen.
 
 Daraus folgt:
 
-- **Keine Bibliothek, kein Framework.** Sechs eigene Skriptdateien,
+- **Keine Bibliothek, kein Framework.** Acht eigene Skriptdateien,
   ein Stylesheet.
 - **Routing ohne Server.** Unter jeder Adresse liegt eine echte
   `index.html`. Alle sind gleich aufgebaut; welche Ansicht erscheint,
@@ -59,7 +63,9 @@ uni/
   flohmarkt/<slug>/             Artikelseite
 
   css/app.css                   Werte, Bausteine, Ansichten, Schreibtisch
-  js/daten.js                   Musterdaten (später: Schnittstelle)
+  js/daten.js                   Datumshilfen und ein Fenster auf beide Quellen
+  js/hochschuldaten.js          Struktur aus öffentlichen Hochschulquellen
+  js/musterdaten.js             alles Erfundene, klar getrennt
   js/zustand.js                 der eine Nutzerzustand (localStorage)
   js/abfragen.js                Filtern, Sortieren, Suchen, Sichtbarkeit
   js/bausteine.js               wiederverwendbare Bausteine
@@ -78,95 +84,162 @@ Skript wird einmal ausgeführt.
 
 ## Datenmodell
 
-Sieben Sammlungen, über Schlüssel verbunden. Alles steht in
-`js/daten.js`, nichts ist in der Oberfläche fest verdrahtet.
+Zwei Dateien, streng getrennt:
+
+**`js/hochschuldaten.js`** — Angaben aus öffentlichen Hochschulquellen.
+Jeder Datensatz trägt `herkunft` und `quelle { name, url, abgerufen }`.
 
 ```
-hochschulen    id · name · ort · web
-studiengaenge  id · name · abschluss · faecher[]
-module         slug · studiengang · fach · semester · plan[]
-materialien    slug · modul · verkaeufer
-services       slug · module[] · anbieter
-flohmarkt      slug · hochschule · verkaeufer
-campus         slug · hochschule · quelle{name,url} · muster
-feed           id   · modul | studiengang | (hochschulweit)
-nachrichten    id   · partner · bezug
+hochschulen     id · name · ort · land · web · angebotErfasst
+studiengaenge   id · hochschule · abschluss · fakultaet · braucht{} · moduleErfasst
+lehramtstypen   id · hochschule · studiengang · faechermodell · klassen
+faechermodelle  art · anzahl · gruppen[] | kernfach[] | lernbereiche[]
+faecher         id · name
+anbieter        id · status · liefert[] · beschreibung · offen
 ```
 
-Termine entstehen aus dem `plan` jedes Moduls, für 14 Wochen rund um
-den heutigen Tag. Der Prototyp zeigt dadurch immer eine glaubwürdige
-Woche.
+**`js/musterdaten.js`** — alles Erfundene, `herkunft: 'muster'`.
+
+```
+module          slug · studiengang · lehramtstyp · fach · gruppe · semester · plan[]
+materialien     slug · modul · verkaeufer
+services        slug · module[] · anbieter
+flohmarkt       slug · hochschule · verkaeufer
+campus          slug · hochschule · quelle · herkunft
+feed            id   · modul | fach | studiengang | (hochschulweit)
+```
+
+Herkunftsstufen: `offiziell` (maschinell aus einer offiziellen Quelle),
+`recherchiert` (von Hand aus öffentlichen Seiten, mit Adresse und Datum),
+`gemeinschaft` (von Studenten eingetragen, vorbereitet) und `muster`.
+Im Prototyp kommen `recherchiert` und `muster` vor.
 
 ## Personalisierung
 
-Der Studiengang bestimmt die Inhalte wirklich — nicht nur die
-Beschriftung.
-
-**Die Modulliste ist normalerweise nicht gespeichert.** Sie ergibt sich
-aus Studiengang, Fach und Semester:
+Die Kette ist datengesteuert, nicht fest verdrahtet:
 
 ```
-Nutzer → Hochschule → Studiengang → (Fach) → Semester → Module
+Nutzer → Hochschule → Studiengang → (Lehramtstyp) → (Fächer) → Semester → Module
 ```
 
-Erst wenn jemand selbst ein Modul hinzufügt oder entfernt, wird die
-Liste festgeschrieben. Ein Wechsel des Studiengangs im Onboarding setzt
-sie zurück; angepinnte Module, die nicht mehr passen, fallen weg. In den
-Einstellungen lässt sich die eigene Auswahl wieder verwerfen.
+Welche Ebenen ein Studiengang braucht, steht an ihm selbst:
 
-**Drei Reichweiten** entscheiden über jeden Inhalt:
+```js
+braucht: { lehramtstyp: true, faecher: true }   // Lehramt
+braucht: {}                                      // Wirtschaftswissenschaften
+```
+
+Das Onboarding baut seine Schritte daraus. Ein WiWi-Student sieht
+keinen Lehramtsschritt, und die Fortschrittsanzeige zählt die
+tatsächlichen Schritte — nichts daran ist fest verdrahtet.
+
+**Empfehlung ist nicht Belegung.** `empfohleneModule()` sagt, was laut
+Studienstruktur zum Semester passt. `module()` sind die Module, die der
+Nutzer im letzten Onboarding-Schritt bestätigt hat. Wer ein Modul
+herausnimmt, sieht es nirgends mehr.
+
+**Vier Reichweiten** entscheiden über jeden Inhalt:
 
 | Reichweite | sichtbar für |
 |---|---|
 | modulbezogen | wer das Modul belegt |
+| fachbezogen | wer dieses Fach gewählt hat |
 | studiengangbezogen | alle im selben Studiengang |
 | hochschulweit | alle an der eigenen Hochschule |
 
-Der Flohmarkt gilt nur für die eigene Hochschule. Digitale Materialien
-und Services sind bewusst hochschulübergreifend — ein Lernzettel zur
-Analysis hilft auch anderswo; der Modulbezug ist dort der eigentliche
-Filter.
+**Es wird nie auf einen anderen Studiengang ausgewichen.** Fehlt eine
+Modulstruktur, kommt ein leerer Zustand mit zwei Wegen nach vorn.
 
-**Es wird nie auf einen anderen Studiengang ausgewichen.** Wer einen
-Studiengang ohne hinterlegte Module wählt, bekommt einen leeren Zustand
-mit zwei Wegen nach vorn: Modul hinzufügen oder Modul vorschlagen.
+## Lehramt
 
-### Hinterlegte Studiengänge
+Der Ablauf hat einen eigenen Schritt vor der Fächerwahl:
 
-| Studiengang | Module | Besonderheit |
+```
+Hochschule → Lehramt → Schulart → Fächer → Semester → Module bestätigen
+```
+
+Welche Schularten es gibt, hängt an der Hochschule — die Liste steht
+nicht global im Code. Für die Universität Leipzig sind fünf erfasst:
+Grundschule, Oberschule, Gymnasium, Sonderpädagogik und berufsbildende
+Schulen.
+
+**Wie die Fächer gewählt werden, hängt an der Schulart.** Das ist der
+Kern: ein Modell „zwei Fächer für alle“ wäre schlicht falsch.
+
+| Schulart | Modell | Auswahl |
 |---|---|---|
-| Betriebswirtschaftslehre | 16 | Semester 1 bis 4 |
-| Lehramt | 7 + 3 Deutsch + 4 Mathematik | eigener Schritt für das Fach |
-| Informatik | 7 | Semester 1 bis 3 |
-| Psychologie | 7 | eigenes Statistik II, nicht das der BWL |
-| Maschinenbau | 6 | Semester 1 und 3 |
-| VWL, Jura, Wirtschaftsinformatik | keine | zeigen den leeren Zustand |
+| Gymnasium | `gruppen` | zwei Fächer, mindestens eines aus Gruppe 1; Gruppe-2-Fächer nicht miteinander; Musik als Sonderfall |
+| Oberschule | `gruppen` | zwei Fächer nach derselben Regel, eigene Fächerliste |
+| Grundschule | `kernfach` | **ein** Kernfach, dazu die festen Grundschuldidaktiken Deutsch, Mathematik, Sachunterricht und ein kleines Wahlfach |
+| Sonderpädagogik | `gemischt` | ein Unterrichtsfach; die Förderschwerpunkte sind **nicht erfasst** und werden deshalb nicht abgefragt |
+| Berufsbildende Schulen | — | Struktur nicht erfasst, wird nicht erfunden |
 
-### Der Name
+Die Kombinationsregel wird geprüft: „Weiter“ bleibt gesperrt, solange
+die Auswahl unvollständig oder unzulässig ist, mit Klartext daneben.
 
-Der Name kommt aus dem Profil und wird im Onboarding erfragt. Er ist
-**kein Pflichtfeld**: ohne Namen grüßt die App mit „Guten Morgen“ statt
-mit einem erfundenen Namen. Kopf, Profil und Titel lesen denselben
-Wert — im Markup steht kein Name.
+Die Module eines Lehramtsstudenten entstehen aus vier Gruppen:
+`bildungswissenschaften` (für jede Schulart), `schulart` (die
+Lernbereiche der Grundschuldidaktik), `fachwissenschaft` und
+`fachdidaktik` (je gewähltem Fach) sowie `praktikum`. Grundschule und
+Gymnasium bekommen dadurch nachweislich verschiedene Module.
 
-## Quellen bei Campus-Inhalten
+## Öffentliche Hochschuldaten
 
-Campus-Einträge tragen `quelle: { name, url? }` und ein `muster`-Kennzeichen.
+Pilot ist die **Universität Leipzig**. Recherchiert und mit Adresse
+hinterlegt sind: das Studienangebot, die fünf Lehramtsrichtungen, die
+Fächergruppen für Gymnasium und Oberschule, das Kernfach-Modell der
+Grundschule und das Unterrichtsfach der Sonderpädagogik.
 
-- **Mit Adresse** wird ein echter Verweis gerendert: `<a>` mit
-  `target="_blank"` und `rel="noopener noreferrer"`, klein und dezent
-  unter dem Beitrag. Verwendet werden ausschließlich die Startseiten der
-  Hochschulen — je Hochschule ein Wegweiser-Eintrag, der nichts
-  behauptet, sondern sagt, wo Fristen und Öffnungszeiten wirklich stehen.
+Quellen (Stand siehe `geprueft` in `hochschuldaten.js`):
+
+- [Studienangebot](https://www.uni-leipzig.de/studium/vor-dem-studium/studienangebot)
+- [Aufbau des Lehramtsstudiums](https://www.uni-leipzig.de/studium/vor-dem-studium/aufbau-des-studiums/lehramt)
+- [Lehramt an Gymnasien](https://www.uni-leipzig.de/studium/im-studium/lehramtsstudium/lehramt-an-gymnasien)
+- [Lehramt an Oberschulen](https://www.uni-leipzig.de/studium/im-studium/lehramtsstudium/lehramt-an-oberschulen)
+- [Lehramt an Grundschulen](https://www.uni-leipzig.de/studium/im-studium/lehramtsstudium/lehramt-an-grundschulen)
+- [Wirtschaftswissenschaften B. Sc.](https://www.uni-leipzig.de/studium/vor-dem-studium/studienangebot/studiengang/course/show/wirtschaftswissenschaften-b-sc)
+- [Studiendokumente der Wirtschaftswissenschaftlichen Fakultät](https://www.wifa.uni-leipzig.de/studium/studienorganisation/studiendokumente)
+
+Für die übrigen vier Hochschulen ist **nichts erfasst**. Sie zeigen im
+Onboarding einen eigenen Schritt mit Verweis auf ihre Startseite — statt
+Studiengänge zu erfinden.
+
+### Anbieter statt Scraper
+
+`hochschuldaten.js` führt eine Liste von Anbietern mit Status. Ein neuer
+kommt als Eintrag dazu; die App fragt nur über `lade()` an.
+
+| Anbieter | Status | Warum |
+|---|---|---|
+| Statischer Import | aktiv | von Hand recherchiert, mit Adresse und Datum |
+| Modulhandbücher | vorbereitet | öffentlich als PDF; Abruf aus dieser Umgebung nicht möglich |
+| Vorlesungsverzeichnis (AlmaWeb) | blockiert | Sitzungsadressen mit Token, keine stabile öffentliche Adresse je Veranstaltung, keine dokumentierte Schnittstelle |
+| Newsportal | vorbereitet | öffentlich; Feed-Format nicht bestätigt, Abruf nicht möglich |
+| HISinOne / LSF | offen | je Hochschule zu prüfen: Zugang, robots.txt, Nutzungsbedingungen |
+
+> **Wichtig:** Aus dieser Entwicklungsumgebung sind die Hochschulserver
+> nicht erreichbar — weder per HTTP noch über den Seitenabruf. Die
+> Struktur oben stammt deshalb aus der Websuche und ist als
+> `recherchiert` gekennzeichnet, nicht als `offiziell`. Vor einem echten
+> Start gehört jede Adresse und jede Angabe einmal am Original geprüft.
+
+## Quellen in der Oberfläche
+
+Inhalte tragen `quelle { name, url, abgerufen }`.
+
+- **Mit Adresse** entsteht ein echtes `<a>` mit `target="_blank"` und
+  `rel="noopener noreferrer"`, klein und dezent unter dem Inhalt.
+  Es zeigt auf die Originalseite, nicht auf eine Kopie.
 - **Ohne Adresse** steht die Quelle als Text da, mit dem Zusatz
   „Musterdaten“. Es wird kein Link erfunden.
 
-Erfundene Meldungen sollen nie wie echte Mitteilungen einer Hochschule
-wirken. Deshalb steht über der Campus-Liste und unter der Startseite ein
-sichtbarer Hinweis, und jede erfundene Quelle ist gekennzeichnet.
+Quellenverweise stehen im Onboarding (Studienangebot, Schularten,
+Fächermodell), im Studium-Bereich (Studiengang und Studiendokumente),
+auf Campus-Beiträgen und auf Modulseiten.
 
-> Die hinterlegten Adressen sind die Startseiten der jeweiligen
-> Einrichtungen. Vor einem echten Start gehören sie einmal geprüft.
+Auf jeder Modulseite steht sichtbar, dass Modulname, Zeiten und Beiträge
+Musterdaten sind, und welche Angaben **nicht hinterlegt** sind. Wo kein
+Dozent bekannt ist, steht keiner — auch kein erfundener.
 
 ---
 
@@ -195,50 +268,41 @@ Zurück-Knopf des Browsers funktioniert.
 
 ## Was wirklich funktioniert
 
-Onboarding in vier bis fünf Schritten (Name, Hochschule, Studiengang,
-Fach, Semester) · Ableitung der Module aus dem Studiengang · Navigation
-ohne Neuladen · Module anpinnen, hinzufügen, wieder ableiten · Reiter ·
-Filter und Sortierung · Materialien merken · Verkäufern folgen ·
-Checklisten auf Abgaben · Kalenderwoche blättern · globale Suche über
-alle Sammlungen mit Vorrang für eigene Module · Chat mit eigener Antwort ·
-Schnellmenü mit Formularen · Quellenverweise · helles und dunkles
-Erscheinungsbild · Benachrichtigungsstufe · Prototyp zurücksetzen.
-
-Gespeichert wird in `localStorage`, nur in diesem Browser. Fällt der
-Speicher aus (privates Fenster), läuft die App weiter und merkt sich
-nichts.
+Datengesteuertes Onboarding mit dynamischer Schrittzahl · Lehramtsablauf
+mit Schulart, Fächermodell und Kombinationsregel · Bestätigung der
+eigenen Module · Navigation ohne Neuladen · Module anpinnen, hinzufügen,
+wieder ableiten · Reiter · Filter und Sortierung · Materialien merken ·
+Verkäufern folgen · Checklisten auf Abgaben · Kalenderwoche blättern ·
+globale Suche über Module, Studiengänge, Materialien, Leute, Campus,
+Services und Flohmarkt · Chat mit eigener Antwort · Schnellmenü ·
+Quellenverweise · helles und dunkles Erscheinungsbild ·
+Benachrichtigungsstufe · Prototyp zurücksetzen.
 
 ## Was ausdrücklich Attrappe ist
 
 Nichts davon täuscht eine Funktion vor; überall steht ein Hinweis:
 
-- **Zahlung.** Kein Zahlungsanbieter angebunden. „Kaufen“ öffnet einen
-  Hinweis und schaltet das Material auf Wunsch nur lokal frei.
+- **Alle Modulnamen, Dozenten, Räume, Zeiten, Beiträge, Materialien,
+  Preise und Bewertungen.** Sie stehen in `musterdaten.js` und sind in
+  der Oberfläche als Musterdaten gekennzeichnet.
+- **Zahlung.** Kein Zahlungsanbieter angebunden.
 - **Verifizierung.** Es wird keine E-Mail verschickt.
-- **Hochladen.** Kein Speicher angebunden.
-- **Kalender-Abgleich** mit Google und Apple: vorbereitet, nicht
-  angebunden.
-- **Offizielle Hochschultermine**, Push-Benachrichtigungen, Ruhezeiten:
-  vorbereitet, nicht angebunden.
-- **Formulare** im Schnellmenü sind vollständig bedienbar, senden aber
-  nichts.
+- **Hochladen**, **Kalender-Abgleich**, **offizielle Hochschultermine**,
+  **Push**: vorbereitet, nicht angebunden.
 
 ## Was noch fehlt
 
-- Community: Kommentare, verschachtelte Antworten, „Hilfreich“ als
-  Handlung. Die Beiträge zeigen die Zahlen, sind aber noch nicht
-  bedienbar.
-- Eigene Semesterübersicht statt der Trennung „laufend / früher“.
-- Gebührenmodell. Die Datenstruktur lässt Preis und Gebühren je
-  Produktart offen; festgelegt ist nichts.
-- Mehrere Hochschulen gleichzeitig: die Daten sind darauf vorbereitet,
-  Flohmarkt-Artikel liegen bisher nur für Leipzig vor.
-- Weitere Studiengänge. Neue kommen als Eintrag in `studiengaenge` und
-  ein paar Module dazu, sonst ändert sich nichts.
-- Noten und eine echte Semesterhistorie. Frühere Semester zeigen den
-  Modulkatalog, keine persönlichen Ergebnisse — die wären erfunden.
-
----
+- Ein echter Import. Modulhandbücher und Newsportal sind als Anbieter
+  vorbereitet, aber nicht abgerufen (siehe Tabelle oben).
+- Weitere Hochschulen. Jede braucht ihre eigene Recherche; die Struktur
+  nimmt sie ohne Umbau auf.
+- Förderschwerpunkte der Sonderpädagogik und die Struktur der
+  berufsbildenden Schulen.
+- Community-Beiträge sind noch nicht bedienbar; Konflikte zwischen
+  offiziellen und Community-Angaben sind im Modell vorgesehen
+  (`herkunft`), aber noch nicht ausgespielt.
+- Deduplizierung gleicher Module aus mehreren Quellen — dafür sind
+  Modulnummer, Hochschule und Studiengang als Schlüssel vorgesehen.
 
 ## Gestaltung
 
@@ -284,6 +348,13 @@ Drei Nutzerfälle gehören zu jeder Änderung an der Personalisierung:
 
 | Nutzer | Angaben | Erwartung |
 |---|---|---|
-| A | Maurice · BWL · 3 | BWL-Module und BWL-Feed, Anrede mit Namen |
-| B | Anna · Lehramt Deutsch · 3 | Lehramtsmodule, kein BWL, Anrede „Anna“ |
-| C | ohne Namen · VWL · 3 | leerer Zustand, kein BWL als Ersatz, Anrede ohne Namen |
+| A | Maurice · Wirtschaftswissenschaften · 3 | WiWi-Module und -Feed, Anrede mit Namen |
+| B | Anna · Lehramt Gymnasium · Deutsch + Geschichte · 3 | Bildungswissenschaften, Praktikum, Fachwissenschaft und Fachdidaktik beider Fächer; kein WiWi, keine Grundschuldidaktik |
+| B2 | Lehramt Grundschule · Kernfach Deutsch · 3 | Lernbereiche der Grundschuldidaktik statt zweitem Fach — nachweislich andere Module als B |
+| C | Rechtswissenschaft · 3 | leerer Zustand, kein Ersatz aus einem anderen Studiengang |
+| D | ohne Vornamen | „Guten Morgen“ ohne Namen |
+| E | TU Dresden | Hinweis auf fehlendes Studienangebot mit Verweis auf die Hochschule |
+
+Dazu ein Quellen-Test: jeder Quellenlink führt auf eine echte
+`https`-Adresse, öffnet in einem neuen Tab, trägt
+`rel="noopener noreferrer"`, und keine Musterquelle ist verlinkt.
